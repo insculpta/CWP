@@ -1,0 +1,6 @@
+Background: #484848
+Navigate Bar(Header): #212121
+LightBlue: #33d9e1
+White: #ffffff
+Any button in Connection: #7b7b7b
+Menu grey: #666666 
