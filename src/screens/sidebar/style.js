@@ -19,11 +19,11 @@ export default {
     width: 210,
     height: 75,
     resizeMode: "cover"
-
   },
   text: {
     fontWeight: Platform.OS === "ios" ? "500" : "400",
     fontSize: 16,
+    marginLeft: 20,
     color: "#ffff",
     fontWeight:'bold',
   },

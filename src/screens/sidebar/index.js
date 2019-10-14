@@ -29,26 +29,49 @@ class SideBar extends Component<Props> {
 
     this.datas = [
       {
-        name: "公告與通知",
+        name: "Master Mode",
         route: "Mastermode",  //要連到的mod
-
-        bg: "#1e2d28"
+        iconimage: require("./assets/Menu/menu_master_w.png"),
+        icon: "people",
+        bg: "#C5F442"
       },
       {
-        name: "班表查詢",
+        name: "Recorder Mode",
         route: "Recordermode2",
-        bg: "#1e2d28",
+        iconimage: require("./assets/Menu/menu_recorder_w.png"),
+        icon: "people",
+        bg: "#666666",
 
       },
       {
-        name: "差假申請",
+        name: "Play",
         route: "PlayMode",
-        bg: "#1e2d28",
+        iconimage: require("./assets/Menu/menu_play_w.png"),
+        icon: "people",
+        bg: "#666666",
       },
       {
-        name: "差假申請核准",
+        name: "Connection",
         route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
-        bg: "#1e2d28",
+        iconimage: require("./assets/Menu/connect_w.png"),
+        icon: "people",
+        bg: "#666666",
+      },
+      {
+
+        bg: "#666666",
+      },
+      {
+
+        bg: "#666666",
+      },
+      {
+
+        bg: "#666666",
+      },
+      {
+
+        bg: "#666666",
       },
     ];
   };
@@ -63,16 +86,23 @@ class SideBar extends Component<Props> {
       <Container>
         <Content
           bounces={false}
-          style={{ flex: 1, backgroundColor:"#1e2d28",  top: -1 }} >
-          <View style={{height:30}}></View>
+          style={{ flex: 1, backgroundColor: "#212121", top: -1 }}>
 
-          <List
+
+
+
+          <View style={{height: 200,justifyContent: 'center',alignItems:'center',backgroundColor: '#212121'}}>
+                <Thumbnail large source={require('../../../assets/minj.jpg')} />
+                <Text style={{color:"white",fontSize: 20,fontWeight: 'bold',alignSelf: 'center',justifyContent: 'center',marginTop: 10}}>Jing Yao</Text>
+          </View>
+
+          <List style={{backgroundColor: "#666666" }}
             dataArray={this.datas}
             renderRow={data =>
               <ListItem
                 button
                 noBorder
-                onPress={() => this.props.navigation.navigate(data.route)}
+                onPress={() => this.props.navigation.navigate(data.route)} style={{backgroundColor: "#666666"}}
               >
                 <Left>
                 <Image style={{width:30, height:30}} source={data.iconimage} />
@@ -88,7 +118,7 @@ class SideBar extends Component<Props> {
                         borderRadius: 3,
                         height: 25,
                         width: 72,
-
+                        backgroundColor: data.bg
                       }}
                     >
                       <Text
