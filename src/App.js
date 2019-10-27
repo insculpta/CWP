@@ -151,8 +151,11 @@ import NHToast from "./screens/toast/";
 import Actionsheet from "./screens/actionsheet";
 import NHAccordion from "./screens/accordion/";
 import NHDatePicker from "./screens/datepicker/";
+
+
 export default class App extends Component<Props>{
     constructor(props){
+
       super(props);
       const Drawer = createDrawerNavigator(
         {

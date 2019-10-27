@@ -1,5 +1,5 @@
 import React ,{Component} from 'react';
-import {View,Text, ActivityIndicator,StyleSheet, TextInput,KeyboardAvoidingView,ScrollView,} from 'react-native';
+import {AppRegistry,View,Text, ActivityIndicator,StyleSheet, TextInput,KeyboardAvoidingView,ScrollView, Keyboard} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {Image,} from 'react-native-elements';
 import {
@@ -78,11 +78,85 @@ const styles=StyleSheet.create({
 export default class Connection extends Component{
     constructor(props){
       super(props);
+      this.state={
+
+      		}
+this.userAccount = null;
+this.userPassword = null;
+
       }
 
 
+login = () =>{
+
+    //const {employee,work} = this.state;
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    if(this.userAccount==""){
+        alert("Please enter Account");
+      //this.setState({account:'Please enter Account'})
+
+    }
+
+/* 	else if(reg.test(this.employee) === false)
+    {
+    //alert("Account is Not Correct");
+    this.setState({account:'Account is Not Correct'})
+    return false;
+      } */
+
+    else if(this.userPassword==""){
+    alert("Please enter Password");
+    //this.setState({account:'Please enter password'})
+    }
+    else{
+
+    fetch('http://140.114.54.22:8080/login.php/',{
+        method:'post',
+        header:{
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+        },
+        body:JSON.stringify({
+            // we will pass our input data to server
+            account: this.userAccount,
+            password: this.userPassword
+        })
+
+    })
+    .then((response) => response.json())
+     .then((jsonData)=>{
+
+         if(jsonData == "Correct"){
+             // redirect to profile page
+             alert("Successfully Login");
+             this.props.navigation.navigate("Mastermode")
+
+         }else if (jsonData == "Wrong Password"){
+             alert("Wrong Password");
+             this.passwordInput.clear();
+             this.userPassword=null;
+         }
+         else if (jsonData == "Wrong Account"){
+            alert("Wrong Account");
+            this.accountInput.clear();
+            this.passwordInput.clear();
+            this.userAccount=null;
+            this.userPassword=null;
+         }
+     })
+     .catch((error)=>{
+     console.error(error);
+     });
+    }
+
+
+
+
+}
 
     render(){
+
+
       return(
 
 
@@ -124,8 +198,9 @@ export default class Connection extends Component{
                              keyboardType='default'
                              autoFocus={true}
                              underlineColorAndroid='#d6dee2'
-                             onChangeText={n=>{this.room_number=n;}}
-                             style={{fontSize:20, color:'#d6dee2',height:45}}
+                             onChangeText={(text) => {this.userAccount = text}}
+                             style={{fontSize:20, color:'#6A6C6E',height:45}}
+                             ref={input => { this.accountInput = input }}
                         /></View>
                         <View style={styles.input}>
                         <TextInput
@@ -134,8 +209,10 @@ export default class Connection extends Component{
                              secureTextEntry= {true}
                              autoFocus={true}
                              underlineColorAndroid='#d6dee2'
-                             onChangeText={n=>{this.room_number=n;}}
+                             onChangeText={(text) => {this.userPassword = text}}
                              style={{fontSize:20, color:'#d6dee2',height:45}}
+                             ref={input => { this.passwordInput = input }}
+
                         /></View>
 
                  </View>
@@ -149,10 +226,10 @@ export default class Connection extends Component{
               <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 
                 <View>
-                    <Button transparent onPress={()=>{
-                      this.props.navigation.navigate("Mastermode");
+                    <Button transparent onPress={
+                     this.login
 
-                    }}><Image
+                    }><Image
                       source={require('./images/login.png')}
                       style={{ }}/>
                       </Button>
@@ -175,6 +252,7 @@ export default class Connection extends Component{
                 this.props.navigation.navigate("Mastermode");
                 }}>
               <Text style={styles.underline}>無法登入？</Text>
+
               </Button>
               </View>
 
