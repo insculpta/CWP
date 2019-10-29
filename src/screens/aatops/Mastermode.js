@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,} from 'react-native';
+import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground,} from 'react-native';
 import {
   Thumbnail,
   Container,
@@ -97,6 +97,7 @@ const action = require("../../../assets/MasterMode/Action.png");
 const action2 = require("../../../assets/MasterMode/Action2.jpg");
 const card1 = require("../../../assets/MasterMode/card1.png");
 const card2 = require("../../../assets/MasterMode/card2.png");
+const banner = require("../../../assets/MasterMode/banner.png");
 
 
 
@@ -111,7 +112,8 @@ class Mastermode extends Component {
       isPlaying:false,
       counter:0,
       min: 0,
-      sec: 0
+      sec: 0,
+
     };
       this.audioRecorderPlayer = new AudioRecorderPlayer();
       this.onStartRecord = this.onStartRecord.bind(this);
@@ -168,6 +170,18 @@ class Mastermode extends Component {
      let dimensions = Dimensions.get("window");
      let imageHeight = Math.round((dimensions.width * 9) / 16);
      let imageWidth = dimensions.width;
+	 
+	 
+	const data =  this.props.screenProps.get_userdata();
+	let dataDisplay = data.map(function (jsonData) {
+		return (
+			<View key={jsonData.name}>
+				<View style={{ flexDirection: 'row' }}>					
+					<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {jsonData.name} ！</Text>				
+				</View>
+			</View>
+		)
+	});
 
 
     return (
@@ -191,24 +205,29 @@ class Mastermode extends Component {
 
       <ScrollView  horizontal={true} >
 
-               <Image
+               <ImageBackground
                  style={{ height:  imageHeight , width: imageWidth }}
-                 source={action}
-               />
-
-               <Image
+                 source={banner}
+               > 
+				<View style={{position: 'absolute', top: 22, left: 34, right: 0, bottom: 0}}>
+				{dataDisplay}
+				</View>
+			  </ImageBackground>
+				
+               <ImageBackground
                  style={{height:  imageHeight , width: imageWidth}}
-                 source={action2}
-               />
+                 source={banner}
+               >
+			   </ImageBackground>
 
       </ScrollView>
 
-      <View style={{flex:3,justifyContent: 'center',alignSelf: 'center'}}>
-      <Text style={{fontWeight: 'bold', fontSize: 26, height:30, color:'#435366',alignItems:  'flex-start',margin:20,}}>公 告 與 通 知</Text>
-      </View>
+                <ScrollView contentContainerStyle={styles.underline}>
+                    {dataDisplay}
+				</ScrollView>
 
       <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
-
+                 
                  <Image
                    style={{ paddingBottom:15 }}
                    source={card1}

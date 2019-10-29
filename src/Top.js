@@ -34,8 +34,13 @@ export default class Top extends Component<Props>{
       this.all_close=this.all_close.bind(this);
       this.close=this.close.bind(this);
       this.connect=new Connection(this.ws_fire_event);
+	  
+	  //使用者資料將function bind 
+	  this.set_userdata = this.set_userdata.bind(this);
+	  this.get_userdata = this.get_userdata.bind(this);
+	  
 
-       this.init_state={
+       this.state={
         mode:0, //0為未選擇 1為recoder 2為master
         room:-1,//-1為未選擇
         name:"user",
@@ -63,6 +68,11 @@ export default class Top extends Component<Props>{
         ws_fire_event:this.ws_fire_event,
         send:this.send,
         ch_name:this.ch_name,
+		
+		//使用者資料的state
+		userdata:123,
+		set_userdata:this.set_userdata,
+		get_userdata:this.get_userdata,
 
         //master用這些條function來控制錄音開始/停止
         all_start:this.all_device_start_record,//this.props.screenProps.all_start()
@@ -78,7 +88,6 @@ export default class Top extends Component<Props>{
       };
 
 
-      this.state=this.init_state;
 
   }
 
@@ -88,6 +97,7 @@ export default class Top extends Component<Props>{
   render(){
       return(
         <App props={this.state}/>
+		
       );
   }
 
@@ -276,4 +286,16 @@ export default class Top extends Component<Props>{
     return this.state.room;
     //console.log(this.state.room);
   }
+
+//用戶的使用者資料用這兩個function修改	(參照set_room_number跟get)room function做的)
+set_userdata(data){
+	this.state.userdata = data;
+}	
+	
+get_userdata(){
+	return this.state.userdata;	
+}
+		
+	
+  
 }

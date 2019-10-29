@@ -19,67 +19,13 @@ import {
   Input
 } from "native-base";
 
-const fontSize1=30;
-const fontSize2=20;
-const styles=StyleSheet.create({
-    container:{
-      backgroundColor:'#f5f9f8',
-      flex:1
-    },
-    button:{
-      backgroundColor:'#7b7b7b',
-      width:'80%',
-      height:'60%',
-      alignSelf:'center'
-
-    },
-    text:{
-      color:"#ffffff"
-    },
-
-    header: {
-      backgroundColor: "#1e2d28",
 
 
-    },
-    content:{
-               position: 'absolute',
-               top: 56,
-               left: 0,
-               right: 0,
-               bottom: 0,
-               backgroundColor: 'transparent'
-    },
-    footer:{
-      backgroundColor: "#019875",
-      height:50,
-
-    },
-    modetext:{
-      fontSize:10
-    },
-    underline:{
-      textDecorationLine: 'underline',
-      fontWeight: 'bold',fontSize:15, color:'#7b7b7b',
-
-    },
-
-    input:{
-      borderColor: '#d6dee2',
-      borderRadius:3,
-      width:300,
-      fontSize:30, color:'#d6dee2',height:45,
-      margin:5,
-    },
-});
-
-
-
-export default class Connection extends Component{
+export default class Connection extends Component<props>{
     constructor(props){
       super(props);
       this.state={
-
+          userData: [],
       		}
 this.userAccount = null;
 this.userPassword = null;
@@ -152,9 +98,90 @@ login = () =>{
 
 
 
-}
+    }
+
+
+    OnGetuserdata = () => {
+
+        //const {employee,work} = this.state;
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (this.userAccount == "") {
+            alert("Please enter Account");
+            //this.setState({account:'Please enter Account'})
+
+        }
+
+        /* 	else if(reg.test(this.employee) === false)
+            {
+            //alert("Account is Not Correct");
+            this.setState({account:'Account is Not Correct'})
+            return false;
+              } */
+
+        else if (this.userPassword == "") {
+            alert("Please enter Password");
+            //this.setState({account:'Please enter password'})
+        }
+        else {
+
+            fetch('http://140.114.54.22:8080/new_userdata.php/', {
+                method: 'post',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // we will pass our input data to server
+                    account: this.userAccount,
+                    password: this.userPassword
+                })
+
+            })
+                .then((response) => response.json())
+                .then((jsonData) => {
+
+                    this.setState({ userData: jsonData, })
+
+                    if (jsonData != "") {
+                        // redirect to profile page
+
+                        alert("Hi I get it!!");
+						
+						this.props.screenProps.set_userdata(jsonData);
+						this.props.navigation.navigate("Mastermode");
+                    }
+
+                    else if (jsonData == "") {
+                        alert("Data Fail");
+                        this.userAccount = null;
+                        this.userPassword = null;
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+    }
+
 
     render(){
+
+        
+	const data = this.state.userData;
+	//const data = this.props.screenProps.get_userdata();
+	let dataDisplay = data.map(function(jsonData){
+	 return (
+	   <View key={jsonData.id}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 30}}>{jsonData.id}</Text>
+		  <Text style={{color: '#00f',width: 60}}>{jsonData.name}</Text>
+		  <Text style={{color: '#000',width: 140}}>{jsonData.date}</Text>
+		  <Text style={{color: '#00f',width: 100}}>{jsonData.work}</Text>
+		</View>
+	   </View>
+	 )
+	});
 
 
       return(
@@ -227,7 +254,10 @@ login = () =>{
 
                 <View>
                     <Button transparent onPress={
-                     this.login
+                    this.OnGetuserdata
+					
+					//this.props.navigation.navigate("Mastermode");
+					
 
                     }><Image
                       source={require('./images/login.png')}
@@ -248,13 +278,15 @@ login = () =>{
           <View style={{flex:2, alignSelf:'center',justifyContent: 'flex-start'} }>
 
               <View style={{alignSelf: 'center',justifyContent: 'center'}}>
-              <Button transparent onPress={()=>{
-                this.props.navigation.navigate("Mastermode");
-                }}>
+              <Button transparent   onPress={this.props.screenProps.set_userdata(this.state.userData)} >
               <Text style={styles.underline}>無法登入？</Text>
 
               </Button>
               </View>
+            <ScrollView contentContainerStyle={styles.underline}>
+            {dataDisplay}
+                
+            </ScrollView>
 
           </View>
 
@@ -275,3 +307,59 @@ login = () =>{
       );
     }
 }
+
+
+const fontSize1=30;
+const fontSize2=20;
+const styles=StyleSheet.create({
+    container:{
+      backgroundColor:'#f5f9f8',
+      flex:1
+    },
+    button:{
+      backgroundColor:'#7b7b7b',
+      width:'80%',
+      height:'60%',
+      alignSelf:'center'
+
+    },
+    text:{
+      color:"#ffffff"
+    },
+
+    header: {
+      backgroundColor: "#1e2d28",
+
+
+    },
+    content:{
+               position: 'absolute',
+               top: 56,
+               left: 0,
+               right: 0,
+               bottom: 0,
+               backgroundColor: 'transparent'
+    },
+    footer:{
+      backgroundColor: "#019875",
+      height:50,
+
+    },
+    modetext:{
+      fontSize:10
+    },
+    underline:{
+      textDecorationLine: 'underline',
+      fontWeight: 'bold',fontSize:15, color:'#7b7b7b',
+
+    },
+
+    input:{
+      borderColor: '#d6dee2',
+      borderRadius:3,
+      width:300,
+      fontSize:30, color:'#d6dee2',height:45,
+      margin:5,
+    },
+});
+

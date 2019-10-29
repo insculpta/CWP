@@ -198,7 +198,7 @@ export default class App extends Component<Props>{
         },
         {
           initialRouteName: "Master_main_page",
-          contentOptions: {
+          contentOptions: {  
             activeTintColor: "#e91e63"
           },
           contentComponent: props => <SideBar {...props} />
@@ -352,6 +352,7 @@ export default class App extends Component<Props>{
     render(){
       return(
         <Root>
+		
           <AppContainer screenProps={this.props.props}/>
         </Root>
       );
