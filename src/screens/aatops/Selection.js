@@ -24,35 +24,155 @@ import {
 export default class Connection extends Component<props>{
     constructor(props){
       super(props);
-      this.state={
-          userData: [],
-      		}
+
 this.userAccount = null;
 this.userPassword = null;
-
+//this.props.screenProps.set_workdata=this.props.screenProps.set_workdata.bind(this);
+//this.props.screenProps.get_workdata=this.props.screenProps.get_workdata.bind(this);
+//this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
+    
+	this.state={
+          userData:[],
+		  workData:[],
+      		}
       }
+
+
+new_login = () => {
+
+		if(this.userAccount==""){
+			alert("Please enter Account");
+		}
+
+		else if(this.userPassword==""){
+		alert("Please enter Password");
+		}
+		else{
+
+		fetch('http://140.114.54.22:8080/new_userdata.php/',{
+			method:'post',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			body:JSON.stringify({
+				// we will pass our input data to server
+				account: this.userAccount,
+				password: this.userPassword
+			})
+
+		})
+		.then((response) => response.json())
+		.then((user_jsonData)=>{
+			
+			if (user_jsonData == "Wrong Password"){
+				alert("Wrong Password");
+				this.passwordInput.clear();
+				this.userPassword=null;
+			}
+			else if (user_jsonData == "Wrong Account"){
+				alert("Wrong Account");
+				this.accountInput.clear();
+				this.passwordInput.clear();
+				this.userAccount=null;
+				this.userPassword=null;
+			} 	
+			
+			else {
+			this.setState({ userData: user_jsonData, }); 
+			this.props.screenProps.set_userdata(user_jsonData);
+		 
+			 
+		    fetch('http://140.114.54.22:8080/userdata.php/',{
+			method:'post',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			body:JSON.stringify({
+				// we will pass our input data to server
+				account: this.userAccount,
+				password: this.userPassword
+			})
+			})
+			.then((response) => response.json())
+			.then((work_jsonData)=>{
+				this.setState({ userWorkData: work_jsonData,})
+			})
+			 .catch((error)=>{
+			 console.error(error);
+			 });
+			 									 			 
+			 alert("Successfully Login");
+			 //this.props.navigation.navigate("Mastermode");
+
+		 }
+			 		 
+		})
+		.catch((error)=>{
+		console.error(error);
+		});
+		}	
+		
+}
+
+
+
+some =() =>{
+
+fetch('http://140.114.54.22:8080/login.php/',{
+        method:'post',
+        header:{
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+        },
+        body:JSON.stringify({
+            // we will pass our input data to server
+            account: this.userAccount,
+            password: this.userPassword,
+        })
+
+    })
+    .then((response) => response.json())
+     .then((jsonData)=>{
+
+         if(jsonData == "Correct"){
+             // redirect to profile page
+             alert("Successfully Login");
+             this.props.navigation.navigate("Mastermode");
+
+         }else if (jsonData == "Wrong Password"){
+             alert("Wrong Password");
+             this.passwordInput.clear();
+             this.userPassword=null;
+         }
+         else if (jsonData == "Wrong Account"){
+            alert("Wrong Account");
+            this.accountInput.clear();
+            this.passwordInput.clear();
+            this.userAccount=null;
+            this.userPassword=null;
+         }
+     })
+     .catch((error)=>{
+     console.error(error);
+     });	
+		
+		
+}
+
+
 
 
 login = () =>{
 
-    //const {employee,work} = this.state;
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+
     if(this.userAccount==""){
         alert("Please enter Account");
-      //this.setState({account:'Please enter Account'})
-
     }
-
-/* 	else if(reg.test(this.employee) === false)
-    {
-    //alert("Account is Not Correct");
-    this.setState({account:'Account is Not Correct'})
-    return false;
-      } */
 
     else if(this.userPassword==""){
     alert("Please enter Password");
-    //this.setState({account:'Please enter password'})
     }
     else{
 
@@ -65,7 +185,7 @@ login = () =>{
         body:JSON.stringify({
             // we will pass our input data to server
             account: this.userAccount,
-            password: this.userPassword
+            password: this.userPassword,
         })
 
     })
@@ -75,7 +195,7 @@ login = () =>{
          if(jsonData == "Correct"){
              // redirect to profile page
              alert("Successfully Login");
-             this.props.navigation.navigate("Mastermode")
+             //this.props.navigation.navigate("Mastermode");
 
          }else if (jsonData == "Wrong Password"){
              alert("Wrong Password");
@@ -96,27 +216,50 @@ login = () =>{
     }
 
 
-
-
     }
+
+
+
+    goodjob =() => {
+		
+		fetch('http://140.114.54.22:8080/workdata.php/', {
+		method: 'post',
+		header: {
+			'Accept': 'application/json',
+			'Content-type': 'application/json'
+		},
+		body: JSON.stringify({
+			account: this.userAccount,
+			password: this.userPassword,
+		})
+		}).then((response) => response.json())
+		  .then((jsonData) => {
+			  
+		if (jsonData != "") {
+	
+		this.props.screenProps.set_workdata(jsonData);
+		this.setState({ workData: jsonData,});
+		alert("workdata get!!")	;
+		}
+		else { alert("WorkData Loadwrong") ;  }
+		
+		}).catch((error)=>{
+		  console.error(error);
+			});
+		
+		
+	}
+
 
 
     OnGetuserdata = () => {
 
-        //const {employee,work} = this.state;
-        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+   
         if (this.userAccount == "") {
             alert("Please enter Account");
             //this.setState({account:'Please enter Account'})
 
         }
-
-        /* 	else if(reg.test(this.employee) === false)
-            {
-            //alert("Account is Not Correct");
-            this.setState({account:'Account is Not Correct'})
-            return false;
-              } */
 
         else if (this.userPassword == "") {
             alert("Please enter Password");
@@ -124,7 +267,7 @@ login = () =>{
         }
         else {
 
-            fetch('http://140.114.54.22:8080/new_userdata.php/', {
+            fetch('http://140.114.54.22:8080/userdata.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -136,38 +279,45 @@ login = () =>{
                     password: this.userPassword
                 })
 
-            })
-                .then((response) => response.json())
-                .then((jsonData) => {
-
-                    this.setState({ userData: jsonData, })
-
-                    if (jsonData != "") {
-                        // redirect to profile page
-
-                        alert("Hi I get it!!");
-						
-						this.props.screenProps.set_userdata(jsonData);
-						this.props.navigation.navigate("Mastermode");
-                    }
-
-                    else if (jsonData == "") {
-                        alert("Data Fail");
-                        this.userAccount = null;
-                        this.userPassword = null;
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            }).then((response) => response.json())
+              .then((jsonData) => {
+                
+				if (jsonData == "Wrong Account") {
+					alert("Wrong Account");
+					this.userAccount = null;
+					this.userPassword = null;
+				}
+			   
+				else if (jsonData == "Wrong Password"){
+					alert("Wrong Password");
+					this.userPassword = null;
+			   
+				}				   
+													   
+				else if (jsonData != "") {
+					// redirect to profile page
+					this.setState({ userData: jsonData,});
+					this.props.screenProps.set_userdata(jsonData);
+																			
+					alert('Login Successfully');					
+					this.props.navigation.navigate("Mastermode");
+				}
+			 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
         }
 
     }
 
 
+
     render(){
 
-        
+    
 	const data = this.state.userData;
 	//const data = this.props.screenProps.get_userdata();
 	let dataDisplay = data.map(function(jsonData){
@@ -176,14 +326,16 @@ login = () =>{
 		<View style={{flexDirection: 'row'}}>
 		  <Text style={{color: '#000',width: 30}}>{jsonData.id}</Text>
 		  <Text style={{color: '#00f',width: 60}}>{jsonData.name}</Text>
-		  <Text style={{color: '#000',width: 140}}>{jsonData.date}</Text>
-		  <Text style={{color: '#00f',width: 100}}>{jsonData.work}</Text>
+		  <Text style={{color: '#000',width: 80}}>{jsonData.date}</Text>
+		  <Text style={{color: '#00f',width: 60}}>{jsonData.work}</Text>
 		</View>
 	   </View>
 	 )
 	});
 
-
+	this.userAccount = null;
+	this.userPassword = null;
+		
       return(
 
 
@@ -253,13 +405,14 @@ login = () =>{
               <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 
                 <View>
-                    <Button transparent onPress={
-                    this.OnGetuserdata
-					
+                    <Button transparent onPress={() => {  
+                    this.OnGetuserdata();
+					//this.goodjob();
+					//alert('login successfully!');				
 					//this.props.navigation.navigate("Mastermode");
 					
 
-                    }><Image
+                    }}><Image
                       source={require('./images/login.png')}
                       style={{ }}/>
                       </Button>
@@ -278,15 +431,17 @@ login = () =>{
           <View style={{flex:2, alignSelf:'center',justifyContent: 'flex-start'} }>
 
               <View style={{alignSelf: 'center',justifyContent: 'center'}}>
-              <Button transparent   onPress={this.props.screenProps.set_userdata(this.state.userData)} >
+              <Button transparent   onPress={this.login} >
               <Text style={styles.underline}>無法登入？</Text>
 
               </Button>
               </View>
-            <ScrollView contentContainerStyle={styles.underline}>
+			  
+			<ScrollView contentContainerStyle={styles.underline}>
             {dataDisplay}
                 
             </ScrollView>
+
 
           </View>
 
@@ -307,6 +462,8 @@ login = () =>{
       );
     }
 }
+
+
 
 
 const fontSize1=30;

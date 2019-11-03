@@ -38,6 +38,8 @@ export default class Top extends Component<Props>{
 	  //使用者資料將function bind 
 	  this.set_userdata = this.set_userdata.bind(this);
 	  this.get_userdata = this.get_userdata.bind(this);
+	  this.set_workdata = this.set_workdata.bind(this);
+	  this.get_workdata = this.get_workdata.bind(this);
 	  
 
        this.state={
@@ -73,6 +75,13 @@ export default class Top extends Component<Props>{
 		userdata:123,
 		set_userdata:this.set_userdata,
 		get_userdata:this.get_userdata,
+		
+		//使用者工作的state
+		workdata:123,
+		set_workdata:this.set_workdata,
+		get_workdata:this.get_workdata,
+		
+		
 
         //master用這些條function來控制錄音開始/停止
         all_start:this.all_device_start_record,//this.props.screenProps.all_start()
@@ -294,6 +303,15 @@ set_userdata(data){
 	
 get_userdata(){
 	return this.state.userdata;	
+}
+
+// 存staff table 裡員工的工作資料 
+set_workdata(data){
+	this.state.workdata = data;
+}	
+	
+get_workdata(){
+	return this.state.workdata;	
 }
 		
 	
