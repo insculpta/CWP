@@ -50,7 +50,12 @@ class Mastermode extends Component<props> {
       counter:0,
       min: 0,
       sec: 0,
-
+	  date:'',
+	  wday:['星期日','星期一','星期二','星期三','星期四','星期五','星期六',],
+	  day:'',
+	  userid:'',
+	  workData:[],
+		
     };
       this.audioRecorderPlayer = new AudioRecorderPlayer();
       this.onStartRecord = this.onStartRecord.bind(this);
@@ -59,6 +64,7 @@ class Mastermode extends Component<props> {
       this.onPausePlay=this. onPausePlay.bind(this);	  
       this.timer = null;
 	  this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
+	  this.callfunc = this.callfunc.bind(this);
     }
 
 
@@ -102,6 +108,63 @@ class Mastermode extends Component<props> {
     });
 
   }
+  
+  componentDidMount() {
+    var that = this;
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+	var dayindex = new Date().getDay();
+    that.setState({
+      //Setting the value of the date time
+      date:
+        date + '/' + month + '/' + year + ' ' ,
+	  day: this.state.wday[dayindex],	
+		
+    });
+
+  }
+  
+  
+  
+    Getworkdata =(e) => {
+		
+		fetch('http://140.114.54.22:8080/workdata.php/', {
+		method: 'post',
+		header: {
+			'Accept': 'application/json',
+			'Content-type': 'application/json'
+		},
+		body: JSON.stringify({
+			name: e ,
+		})
+		}).then((response) => response.json())
+		  .then((jsonData) => {
+			  
+		if (jsonData != "") {
+	
+		//this.props.screenProps.set_workdata(jsonData);
+		this.setState({ workData: jsonData});
+		//alert("workdata get!!")	;
+		//this.props.navigation.navigate("Mastermode");
+		}
+		else { //alert("WorkData Loadwrong") ;  
+		}
+		
+		}).catch((error)=>{
+		  console.error(error);
+			});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+
+	}
+
+	callfunc = (e) => {
+		this.Getworkdata(e);
+		return 1;
+	}
 
   render() {
     console.log('now', this.state.volumn);
@@ -114,19 +177,61 @@ class Mastermode extends Component<props> {
 	let dataDisplay = data.map( function(jsonData) {
 	return (
 		<View key={jsonData.name}>
-			<View style={{ flexDirection: 'row' }}>					
-				<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {jsonData.name} ！</Text>
-			
+			<View style={{ flexDirection: 'row' }}>			
+				<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {jsonData.name} ！</Text>			
 			</View>
 		</View>
 	)
 });
+/* 
+var obj = { "name": "Violet", "occupation": "character" }
+var keys = Object.keys(data);
+this.state.userid = keys[2];
+this.state.userid = dataDisplay.name;
+ */
+
+/* this.state.userid = data.map( function(jsonData) {
+		
+  return jsonData.name
+}); */
+
+//var cart = JSON.parse(this.props.screenProps.get_userdata());
+//this.state.userid = cart.name;
+
+//var key = ['name'];
+; 
 
 
+const username = Object.values(data).map(item => item.name); //still object
+this.state.userid= String(username); 
+
+
+//this.Getworkdata;
+
+	//var workdata =  {"data" : "inputObject"};
+	const user = this.state.workData;
+	let workdataDisplay = user.map( function(jsonData) {
+
+	return (
+	   <View key={jsonData.id}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.work}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.ST_time} ~ {jsonData.END_time}</Text>
+
+		</View>
+	   </View>
+	)
+
+});
+
+
+  var call = this.Getworkdata(this.state.userid);
 
 
 
     return (
+	
+
 
 <Container style={styles.container}>
 
@@ -144,6 +249,7 @@ class Mastermode extends Component<props> {
                    </Header>
 
  <Content>
+	
 
       <ScrollView  horizontal={true} >
 
@@ -152,8 +258,8 @@ class Mastermode extends Component<props> {
                  source={banner}
                > 
 				<View style={{position: 'absolute', top: 22, left: 34, right: 0, bottom: 0}}>
-					{dataDisplay}
-				</View>
+					{workdataDisplay} 
+				</View><Text> {this.state.date}{this.state.day}{this.state.userid} </Text>
 			  </ImageBackground>
 				
                <ImageBackground

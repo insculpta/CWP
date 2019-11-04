@@ -240,6 +240,7 @@ login = () =>{
 		this.props.screenProps.set_workdata(jsonData);
 		this.setState({ workData: jsonData,});
 		alert("workdata get!!")	;
+		//this.props.navigation.navigate("Mastermode");
 		}
 		else { alert("WorkData Loadwrong") ;  }
 		
@@ -298,7 +299,7 @@ login = () =>{
 					// redirect to profile page
 					this.setState({ userData: jsonData,});
 					this.props.screenProps.set_userdata(jsonData);
-																			
+					//this.goodjob;														
 					alert('Login Successfully');					
 					this.props.navigation.navigate("Mastermode");
 				}
