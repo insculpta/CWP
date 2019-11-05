@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground,} from 'react-native';
+import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList} from 'react-native';
 import {
   Thumbnail,
   Container,
@@ -19,6 +19,8 @@ import {
 
 import VerticalSlider from 'rn-vertical-slider'
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import SwiperFlatList from 'react-native-swiper-flatlist';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -59,6 +61,13 @@ class Mastermode extends Component<props> {
       ST_time: '',
       END_time: '',
       worktype:'',
+	  swiperShow: false,
+	  date1:"2019-11-7",
+	  date2:"2019-11-8",
+	  date3:"2019-11-9",
+	  date4:"2019-11-10",
+	  
+	  
       		
     };
       this.audioRecorderPlayer = new AudioRecorderPlayer();
@@ -115,21 +124,27 @@ class Mastermode extends Component<props> {
   
   componentDidMount() {
     var that = this;
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    var hours = new Date().getHours(); //Current Hours
-    var min = new Date().getMinutes(); //Current Minutes
-    var sec = new Date().getSeconds(); //Current Seconds
-	var dayindex = new Date().getDay();
-    that.setState({
+	var Today = new Date();
+    var date = (Today.getDate()<10 ? '0' : '')+ Today.getDate(); //Current Date
+    var month = Today.getMonth() + 1; //Current Month
+    var year = Today.getFullYear(); //Current Year
+    var hours = Today.getHours(); //Current Hours
+    var min = Today.getMinutes(); //Current Minutes
+    var sec = Today.getSeconds(); //Current Seconds
+	var dayindex = Today.getDay();
+	
+	//var date1= Today.setDate(Today.getDate() + 1);
+	//var date1 = (Today.setDate(Today.getDate() + 1)<10 ? '0' : '')+ Today.setDate(Today.getDate() + 1);
+    //var date2 = (date1 <10 ? '0' : '')+date1;
+	that.setState({
       //Setting the value of the date time
         date:
-        year + '-' + month + '-'+ date,
+        year + '-' + month + '-'+ (date),
 	    day: this.state.wday[dayindex],	
+				
 		
     });
-
+	
   }
   
   
@@ -169,6 +184,13 @@ class Mastermode extends Component<props> {
 		this.Getworkdata(e);
 		return 1;
 	}
+	
+
+
+ 
+ 
+
+		
 
   render() {
     console.log('now', this.state.volumn);
@@ -212,9 +234,10 @@ this.state.userid= String(username);
 // 依date找當日的working date--------------------------------------------------
       var results = [];
       var searchField = "date";
-      var searchVal = "2019-10-29";
+      var searchVal = this.state.date;
       for (var i = 0; i < work.length; i++) {
-          if (work[i][searchField] == searchVal) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
               results.push(work[i]);         
           }
       }
@@ -227,6 +250,14 @@ this.state.userid= String(username);
       this.state.worktype = String(type); 
 
       var call = this.Getworkdata(this.state.userid);
+
+
+
+
+
+
+
+
 
 
 
@@ -251,36 +282,64 @@ this.state.userid= String(username);
 
  <Content>
 	
-
-      <ScrollView  horizontal={true} >
+	  
+	  <View style={{flex:2}}>
 
                <ImageBackground
                  style={{ height:  imageHeight , width: imageWidth }}
                  source={banner}
                > 
-				<View style={{position: 'absolute', top: 22, left: 34, right: 0, bottom: 0}}>
+				<View style={styles.Top}>
                             {dataDisplay}
-                        </View><Text> {this.state.date}{this.state.day}{this.state.userid} </Text>
-                        <View style={styles.banner}><Text style={styles.date}>{this.state.date}</Text>
-                         <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        </View>
+						
+	    <SwiperFlatList
+          autoplay={false}
+          autoplayDelay={2}
+          autoplayLoop          
+          showPagination={true}
+        >		
+						<View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date} {this.state.day}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View>
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+						
+												
+                        <View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date1}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.bannerTextArea}>                       
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+						
+						<View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date2}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.bannerTextArea}>                       
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+						
+						<View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date3}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.bannerTextArea}>                       
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+						
+						<View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date4}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.bannerTextArea}>                       
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
                         
-			  </ImageBackground>
-				
-               <ImageBackground
-                 style={{height:  imageHeight , width: imageWidth}}
-                 source={banner}
-               >
-			   </ImageBackground>
+                      
+       </SwiperFlatList>
+      </ImageBackground>
+     	  
+	<Text style={{fontWeight: 'bold', fontSize: 30, height:34, color:'#435366',alignSelf:'center' ,margin:15,}}>公告與通知</Text>
 
-      </ScrollView>
-
-                <ScrollView contentContainerStyle={styles.underline}>
-                    {dataDisplay}
-				</ScrollView>
-
-      <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
+	  
+	  </View>
+	  
+	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
                  
                  <Image
                    style={{ paddingBottom:15 }}
@@ -295,6 +354,7 @@ this.state.userid= String(username);
                  />
 
        </ScrollView>
+
 
  </Content>
       <Footer  style={styles.footer}>
@@ -367,9 +427,9 @@ const styles=StyleSheet.create({
                                                 
                                                     },
                                                 
-    banner:{
-
-        marginTop: width / 14,
+    swipe:{
+		
+        marginTop: width / 8,
         marginHorizontal: 30,
         alignSelf: 'stretch',
         //backgroundColor: 'rgba(0,0,255,0.32)',
@@ -377,7 +437,7 @@ const styles=StyleSheet.create({
                 },
 
     date: {
-        fontSize: 16,
+        fontSize: 18,
         color: '#fff',
         alignSelf: 'center',
         justifyContent: 'center',
@@ -386,7 +446,7 @@ const styles=StyleSheet.create({
 
     worktype: {
 
-        marginTop: 24,
+        marginTop: 20,
         flexDirection: 'row',
         alignSelf: 'center',
         justifyContent: 'center',
@@ -418,6 +478,16 @@ const styles=StyleSheet.create({
         alignSelf: 'center',
 
     },
+	
+  
+  Top:{
+	position: 'absolute', 
+	top: 22, 
+	left: 34, 
+	right: 0, 
+	bottom: 0
+	
+  }, 
 
 });
 

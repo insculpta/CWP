@@ -57,6 +57,8 @@
     "react-native-progress": "^3.6.0",
     "react-native-simple-dialogs": "^1.1.0",
     "react-native-slider": "^0.11.0",
+    "react-native-swiper": "^1.5.14",
+    "react-native-swiper-flatlist": "^1.0.11",
     "react-native-vector-icons": "^6.3.0",
     "react-navigation": "3.3.0",
     "react-redux": "^6.0.0",
