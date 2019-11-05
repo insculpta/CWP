@@ -51,11 +51,15 @@ class Mastermode extends Component<props> {
       min: 0,
       sec: 0,
 	  date:'',
-	  wday:['星期日','星期一','星期二','星期三','星期四','星期五','星期六',],
+      workdate:'',
+      wday: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六',],
 	  day:'',
 	  userid:'',
-	  workData:[],
-		
+      workData: [],
+      ST_time: '',
+      END_time: '',
+      worktype:'',
+      		
     };
       this.audioRecorderPlayer = new AudioRecorderPlayer();
       this.onStartRecord = this.onStartRecord.bind(this);
@@ -120,9 +124,9 @@ class Mastermode extends Component<props> {
 	var dayindex = new Date().getDay();
     that.setState({
       //Setting the value of the date time
-      date:
-        date + '/' + month + '/' + year + ' ' ,
-	  day: this.state.wday[dayindex],	
+        date:
+        year + '-' + month + '-'+ date,
+	    day: this.state.wday[dayindex],	
 		
     });
 
@@ -183,34 +187,15 @@ class Mastermode extends Component<props> {
 		</View>
 	)
 });
-/* 
-var obj = { "name": "Violet", "occupation": "character" }
-var keys = Object.keys(data);
-this.state.userid = keys[2];
-this.state.userid = dataDisplay.name;
- */
-
-/* this.state.userid = data.map( function(jsonData) {
-		
-  return jsonData.name
-}); */
-
-//var cart = JSON.parse(this.props.screenProps.get_userdata());
-//this.state.userid = cart.name;
-
-//var key = ['name'];
-; 
 
 
 const username = Object.values(data).map(item => item.name); //still object
 this.state.userid= String(username); 
 
 
-//this.Getworkdata;
 
-	//var workdata =  {"data" : "inputObject"};
-	const user = this.state.workData;
-	let workdataDisplay = user.map( function(jsonData) {
+	const work = this.state.workData;
+	let workdataDisplay = work.map( function(jsonData) {
 
 	return (
 	   <View key={jsonData.id}>
@@ -221,11 +206,27 @@ this.state.userid= String(username);
 		</View>
 	   </View>
 	)
+    });
 
-});
 
+// 依date找當日的working date--------------------------------------------------
+      var results = [];
+      var searchField = "date";
+      var searchVal = "2019-10-29";
+      for (var i = 0; i < work.length; i++) {
+          if (work[i][searchField] == searchVal) {
+              results.push(work[i]);         
+          }
+      }
 
-  var call = this.Getworkdata(this.state.userid);
+      const start = Object.values(results).map(item => item.ST_time); 
+      const end = Object.values(work).map(item => item.END_time); //still object  
+      const type= Object.values(results).map(item => item.work); 
+      this.state.ST_time = String(start).substring(0, 5);
+      this.state.END_time = String(end).substring(0,5); 
+      this.state.worktype = String(type); 
+
+      var call = this.Getworkdata(this.state.userid);
 
 
 
@@ -258,8 +259,13 @@ this.state.userid= String(username);
                  source={banner}
                > 
 				<View style={{position: 'absolute', top: 22, left: 34, right: 0, bottom: 0}}>
-					{workdataDisplay} 
-				</View><Text> {this.state.date}{this.state.day}{this.state.userid} </Text>
+                            {dataDisplay}
+                        </View><Text> {this.state.date}{this.state.day}{this.state.userid} </Text>
+                        <View style={styles.banner}><Text style={styles.date}>{this.state.date}</Text>
+                         <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.bannerTextArea}>                       
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View>
+                        
 			  </ImageBackground>
 				
                <ImageBackground
@@ -334,15 +340,15 @@ const styles=StyleSheet.create({
   width: 45
 },
 
-buttonoff: {
-margin: 10,
-backgroundColor: '#fff',
-borderRadius: 5,
-alignItems: 'center',
-justifyContent: 'center',
-height: 28,
-width: 45
-},
+    buttonoff: {
+    margin: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 28,
+    width: 45
+    },
 
   buttonText: {
   color: '#000000',
@@ -357,9 +363,61 @@ width: 45
 
   header: {
     backgroundColor: "#1e2d28",
+                                             
+                                                
+                                                    },
+                                                
+    banner:{
+
+        marginTop: width / 14,
+        marginHorizontal: 30,
+        alignSelf: 'stretch',
+        //backgroundColor: 'rgba(0,0,255,0.32)',
+        flexDirection: "column" 
+                },
+
+    date: {
+        fontSize: 16,
+        color: '#fff',
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
 
 
-  },
+    worktype: {
+
+        marginTop: 24,
+        flexDirection: 'row',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#fff',
+
+    },
+
+    bannerTextArea: {
+        //position: 'absolute',
+        //top: 80, left: 45, right: 0, bottom: 0,
+        marginTop: 8,
+        height: 60,
+        alignSelf: 'stretch',
+        backgroundColor: 'rgba(255,255,255,0.32)',
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'center',
+        
+    },
+
+    bannerText: {
+
+        fontWeight: 'bold',
+        fontSize: 35,
+        color: '#ffffff',
+        alignSelf: 'center',
+
+    },
 
 });
 
