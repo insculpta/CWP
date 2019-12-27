@@ -3,8 +3,9 @@
     "",
     "\\src",
     "\\src\\screens",
-    "\\src\\screens\\aatops"
+    "\\src\\screens\\aatops",
+    "\\src\\screens\\datepicker"
   ],
-  "SelectedNode": "\\src\\screens\\aatops\\Mastermode.js",
+  "SelectedNode": "\\src\\screens\\datepicker\\index.js",
   "PreviewInSolutionExplorer": false
 }

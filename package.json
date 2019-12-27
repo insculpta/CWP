@@ -36,6 +36,7 @@
     ]
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^2.1.0",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "color": "1.0.3",
@@ -48,8 +49,10 @@
     "native-base": "2.12.1",
     "prop-types": "^15.6.2",
     "react": "16.6.3",
+    "react-day-picker": "^7.4.0",
     "react-native": "0.58.5",
     "react-native-audio-recorder-player": "^2.1.4",
+    "react-native-calendars": "^1.213.0",
     "react-native-dialog-input": "^1.0.7",
     "react-native-elements": "^1.1.0",
     "react-native-fs": "^2.13.3",

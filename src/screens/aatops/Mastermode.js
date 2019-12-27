@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList} from 'react-native';
+import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
   Thumbnail,
   Container,
@@ -16,10 +18,6 @@ import {
   Item,
   Input
 } from "native-base";
-
-import VerticalSlider from 'rn-vertical-slider'
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import SwiperFlatList from 'react-native-swiper-flatlist';
 
 
 const { width, height } = Dimensions.get('window');
@@ -52,25 +50,23 @@ class Mastermode extends Component<props> {
       counter:0,
       min: 0,
       sec: 0,
-	  date:'',
-      workdate:'',
+	  date:'',date1:'',date2:'',date3:'',date4:'',
+	  workdate:'',
       wday: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六',],
-	  day:'',
+	  day:'',day1:'',day2:'',day3:'',day4:'',
 	  userid:'',
-      workData: [],
-      ST_time: '',
-      END_time: '',
-      worktype:'',
+      workData: [], workData1: [],	  
+      ST_time: '', ST_time1: '',ST_time2: '',ST_time3: '',ST_time4: '',
+      END_time: '',END_time1: '',END_time2: '',END_time3: '',END_time4: '',
+      worktype:'',worktype1:'',worktype2:'',worktype3:'',worktype4:'',
 	  swiperShow: false,
-	  date1:"2019-11-7",
-	  date2:"2019-11-8",
-	  date3:"2019-11-9",
-	  date4:"2019-11-10",
+  
+	  boolGet: 1, //是否拿過workdata
 	  
 	  
       		
     };
-      this.audioRecorderPlayer = new AudioRecorderPlayer();
+    
       this.onStartRecord = this.onStartRecord.bind(this);
       this.onStopRecord = this.onStopRecord.bind(this);
       this.onStartPlay=this. onStartPlay.bind(this);
@@ -122,6 +118,22 @@ class Mastermode extends Component<props> {
 
   }
   
+  
+	getDay(num, str) {
+    var today = new Date();
+    var nowTime = today.getTime();
+    var ms = 24*3600*1000*num;
+    today.setTime(parseInt(nowTime + ms));
+    var oYear = today.getFullYear();
+    var oMoth = (today.getMonth() + 1).toString();
+    if (oMoth.length <= 1) oMoth = '0' + oMoth;
+    var oDay = ((today.getDate()<10 ? '0' : '')+ today.getDate()).toString();
+    if (oDay.length <= 1) oDay = '0' + oDay;
+    return oYear + str + oMoth + str + oDay;
+}
+
+	
+  
   componentDidMount() {
     var that = this;
 	var Today = new Date();
@@ -133,14 +145,28 @@ class Mastermode extends Component<props> {
     var sec = Today.getSeconds(); //Current Seconds
 	var dayindex = Today.getDay();
 	
-	//var date1= Today.setDate(Today.getDate() + 1);
+	var date1= Today.setDate(Today.getDate() + 1);
 	//var date1 = (Today.setDate(Today.getDate() + 1)<10 ? '0' : '')+ Today.setDate(Today.getDate() + 1);
     //var date2 = (date1 <10 ? '0' : '')+date1;
+	var today1 = this.getDay(1,'-');
+	var today2 = this.getDay(2,'-');
+	var today3 = this.getDay(3,'-');
+	var today4 = this.getDay(4,'-');
+	
 	that.setState({
       //Setting the value of the date time
         date:
-        year + '-' + month + '-'+ (date),
-	    day: this.state.wday[dayindex],	
+        year + '-' + month + '-'+ (date),	    	
+		date1: today1,
+		date2: today2,
+		date3: today3,
+		date4: today4,
+		day: this.state.wday[dayindex],
+		day1: this.state.wday[(dayindex+1)%7],
+		day2: this.state.wday[(dayindex+2)%7],
+		day3: this.state.wday[(dayindex+3)%7],
+		day4: this.state.wday[(dayindex+4)%7],
+		
 				
 		
     });
@@ -150,7 +176,8 @@ class Mastermode extends Component<props> {
   
   
     Getworkdata =(e) => {
-		
+		if(this.state.boolGet)
+		{
 		fetch('http://140.114.54.22:8080/workdata.php/', {
 		method: 'post',
 		header: {
@@ -166,7 +193,7 @@ class Mastermode extends Component<props> {
 		if (jsonData != "") {
 	
 		//this.props.screenProps.set_workdata(jsonData);
-		this.setState({ workData: jsonData});
+		this.setState({ workData: jsonData, boolGet : 0});
 		//alert("workdata get!!")	;
 		//this.props.navigation.navigate("Mastermode");
 		}
@@ -177,17 +204,74 @@ class Mastermode extends Component<props> {
 		  console.error(error);
 			});		
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
-
+		}
 	}
+	
+	    Getworkdata1 =(e) => {
+		if(this.state.boolGet)
+		{
+		fetch('http://140.114.54.22:8080/workdata1.php/', {
+		method: 'post',
+		header: {
+			'Accept': 'application/json',
+			'Content-type': 'application/json'
+		},
+		body: JSON.stringify({
+			EmployeeID: e ,
+		})
+		}).then((response) => response.json())
+		  .then((jsonData) => {
+			  
+		if (jsonData != "") {
+	
+		//this.props.screenProps.set_workdata(jsonData);
+		this.setState({ workData1: jsonData, boolGet : 0});
+		//alert("workdata get!!")	;
+		//this.props.navigation.navigate("Mastermode");
+		}
+		else { //alert("WorkData Loadwrong") ;  
+		}
+		
+		}).catch((error)=>{
+		  console.error(error);
+			});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+		}
+	}
+	
+	
+	
 
 	callfunc = (e) => {
+		if(!this.state.workData)
+		{
 		this.Getworkdata(e);
+		}
 		return 1;
 	}
 	
+/* 
+	workinfo =(date) => {
+	  var results = [];
+      var searchField = "date";
+      var searchVal = date;
+      for (var i = 0; i < work.length; i++) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
+              results.push(work[i]);         
+          }
+      }
 
-
+      const start = Object.values(results).map(item => item.ST_time); 
+      const end = Object.values(work).map(item => item.END_time); //still object  
+      const type= Object.values(results).map(item => item.work); 
+      var ST = String(start).substring(0, 5);
+      var END = String(end).substring(0,5); 
+      var type = String(type); 
+	  this.setState({ ST_time:ST, END_time : END, worktype:type});
+	  
  
+	} */
  
 
 		
@@ -215,7 +299,6 @@ const username = Object.values(data).map(item => item.name); //still object
 this.state.userid= String(username); 
 
 
-
 	const work = this.state.workData;
 	let workdataDisplay = work.map( function(jsonData) {
 
@@ -231,8 +314,27 @@ this.state.userid= String(username);
     });
 
 
+	const work1 = this.state.workData1;
+	let workdataDisplay1 = work1.map( function(jsonData) {
+
+	return (
+	   <View key={jsonData.EmployeeID}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.TaskCode}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartTime} ~ {jsonData.EndTime}</Text>
+
+		</View>
+	   </View>
+	)
+    });
+
+
+
+
+
 // 依date找當日的working date--------------------------------------------------
-      var results = [];
+// date   
+	  var results = [];
       var searchField = "date";
       var searchVal = this.state.date;
       for (var i = 0; i < work.length; i++) {
@@ -241,21 +343,89 @@ this.state.userid= String(username);
               results.push(work[i]);         
           }
       }
-
-      const start = Object.values(results).map(item => item.ST_time); 
-      const end = Object.values(work).map(item => item.END_time); //still object  
-      const type= Object.values(results).map(item => item.work); 
+      var start = Object.values(results).map(item => item.ST_time); 
+      var end = Object.values(results).map(item => item.END_time); //still object  
+      var type= Object.values(results).map(item => item.work); 
       this.state.ST_time = String(start).substring(0, 5);
       this.state.END_time = String(end).substring(0,5); 
-      this.state.worktype = String(type); 
-
+      this.state.worktype = String(type);
+// date1   
+	  var results = [];
+      var searchField = "date";
+      var searchVal = this.state.date1;
+      for (var i = 0; i < work.length; i++) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
+              results.push(work[i]);         
+          }
+      }
+       start = Object.values(results).map(item => item.ST_time); 
+       end = Object.values(results).map(item => item.END_time); //still object  
+       type= Object.values(results).map(item => item.work); 
+      this.state.ST_time1 = String(start).substring(0, 5);
+      this.state.END_time1 = String(end).substring(0,5); 
+      this.state.worktype1 = String(type);
+// date2   
+	  var results = [];
+      var searchField = "date";
+      var searchVal = this.state.date2;
+      for (var i = 0; i < work.length; i++) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
+              results.push(work[i]);         
+          }
+      }
+      start = Object.values(results).map(item => item.ST_time); 
+      end = Object.values(results).map(item => item.END_time); //still object  
+      type= Object.values(results).map(item => item.work); 
+      this.state.ST_time2 = String(start).substring(0, 5);
+      this.state.END_time2 = String(end).substring(0,5); 
+      this.state.worktype2 = String(type);	  
+// date3   
+	  var results = [];
+      var searchField = "date";
+      var searchVal = this.state.date3;
+      for (var i = 0; i < work.length; i++) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
+              results.push(work[i]);         
+          }
+      }
+       start = Object.values(results).map(item => item.ST_time); 
+       end = Object.values(results).map(item => item.END_time); //still object  
+       type= Object.values(results).map(item => item.work); 
+      this.state.ST_time3 = String(start).substring(0, 5);
+      this.state.END_time3 = String(end).substring(0,5); 
+      this.state.worktype3 = String(type);	  
+// date4   
+	  var results = [];
+      var searchField = "date";
+      var searchVal = this.state.date4;
+      for (var i = 0; i < work.length; i++) {
+		      check = String(work[i][searchField])
+          if ((check) == searchVal) {
+              results.push(work[i]);         
+          }
+      }
+       start = Object.values(results).map(item => item.ST_time); 
+       end = Object.values(results).map(item => item.END_time); //still object  
+       type= Object.values(results).map(item => item.work); 
+      this.state.ST_time4 = String(start).substring(0, 5);
+      this.state.END_time4 = String(end).substring(0,5); 
+      this.state.worktype4 = String(type);
+	  
+	  
+	  
       var call = this.Getworkdata(this.state.userid);
+	  var call_1 = this.Getworkdata1(900821);
+	  
+	  //var call = this.callfunc(this.state.userid);
 
+// calender
 
-
-
-
-
+const vacation = {key:'vacation', color: 'red', selectedDotColor: 'blue'};
+const massage = {key:'massage', color: 'blue', selectedDotColor: 'blue'};
+const workout = {key:'workout', color: 'green'};
 
 
 
@@ -307,34 +477,36 @@ this.state.userid= String(username);
 						
 												
                         <View style={{ height:  imageHeight , width: imageWidth }}>
-                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date1}</Text>
-                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date1} {this.state.day1}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype1} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.ST_time1} - {this.state.END_time1}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
-                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date2}</Text>
-                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date2} {this.state.day2}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype2} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.ST_time2} - {this.state.END_time2}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
-                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date3}</Text>
-                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date3} {this.state.day3}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype3} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.ST_time3} - {this.state.END_time3}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
-                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date4}</Text>
-                        <Text style={styles.worktype}>{this.state.worktype} </Text>
+                        <View style={styles.swipe}><Text style={styles.date}>{this.state.date4} {this.state.day4}</Text>
+                        <Text style={styles.worktype}>{this.state.worktype4} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.ST_time4} - {this.state.END_time4}</Text></View></View></View>
                         
                       
        </SwiperFlatList>
       </ImageBackground>
      	  
-	<Text style={{fontWeight: 'bold', fontSize: 30, height:34, color:'#435366',alignSelf:'center' ,margin:15,}}>公告與通知</Text>
+	<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:15,}}>公 告 與 通 知</Text>
+{workdataDisplay}
+{workdataDisplay1}
 
 	  
 	  </View>
@@ -352,6 +524,109 @@ this.state.userid= String(username);
                    style={{ paddingBottom:15}}
                    source={card2}
                  />
+				 
+				<Calendar
+				  // Initially visible month. Default = Date()
+				  current={'2019-11-13'}
+				  // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+				  minDate={'2019-11-01'}
+				  // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+				  maxDate={'2019-11-30'}
+				  // Handler which gets executed on day press. Default = undefined
+				  onDayPress={(day) => {console.log('selected day', day)}}
+				  // Handler which gets executed on day long press. Default = undefined
+				  onDayLongPress={(day) => {console.log('selected day', day)}}
+				  // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+				  monthFormat={'yyyy MM'}
+				  // Handler which gets executed when visible month changes in calendar. Default = undefined
+				  onMonthChange={(month) => {console.log('month changed', month)}}
+				  // Hide month navigation arrows. Default = false
+				  hideArrows={true}
+				  // Replace default arrows with custom ones (direction can be 'left' or 'right')
+				  renderArrow={(direction) => (<Arrow />)}
+				  // Do not show days of other months in month page. Default = false
+				  hideExtraDays={true}
+				  // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
+				  // day from another month that is visible in calendar page. Default = false
+				  disableMonthChange={true}
+				  // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
+				  firstDay={1}
+				  // Hide day names. Default = false
+				  hideDayNames={true}
+				  // Show week numbers to the left. Default = false
+				  showWeekNumbers={true}
+				  // Handler which gets executed when press arrow icon left. It receive a callback can go back month
+				  onPressArrowLeft={substractMonth => substractMonth()}
+				  // Handler which gets executed when press arrow icon left. It receive a callback can go next month
+				  onPressArrowRight={addMonth => addMonth()}
+				    // Collection of dates that have to be colored in a special way. Default = {}
+				  markedDates={{
+					'2019-11-22': {selected: true,startingDay: true, color: 'red',},
+					'2019-11-25': {selected: true, endingDay: true, color: 'red', textColor: 'gray'},
+				  }}
+				  // Date marking style [simple/period/multi-dot/custom]. Default = 'simple'
+				  markingType={'period'}
+				  
+					markedDates={{
+					'2019-11-25': {dots: [vacation, massage, workout], selected: true, selectedColor: 'red'},
+					'2019-11-26': {dots: [massage, workout], disabled: true}
+					}}
+					markingType={'multi-dot'}
+				  
+				  
+				  
+				  style={{
+					borderWidth: 1,
+					borderColor: 'gray',
+					height: 350
+				  }}
+				  // Specify theme properties to override specific styles for calendar parts. Default = {}
+				  theme={{
+					backgroundColor: '#ffffff',
+					calendarBackground: '#ffffff',
+					textSectionTitleColor: '#b6c1cd',
+					selectedDayBackgroundColor: '#00adf5',
+					selectedDayTextColor: '#ffffff',
+					todayTextColor: '#00adf5',
+					dayTextColor: '#2d4150',
+					textDisabledColor: '#d9e1e8',
+					dotColor: '#00adf5',
+					selectedDotColor: '#ffffff',
+					arrowColor: 'orange',
+					monthTextColor: 'blue',
+					indicatorColor: 'blue',
+					textDayFontFamily: 'monospace',
+					textMonthFontFamily: 'monospace',
+					textDayHeaderFontFamily: 'monospace',
+					textDayFontWeight: '300',
+					textMonthFontWeight: 'bold',
+					textDayHeaderFontWeight: '300',
+					textDayFontSize: 16,
+					textMonthFontSize: 16,
+					textDayHeaderFontSize: 16
+				  }}
+
+				/>
+				  
+				<CalendarList
+				// Enable horizontal scrolling, default = false
+				horizontal={true}
+				// Enable paging on horizontal, default = false
+				pagingEnabled={true}
+				// Set custom calendarWidth.
+				calendarWidth={width}
+				style={{marginHorizontal:width*0.05}}
+				
+					markedDates={{
+					'2019-11-25': {dots: [vacation, massage, workout], selected: true, selectedColor: 'red'},
+					'2019-11-26': {dots: [massage, workout], disabled: true}
+					}}
+					markingType={'multi-dot'}
+				
+				
+				/>
+
+
 
        </ScrollView>
 
@@ -371,9 +646,7 @@ const styles=StyleSheet.create({
     backgroundColor: "#f5f9f8",
     flex:1,
   },
-  header: {
-    backgroundColor: "#212121",
-  },
+
   content:{
     flex:1
   },
@@ -446,13 +719,14 @@ const styles=StyleSheet.create({
 
     worktype: {
 
-        marginTop: 20,
+        marginTop: 15,
         flexDirection: 'row',
         alignSelf: 'center',
         justifyContent: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         color: '#fff',
+		
 
     },
 

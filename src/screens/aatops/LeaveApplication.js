@@ -3,6 +3,7 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 import {
@@ -25,10 +26,9 @@ import {
 
 
 const { width, height } = Dimensions.get('window');
+const banner = require("../../../assets/MasterMode/banner.png");
 
-
-
-export default class PlayMode extends React.Component {
+export default class LeaveApplication extends Component<props> {
 
   
 	constructor(props) {
@@ -45,6 +45,7 @@ export default class PlayMode extends React.Component {
 		start:'',end:'', //查詢的時間起始結束
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
+		
 		
 		
 		};
@@ -150,9 +151,27 @@ export default class PlayMode extends React.Component {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
-	
+
+
 
     render() {
+	const { show, date, mode } = this.state;
+		
+	let dimensions = Dimensions.get("window");
+    let imageHeight = Math.round((dimensions.width * 9) / 16);
+    let imageWidth = dimensions.width;
+	 
+	 
+	const data =  this.props.screenProps.get_userdata();
+	let dataDisplay = data.map( function(jsonData) {
+	return (
+		<View key={jsonData.name}>
+			<View style={{ flexDirection: 'row' }}>			
+				<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {jsonData.name} ！</Text>			
+			</View>
+		</View>
+	)
+});
        
 	
 	
@@ -220,77 +239,103 @@ export default class PlayMode extends React.Component {
 
 
 
-        return (
-            <Container>
-                <Header style={styles.header}>
-                    <Left>
-                    <Button
-                        transparent
-                        onPress={() => this.props.navigation.openDrawer()}
-                    >
-                        <Icon name="menu" />
-                    </Button>
-                    </Left>
-                    <Body>
-                    <Title style={styles.title}>中華郵政</Title>
-                    </Body>
+	return (
+		<Container>
+			<Header style={styles.header}>
+				<Left>
+				<Button
+					transparent
+					onPress={() => this.props.navigation.openDrawer()}
+				>
+					<Icon name="menu" />
+				</Button>
+				</Left>
+				<Body>
+				<Title style={styles.title}>中華郵政</Title>
+				</Body>
 
-                </Header>
+			</Header>
 
-                <Content>
-				
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>班 表 查 詢 系 統</Text>
- 
-		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
-          <DatePicker 
-            defaultDate={new Date()}
-            minimumDate={new Date(2019, 1, 1)}
-            //maximumDate={new Date(2019, 11, 22)}
-            locale={"en"}       
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" }}
-            onDateChange={this.setstartDate}
+		<Content>
+		
+		<View style={{flex:2}}>
+
+               <ImageBackground
+                 style={{ height:  imageHeight , width: imageWidth }}
+                 source={banner}
+               > 
+				<View style={styles.Top}>
+                            {dataDisplay}
+                        </View>
+						
+	    <SwiperFlatList
+          autoplay={false}
+          autoplayDelay={2}
+          autoplayLoop          
+          showPagination={true}
+        >		
+						<View style={{ height:  imageHeight , width: imageWidth }}>
+                        <View style={styles.swipe}><Text style={styles.date}></Text>
+                        <Text style={styles.worktype}>已使用特休數 </Text>
+                        <Text style={styles.worktype}>剩餘特休數 </Text>                     
+                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View>
+		</SwiperFlatList>
+		</ImageBackground>
+		</View>
 			
-          /></View>
-		   
-		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
-		   <DatePicker 
-            defaultDate={new Date()}
-            minimumDate={new Date(2019, 1, 1)}
-            //maximumDate={new Date(2019, 11, 22)}
-            locale={"en"}       
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" , }}
-            onDateChange={(date) => {this.setendDate(date);this.betweendate()}}
-          /></View>
-		  
-		  
-		  
-		  
-          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
-            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
-			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-          </Text>
-		  		  
-					    	  		  
-		  {workdataDisplay2}	  
+	  <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>	
+	  <Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差假申請</Text>
 
+	  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
+	  <DatePicker 
+		defaultDate={new Date()}
+		minimumDate={new Date(2019, 1, 1)}
+		//maximumDate={new Date(2019, 11, 22)}
+		locale={"en"}       
+		modalTransparent={false}
+		animationType={"fade"}
+		androidMode={"default"}
+		placeHolderText="Select Here"
+		textStyle={{ color: "green" }}
+		placeHolderTextStyle={{ color: "#d3d3d3" }}
+		onDateChange={this.setstartDate}
+		
+	  /></View>
+	   
+	   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
+	   <DatePicker 
+		defaultDate={new Date()}
+		minimumDate={new Date(2019, 1, 1)}
+		//maximumDate={new Date(2019, 11, 22)}
+		locale={"en"}       
+		modalTransparent={false}
+		animationType={"fade"}
+		androidMode={"default"}
+		placeHolderText="Select Here"
+		textStyle={{ color: "green" }}
+		placeHolderTextStyle={{ color: "#d3d3d3" , }}
+		onDateChange={(date) => {this.setendDate(date);this.betweendate()}}
+	  /></View>
+	  
+	  	  
+	  
+	  <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
+		Date: {this.state.chosenstartDate.toString().substr(4, 12)}
+		Date: {this.state.chosenendDate.toString().substr(4, 12)}			
+	  </Text>
 
-                </Content>
-		<Footer  style={styles.footer}>
-		</Footer>
-                
-            </Container>
-        );
-    }
+			  
+								  
+	  {workdataDisplay2}	  
+
+		</ScrollView>
+			</Content>
+	<Footer  style={styles.footer}>
+	</Footer>
+			
+		</Container>
+	);
+}
 }
 
 const styles = StyleSheet.create({
@@ -336,58 +381,68 @@ const styles = StyleSheet.create({
         backgroundColor: '#484848'
     },
 	
-	date:{
+    swipe:{
+		
+        marginTop: width / 8,
+        marginHorizontal: 30,
+        alignSelf: 'stretch',
+        //backgroundColor: 'rgba(0,0,255,0.32)',
+        flexDirection: "column" 
+                },
+
+    date: {
+        fontSize: 18,
+        color: '#fff',
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
+
+
+    worktype: {
+
+        marginTop: 15,
+        flexDirection: 'row',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#fff',
+		
+
+    },
+
+    bannerTextArea: {
+        //position: 'absolute',
+        //top: 80, left: 45, right: 0, bottom: 0,
+        marginTop: 8,
+        height: 60,
+        alignSelf: 'stretch',
+        backgroundColor: 'rgba(255,255,255,0.32)',
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'center',
+        
+    },
+
+    bannerText: {
+
+        fontWeight: 'bold',
+        fontSize: 35,
+        color: '#ffffff',
+        alignSelf: 'center',
+
+    },
 	
-	flexDirection: 'row',
-    alignSelf: 'center',
-    justifyContent: 'center',
-	},
+  
+  Top:{
+	position: 'absolute', 
+	top: 22, 
+	left: 34, 
+	right: 0, 
+	bottom: 0
 	
-	
-swipe:{
-	
-	marginTop: width / 8,
-	marginHorizontal: 30,
-	alignSelf: 'stretch',
-	//backgroundColor: 'rgba(0,0,255,0.32)',
-	flexDirection: "column" 
-			},
-
-worktype: {
-
-	marginTop: 15,
-	flexDirection: 'row',
-	alignSelf: 'center',
-	justifyContent: 'center',
-	fontWeight: 'bold',
-	fontSize: 20,
-	color: '#fff',
-	
-
-},
-
-bannerTextArea: {
-	//position: 'absolute',
-	//top: 80, left: 45, right: 0, bottom: 0,
-	marginTop: 8,
-	height: 60,
-	alignSelf: 'stretch',
-	backgroundColor: 'rgba(255,255,255,0.32)',
-	borderRadius: 8,
-	flexDirection: 'row',
-	alignContent: 'center',
-	justifyContent: 'center',
-	
-},
-
-bannerText: {
-
-	fontWeight: 'bold',
-	fontSize: 35,
-	color: '#ffffff',
-	alignSelf: 'center',
-
-},
+  }, 
 
 list: {
 
@@ -402,3 +457,4 @@ list: {
 	
 	
 });
+

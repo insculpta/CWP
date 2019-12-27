@@ -15,7 +15,6 @@ import {
 } from "native-base";
 import styles from "./style";
 
-const drawerCover = require("../../../assets/account-bg.jpg");
 const drawerImage = require("../../../assets/account.jpg");
 
 
@@ -29,50 +28,36 @@ class SideBar extends Component<Props> {
 
     this.datas = [
       {
-        name: "Master Mode",
+        name: "公告與通知",
         route: "Mastermode",  //要連到的mod
-        iconimage: require("./assets/Menu/menu_master_w.png"),
-        icon: "people",
-        bg: "#C5F442"
-      },
-      {
-        name: "Recorder Mode",
-        route: "Recordermode2",
-        iconimage: require("./assets/Menu/menu_recorder_w.png"),
-        icon: "people",
-        bg: "#666666",
 
       },
       {
-        name: "Play",
+        name: "班表查詢",
         route: "PlayMode",
-        iconimage: require("./assets/Menu/menu_play_w.png"),
-        icon: "people",
-        bg: "#666666",
+
       },
       {
-        name: "Connection",
+        name: "差假申請",
+        route: "LeaveApplication",
+
+      },
+      {
+        name: "差假申請核准",
         route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
-        iconimage: require("./assets/Menu/connect_w.png"),
-        icon: "people",
-        bg: "#666666",
-      },
-      {
 
-        bg: "#666666",
       },
-      {
 
-        bg: "#666666",
-      },
-      {
+      {},
 
-        bg: "#666666",
-      },
-      {
 
-        bg: "#666666",
-      },
+        {
+          name: "登出",
+          route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
+
+        },
+
+
     ];
   };
   componentWillReceiveProps(nextProps){
@@ -86,26 +71,25 @@ class SideBar extends Component<Props> {
       <Container>
         <Content
           bounces={false}
-          style={{ flex: 1, backgroundColor: "#212121", top: -1 }}>
+          style={{ flex: 1, backgroundColor: "#1e2d28" , top: -1 ,}}>
 
 
 
 
-          <View style={{height: 200,justifyContent: 'center',alignItems:'center',backgroundColor: '#212121'}}>
-                <Thumbnail large source={require('../../../assets/minj.jpg')} />
-                <Text style={{color:"white",fontSize: 20,fontWeight: 'bold',alignSelf: 'center',justifyContent: 'center',marginTop: 10}}>Jing Yao</Text>
+          <View style={{height: 200,justifyContent: 'center',alignItems:'center',backgroundColor: '#1e2d28'}}>
           </View>
 
-          <List style={{backgroundColor: "#666666" }}
+          <List contentContainerStyle={{backgroundColor: "#1e2d28"  }}
             dataArray={this.datas}
             renderRow={data =>
               <ListItem
+                //divider
                 button
                 noBorder
-                onPress={() => this.props.navigation.navigate(data.route)} style={{backgroundColor: "#666666"}}
+                onPress={() => this.props.navigation.navigate(data.route)} style={{backgroundColor: "#1e2d28"}}
               >
                 <Left>
-                <Image style={{width:30, height:30}} source={data.iconimage} />
+
 
                   <Text style={styles.text}>
                     {data.name}

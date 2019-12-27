@@ -12,6 +12,7 @@ import Master2 from "./screens/aatops/Master2";
 import Master_main_page from "./screens/aatops/Master_main_page";
 import Recordermode from "./screens/aatops/Recordermode";
 import Recordermode2 from "./screens/recordermode/RecorderMode";
+import LeaveApplication from "./screens/aatops/LeaveApplication";
 import Client_connect1 from "./screens/aatops/Client_connect1";
 import Client_connect_fail from "./screens/aatops/Client_connect_fail";
 import Client_connect_success from "./screens/aatops/Client_connect_success";
@@ -167,6 +168,7 @@ export default class App extends Component<Props>{
           Master_main_page:{screen:Master_main_page},
           PlayMode:{screen:PlayMode},
       //    Selection: { screen: Selection },
+		  LeaveApplication:{screen:LeaveApplication},
           ConnectSelect:{screen:ConnectSelect},
           Home: { screen: Home },
           Anatomy: { screen: Anatomy },

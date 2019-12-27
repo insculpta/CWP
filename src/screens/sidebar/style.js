@@ -10,7 +10,7 @@ export default {
     height: deviceHeight / 3.5,
     width: null,
     position: "relative",
-    marginBottom: 10
+    //marginBottom: 10
   },
   drawerImage: {
     position: "absolute",
@@ -23,9 +23,12 @@ export default {
   text: {
     fontWeight: Platform.OS === "ios" ? "500" : "400",
     fontSize: 16,
-    marginLeft: 20,
+    marginLeft: 60,
     color: "#ffff",
     fontWeight:'bold',
+    alignSelf: 'center',
+    justifyContent:"center",
+
   },
   badgeText: {
     fontSize: Platform.OS === "ios" ? 13 : 11,
