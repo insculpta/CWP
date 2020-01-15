@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
+import { TouchableOpacity, StyleSheet,Text, TextInput, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -21,7 +21,8 @@ import {
   Body,
   Footer,
   Item,
-  Input
+  Input,
+  Picker, Form, 
 } from "native-base";
 
 
@@ -47,12 +48,15 @@ export default class LeaveApplication extends Component<props> {
 		day_all:[], //查詢期間天數的星期幾
 		
 		
+		selected: "key1", //選取假別 
+		remark:[], //請假事由
 		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
+		this.onValueChange = this.onValueChange.bind(this);
 		
         
 
@@ -151,6 +155,13 @@ export default class LeaveApplication extends Component<props> {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
+
+
+  onValueChange(value: string) { //選取假別
+    this.setState({
+      selected: value
+    });
+  }
 
 
 
@@ -284,10 +295,41 @@ export default class LeaveApplication extends Component<props> {
 		</View>
 			
 	  <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>	
-	  <Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差假申請</Text>
+	  <Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 申 請</Text>
 
-	  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
-	  <DatePicker 
+		<View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>差假類別：</Text>
+		  <Form>
+            <Picker
+              note
+              mode="dropdown"
+              style={{ width: 200 }}
+              selectedValue={this.state.selected}
+              onValueChange={this.onValueChange}
+            >
+              <Picker.Item label="休假" value="P" />
+              <Picker.Item label="例假" value="S" />
+              <Picker.Item label="喪假" value="1" />
+              <Picker.Item label="婚假" value="2" />
+              <Picker.Item label="事假" value="3" />
+			  <Picker.Item label="病假" value="4" />
+			  <Picker.Item label="產前(檢)假" value="5" />
+              <Picker.Item label="產假" value="6" />
+              <Picker.Item label="特別休假" value="7" />
+              <Picker.Item label="公假" value="8" />
+              <Picker.Item label="陪產假" value="9" />
+			  <Picker.Item label="生理假" value="10" />
+              <Picker.Item label="家庭照顧假" value="11" />
+              <Picker.Item label="災防假" value="12" />
+              <Picker.Item label="安胎假" value="13" />
+              <Picker.Item label="捐贈骨髓或器官假" value="14" />
+			  <Picker.Item label="工會公假" value="15" />
+            </Picker>
+          </Form>
+		</View>
+
+	  
+		<View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
+		<DatePicker 
 		defaultDate={new Date()}
 		minimumDate={new Date(2019, 1, 1)}
 		//maximumDate={new Date(2019, 11, 22)}
@@ -299,11 +341,11 @@ export default class LeaveApplication extends Component<props> {
 		textStyle={{ color: "green" }}
 		placeHolderTextStyle={{ color: "#d3d3d3" }}
 		onDateChange={this.setstartDate}
-		
-	  /></View>
+
+		/></View>
 	   
-	   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
-	   <DatePicker 
+		<View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
+		<DatePicker 
 		defaultDate={new Date()}
 		minimumDate={new Date(2019, 1, 1)}
 		//maximumDate={new Date(2019, 11, 22)}
@@ -315,20 +357,44 @@ export default class LeaveApplication extends Component<props> {
 		textStyle={{ color: "green" }}
 		placeHolderTextStyle={{ color: "#d3d3d3" , }}
 		onDateChange={(date) => {this.setendDate(date);this.betweendate()}}
-	  /></View>
-	  
-	  	  
-	  
-	  <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
+		/></View>
+				  
+		<Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
 		Date: {this.state.chosenstartDate.toString().substr(4, 12)}
 		Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-	  </Text>
+		</Text>
 
-			  
-								  
-	  {workdataDisplay2}	  
+		<View style={{flex:2,justifyContent: 'center'}}>
+		<View style={styles.input} >
+		<TextInput
+			multiline={true}
+			numberOfLines={10}
+			placeholder="  請輸入差假事由"
+			keyboardType='default'
+			//underlineColorAndroid='#d6dee2'
+			onChangeText={(text) => {this.remark = text}}
+			style={styles.textArea}
+			//ref={input => { this.accountInput = input }}
+		/></View>
+		
+		<View style={{flex:2,flexDirection: 'row',alignItems: 'center', margin:10, padding:10}} >
+		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+			<View>
+				<Button transparent onPress={() => {  				
+				//this.goodjob();
+				//alert('login successfully!');				
+				//this.props.navigation.navigate("Mastermode");				
+				}}><Image source={require('./images/apply.png')}/>
+				  </Button>
+			</View>
+		  </View>
+	    </View>	
+
+		</View>		
+	  	 <View></View>  
 
 		</ScrollView>
+		
 			</Content>
 	<Footer  style={styles.footer}>
 	</Footer>
@@ -395,6 +461,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         alignSelf: 'center',
         justifyContent: 'center',
+		flexDirection:'row'
+		
     },
 
 
@@ -454,6 +522,27 @@ list: {
 	margin:10,
 
 },
+
+    input:{
+      borderColor: '#d6dee2',
+      borderRadius:3,
+	  borderWidth: 1,
+      width:width*0.8,
+//      fontSize:30, color:'#d6dee2',height:45,
+      margin:10,
+	  padding: 5,
+	  alignSelf:"center",
+    },
+	
+	textArea: {
+    height: 150,
+	width:width*0.7,
+	alignSelf:"flex-start",
+    justifyContent: "flex-start",
+	fontSize:20, 
+	color:'#6A6C6E',
+
+  }
 	
 	
 });
