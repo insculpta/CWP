@@ -83,7 +83,8 @@ new_login = () => {
 			this.props.screenProps.set_userdata(user_jsonData);
 		 
 			 
-		    fetch('http://140.114.54.22:8080/userdata.php/',{
+		   // fetch('http://140.114.54.22:8080/userdata.php/',{
+			fetch('http://192.168.1.170:8080/userdata.php/',{	
 			method:'post',
 			header:{
 				'Accept': 'application/json',
@@ -268,7 +269,8 @@ login = () =>{
         }
         else {
 
-            fetch('http://140.114.54.22:8080/userdata.php/', {
+            //fetch('http://140.114.54.22:8080/userdata.php/', {
+			fetch('http://192.168.1.170:8080/userdata.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
