@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { TouchableOpacity, StyleSheet,Text, TextInput, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 
 import {
@@ -28,6 +27,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 const banner = require("../../../assets/MasterMode/banner.png");
+const applybtn = require('./images/apply.png');
 
 export default class LeaveApplication extends Component<props> {
 
@@ -47,8 +47,8 @@ export default class LeaveApplication extends Component<props> {
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
 		
-		
-		selected: "key1", //選取假別 
+		applytime:'',
+		leavetype: "0", //選取假別 
 		remark:[], //請假事由
 		
 		};
@@ -57,12 +57,37 @@ export default class LeaveApplication extends Component<props> {
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
 		this.onValueChange = this.onValueChange.bind(this);
+		this.getapplytime = this.getapplytime.bind(this);
 		
         
-
     }
-
 	
+ 
+	//查找並設定今天日期(申請日期)
+  getapplytime() {
+    var that = this;
+	var Today = new Date();
+    var date = (Today.getDate()<10 ? '0' : '')+ Today.getDate(); //Current Date
+    var month = Today.getMonth() + 1; //Current Month
+    var year = Today.getFullYear(); //Current Year
+    var hours = Today.getHours(); //Current Hours
+    var min = Today.getMinutes(); //Current Minutes
+    var sec = Today.getSeconds(); //Current Seconds
+	var dayindex = Today.getDay();	
+	//var date1 = (Today.setDate(Today.getDate() + 1)<10 ? '0' : '')+ Today.setDate(Today.getDate() + 1);
+    //var date2 = (date1 <10 ? '0' : '')+date1;
+	
+	that.setState({
+      //Setting the value of the date time
+        applytime: year + '-' + month + '-'+ (date)+ ' '+ hours+ ':' + min+ ':' +sec,	    	
+			
+    });
+	
+  }
+  
+
+
+
 	setstartDate(newDate) {
 	
 	this.setState({ chosenstartDate: newDate,});
@@ -72,8 +97,7 @@ export default class LeaveApplication extends Component<props> {
 	var month = monthdic[monstr];
 	var day = this.state.chosenstartDate.toString().substr(8, 2);
 	this.setState({start:year + '-' + month + '-'+ day,});
-	
-	
+		
   }
   	setendDate(newDate) {
     this.setState({ chosenendDate: newDate, });
@@ -160,9 +184,89 @@ export default class LeaveApplication extends Component<props> {
 
   onValueChange(value: string) { //選取假別
     this.setState({
-      selected: value
+      leavetype: value
     });
   }
+  
+  //丟申請資料去資料庫
+  InsertApplyData = (e) => {
+		this.getapplytime();
+
+        
+        if (this.state.leavetype == "0") {
+            alert("請選擇假別");
+        }
+
+        else if (this.state.start == "") {
+            alert("請選擇差假起始日");
+        }
+		else if (this.state.end == "") {
+            alert("請選擇差假結束日");
+        }
+		else if (this.state.remark == "") {
+            alert("請輸入差假事由");
+        }
+        else {
+
+            //fetch('http://140.114.54.22:8080/userdata.php/', {
+			fetch('http://192.168.1.170:8080/insertleave.php/', {
+                method: 'post',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // we will pass our input data to server
+                    EmployeeID: e,
+                    LeaveID: this.state.leavetype,
+					StartDate: this.state.start,
+                    EndDate: this.state.end,
+					ApplicationDate: this.state.applytime,
+                    Remark: this.state.remark,
+					Audited: '0', 
+
+                })
+
+            }).then((response) => response.json())
+              .then((jsonData) => {
+                
+				if (jsonData == "apply successfully") {
+					alert("申請已遞交");		
+					this.state.leavetype = "0";
+					//this.state.start = null;
+                    //this.state.end = null;
+					//this.state.applytime= null;
+                    this.state.remark = null;	
+					//this.forceUpdate()		;			
+								
+				}
+			   
+				else if (jsonData == "try again"){
+					alert("請再試一次");
+			   
+				}	
+				else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			   
+				}				
+/* 				else if (jsonData != "") {
+					// redirect to profile page
+					this.setState({ userData: jsonData,});
+					this.props.screenProps.set_userdata(jsonData);
+					//this.goodjob;														
+					alert('Login Successfully');					
+					this.props.navigation.navigate("Mastermode");
+				} */
+			 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+        }
+
+    }
 
 
 
@@ -304,9 +408,10 @@ export default class LeaveApplication extends Component<props> {
               note
               mode="dropdown"
               style={{ width: 200 }}
-              selectedValue={this.state.selected}
+              selectedValue={this.state.leavetype}
               onValueChange={this.onValueChange}
             >
+			  <Picker.Item label="未選擇" value="0" />
               <Picker.Item label="休假" value="P" />
               <Picker.Item label="例假" value="S" />
               <Picker.Item label="喪假" value="1" />
@@ -373,23 +478,31 @@ export default class LeaveApplication extends Component<props> {
 			placeholder="  請輸入差假事由"
 			keyboardType='default'
 			//underlineColorAndroid='#d6dee2'
-			onChangeText={(text) => {this.remark = text}}
+			onChangeText={(text) => {this.state.remark = text}}
 			style={styles.textArea}
 			//ref={input => { this.accountInput = input }}
 		/></View>
 		
-		<View style={{flex:2,flexDirection: 'row',alignItems: 'center', margin:10, padding:10}} >
+		<View style={{flex:2,flexDirection: 'row',alignItems: 'center', margin:30, padding:10}} >
 		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 			<View>
-				<Button transparent onPress={() => {  				
+				<Button transparent onPress={() => {  		
+				this.InsertApplyData(900821);				
 				//this.goodjob();
 				//alert('login successfully!');				
 				//this.props.navigation.navigate("Mastermode");				
-				}}><Image source={require('./images/apply.png')}/>
+				}}><Image style={{width:294, height:54}} source={applybtn}	/>
 				  </Button>
 			</View>
 		  </View>
 	    </View>	
+		
+		<Text>{this.state.start}</Text>
+		<Text>{this.state.end}</Text>
+		<Text>{this.state.leavetype}</Text>
+		<Text>{this.state.remark}</Text>
+		<Text>{this.state.applytime}</Text>
+		
 
 		</View>		
 	  	 <View></View>  
@@ -544,7 +657,7 @@ list: {
 	color:'#6A6C6E',
 
   }
-	
+
 	
 });
 
