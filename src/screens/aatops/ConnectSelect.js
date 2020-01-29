@@ -1,157 +1,610 @@
-import React ,{Component} from 'react';
-import {View,Text, ActivityIndicator,StyleSheet  } from 'react-native';
-import {Image } from 'react-native-elements';
-import {
-  Thumbnail,
+import React, { Component } from "react";
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+
+
+import { 
+  Button,  
+  Badge,  
+  Body,  
   Container,
+  CardItem,
+  Card, 
+  Content,  
+  DatePicker, 
+  Thumbnail,
+  Footer,
   Header,
-  Title,
-  Content,
   Icon,
-  Badge,
-  Button,
+  Item,
+  Input,  
   Left,
   Right,
-  Body,
-  Footer,
-  Item,
-  Input
+  Title,
 } from "native-base";
 
-const fontSize1=30;
-const fontSize2=20;
-const styles=StyleSheet.create({
-    container:{
-      backgroundColor:'#484848',
-      flex:1
-    },
-    button:{
-      backgroundColor:'#7b7b7b',
-      width:'80%',
-      height:'60%',
-      alignSelf:'center'
 
-    },
-    text:{
-      color:"#ffffff"
-    },
+const { width, height } = Dimensions.get('window');
 
-    header: {
-      backgroundColor: "#212121",
-    },
-    content:{
-      flex:1,
+const banner = require("../../../assets/MasterMode/banner.png");
 
 
-    },
-    footer:{
-      backgroundColor: "#484848",
-      height:24
-    },
-    modetext:{
-      fontSize:10
-    },
-    underline:{
-      textDecorationLine: 'underline',
-      fontWeight: 'bold',fontSize:15, color:'#666666',
 
-    },
-});
-export default class Connection extends Component{
-    constructor(props){
-      super(props);
+export default class Connection extends Component {
+
+  
+	constructor(props) {
+        super(props);
+		this.state = { 			
+		chosenstartDate: new Date(),
+		chosenendDate: new Date() ,		
+		
+		leaveInfo: [],
+		boolGet: 1, //是否拿過leavedata
+		boolUpdate:1, //是否修改過
+		
+		//讀取請假資料用
+		StartTime:'', EndTime:'',TaskCode:'',
+		start:'',end:'', //查詢的時間起始結束
+		date_all:[],  // 查詢期間所有天數
+		day_all:[], //查詢期間天數的星期幾
+		
+		leaveID:'',applicationDate:'',
+		startDate:'', endDate:'',
+		remark:'',
+		
+		//核准資料用
+		absentNoteID:'',
+		employee:'',		
+		audited:'', //  1=審核過, 0=審核未通過
+		approve:'', //  1=未審,0=審過
+		
+				
+		
+		};
+		this.setstartDate = this.setstartDate.bind(this);
+		this.setendDate = this.setendDate.bind(this);
+		this.getDate = this.getDate.bind(this);
+		this.betweendate = this.betweendate.bind(this);
+		//this.UpdateleaveInfo = this.UpdateleaveInfo.bind(this);
+		
+        
+
     }
 
-    render(){
-      return(
+	
+	setstartDate(newDate) {
+	
+	this.setState({ chosenstartDate: newDate,});
+	var year = this.state.chosenstartDate.toString().substr(11, 4);
+	var monthdic = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12',};
+	var monstr = this.state.chosenstartDate.toString().substr(4, 3);
+	var month = monthdic[monstr];
+	var day = this.state.chosenstartDate.toString().substr(8, 2);
+	this.setState({start:year + '-' + month + '-'+ day,});
+	
+	
+  }
+  	setendDate(newDate) {
+    this.setState({ chosenendDate: newDate, });
+	var year = this.state.chosenendDate.toString().substr(11, 4);
+	var monthdic = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12',};
+	var monstr = this.state.chosenendDate.toString().substr(4, 3);
+	var month = monthdic[monstr];
+	var day = this.state.chosenendDate.toString().substr(8, 2);
+	this.setState({end:year + '-' + month + '-'+ day,});
+  }
+  
+  
+//被betweendate所用的時間格式轉換  
+    getDate(datestr){
+      var temp = datestr.split("-");
+      var date = new Date(temp[0],temp[1]-1,temp[2]);
+      console.log(date);
+      return date;
+    }
 
-        <Container style={styles.container}>
+//計算查詢期間所有日期並存在date_all	
+	betweendate(){
+	var i=0;
+	var date_all=[]; //間隔日期
+	var day_all=[]; //間隔日期之對應星期幾
+	var wday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六',];
+	var start = this.state.start;
+    var end = this.state.end;
+    var startTime = this.getDate(start);
+    var endTime = this.getDate(end);
+    while((endTime.getTime()-startTime.getTime())>=0){
+	  var year = startTime.getFullYear();
+      var month = (startTime.getMonth()+1).toString().length==1?"0"+(startTime.getMonth()+1).toString():(startTime.getMonth()+1).toString();
+      var date = startTime.getDate().toString().length==1?"0"+startTime.getDate():startTime.getDate();
+	  var day = startTime.getDay()
+      date_all[i] = year + "-" + month + "-" + date;
+	  day_all[i]= wday[day];
+      startTime.setDate(startTime.getDate()+1);
+      i+=1;
+	  
+    }	
+	this.setState({date_all:date_all, day_all:day_all,})
+	
+				
+	}
+	
+	
+	
+	 
+  
+	GetleaveInfo =(e) => {
+	if(this.state.boolGet)
+	{
+	//fetch('http://140.114.54.22:8080/leaveget.php/', {
+	fetch('http://192.168.1.170:8080/leaveget.php/', {
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({
+		EmployeeID: e ,
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData != "") {
+
+	//this.props.screenProps.set_workdata(jsonData);
+	this.setState({ leaveInfo: jsonData, boolGet : 0});
+	//alert("workdata get!!")	;
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else { //alert("WorkData Loadwrong") ;  
+	}
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+	}
+}
+
+
+
+//審核更新
+/* /*  UpdateleaveInfo =(a,b,c,d) => {
+      
+	   this.setState({
+		absentNoteID:70,
+		employee:900821,		
+		audited:1,
+		approve:0,
+
+	});		
+
+  if (a == "") {
+            alert("a不見了");
+            //this.setState({account:'Please enter Account'})
+
+        }
+
+        else if (b == "") {
+            alert("b不見了");
+            //this.setState({account:'Please enter password'})
+        }
+        else {
+	
+            //fetch('http://140.114.54.22:8080/leaveupdate.php/', {
+			fetch('http://192.168.1.170:8080/leaveupdate.php/', {
+                method: 'post',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+
+			body: JSON.stringify({
+				EmployeeID: b,
+
+			})
+            }).then((response) => response.json())
+              .then((jsonData) => {
+                
+				if (jsonData == "audit successfully") {
+					alert("審核資料已更新");			
+								
+				}
+			   	else if (jsonData == "No this ID"){
+					alert("查無此筆資料");			   
+				}
+				else if (jsonData == "try again"){
+					alert("請再試一次");			   
+				}	
+				else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			   
+				}	
+	
+		
+			 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+        }
+		
+	} */ 
+	
+	
+//測試用 function	
+ InsertApplyData = (e) => {
+
+
+            //fetch('http://140.114.54.22:8080/leaveupdate.php/', {
+			fetch('http://192.168.1.170:8080/leaveupdate.php/', {
+                method: 'post',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // we will pass our input data to server
+				EmployeeID: e ,					
+
+                })
+
+            }).then((response) => response.json())
+              .then((jsonData) => {
+                
+				if (jsonData == "audit successfully") {
+					alert("申請已遞交");		
+					this.state.leavetype = "0";
+					//this.state.start = null;
+                    //this.state.end = null;
+					//this.state.applytime= null;
+                    //this.state.remark = null;	
+					//this.forceUpdate()		;			
+								
+				}
+			   
+				else if (jsonData == "try again"){
+					alert("請再試一次");
+			   
+				}	
+				else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			   
+				}				
+/* 				else if (jsonData != "") {
+					// redirect to profile page
+					this.setState({ userData: jsonData,});
+					this.props.screenProps.set_userdata(jsonData);
+					//this.goodjob;														
+					alert('Login Successfully');					
+					this.props.navigation.navigate("Mastermode");
+				} */
+			 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+        
+
+    }
+
+    
+	
+	   componentDidMount() {
+       //console.log(this.ws);
+      	this.GetleaveInfo(900821);		
+//		var call_1 = this.GetleaveInfo(900821);
+		
+       };
+
+    render() {
+	let dimensions = Dimensions.get("window");       
+	let imageHeight = Math.round((dimensions.width * 9) / 16);
+	let imageWidth = dimensions.width*0.9;
+	
+
+	
+	const work1 = this.state.leaveInfo;
+	let workdataDisplay1 = work1.map(function(jsonData) {
+
+	return (
+	   <View key={jsonData.EmployeeID}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.Remark}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartDate} ~ {jsonData.EndDate}</Text>
+
+		</View>
+	   </View>
+	)
+    });
+	
+	
+			
+// 依date找出   
+	  var results = [];
+	  var searchField = "StartDate";
+	  //var searchVal = "2019-11-07";
+	  for (var i = 0; i < work1.length; i++) {
+		  check = String(work1[i][searchField]) //每筆在work資料表中的資料拿Date出來
+		  for (var j = 0; j < this.state.date_all.length; j++){  //跟期間的資料比對
+			  if ((check) == this.state.date_all[j]) {
+				  //work1[i].push("Day",temp[i]);
+				  var work = work1[i];  // work 為JsonObject
+				  work["Day"] = this.state.day_all[j]; //新增jsonobject的key為Day,對應資料為day_all內容
+				  results.push(work);
+				  
+
+				  
+				  
+			  }
+		  }
+	  }
+	  var leaveID = Object.values(results).map(item => item.LeaveID); 
+	  var applicationDate = Object.values(results).map(item => item.ApplicationDate); //still object  
+	  var startDate = Object.values(results).map(item => item.StartDate); 	  
+	  var endDate = Object.values(results).map(item => item.EndDate); 
+	  var remark = Object.values(results).map(item => item.Remark); //still object 
+	  var absentNoteID = Object.values(results).map(item => item.AbsentNoteID); //still object 
+	  
+	  
+	  
+	  this.state.leaveID = String(leaveID);
+	  this.state.applicationDate = String(applicationDate).substring(0,5); 
+	  this.state.startDate = String(startDate);
+	  this.state.endDate = String(endDate); 
+	  this.state.remark = String(remark);	
+	  this.state.absentNoteID = String(absentNoteID);
+	  	 
+
+	var i = 0;
+	
+	
+	let workdataDisplay2 = results.map(function(jsonData) {	
+	return (
+	   <View key={jsonData.EmployeeID}>
+		<View style={styles.list}>
+		
+		<View  style={{	flexDirection:'row'}}>		
+		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,textAlign:'right', }}>{jsonData.StartDate}</Text>
+		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,marginLeft:10 }}>{jsonData.Day}</Text>
+		</View>
+		
+		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
+		  
+		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>林木森           {jsonData.EmployeeID}</Text></View> 
+		  
+		  <View style={{flex: 4,flexDirection:'row'}}>
+		  
+		  <View style={{flex: 5, flexDirection:'column'}}>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假別：</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		  		  
+		  </View>
+		  
+		  <View style={{flex: 7, flexDirection:'column'}} >		  
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>		  
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}, id ={jsonData.AbsentNoteID}</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>		  
+		  </View>
+		  
+		  </View>  
+		  		  
+		  <View style={{flexDirection:'row',flex:1}}>
+		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderRightWidth:0.5}}>
+		  <Button transparent full
+		   onPress={() => {}}
+		   		  		 
+			>
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>	
+			</Button></View>
+			
+		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
+		  <Button transparent full
+		   onPress={()=> {}}
+	        >
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>待協調</Text>
+			</Button>
+		  </View>
+		  </View>  
+		  
+		  
+		  </View>
+		 
+				
+		</View></View>
+			   
+	)
+	i = i+1;
+    });
+	
+	var call_1 = this.GetleaveInfo(900821);	
+	
+
+        return (
+		
+	           <Container style={styles.container}>
                 <Header style={styles.header}>
-                  <Left>
+                    <Left>
                     <Button
-                      transparent
-                      onPress={() => this.props.navigation.openDrawer()}
+                        transparent
+                        onPress={() => this.props.navigation.openDrawer()}
                     >
-                      <Icon name="menu" />
+                        <Icon name="menu" />
                     </Button>
-                  </Left>
-                  <Body>
-                    <Title>Connection</Title>
-                  </Body>
-                  <Right />
+                    </Left>
+                    <Body>
+                    <Title style={styles.title}>中華郵政</Title>
+                    </Body>
+
                 </Header>
 
-            <View padder style={styles.content}>
+                <Content>
+				
+			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 管 理 系 統</Text>
+			
+			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
+ 
+		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日：</Text>
+          <DatePicker 
+            defaultDate={new Date()}
+            minimumDate={new Date(2019, 1, 1)}
+            //maximumDate={new Date(2019, 11, 22)}
+            locale={"en"}       
+            modalTransparent={false}
+            animationType={"fade"}
+            androidMode={"default"}
+            placeHolderText="Select Here"
+            textStyle={{ color: "green" }}
+            placeHolderTextStyle={{ color: "#d3d3d3" }}
+            onDateChange={(date)=>{this.setstartDate(date);}}
+			
+          /></View>
+		   
+		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日：</Text>
+		   <DatePicker 
+            defaultDate={new Date()}
+            minimumDate={new Date(2019, 1, 1)}
+            //maximumDate={new Date(2019, 11, 22)}
+            locale={"en"}       
+            modalTransparent={false}
+            animationType={"fade"}
+            androidMode={"default"}
+            placeHolderText="Select Here"
+            textStyle={{ color: "green" }}
+            placeHolderTextStyle={{ color: "#d3d3d3" , }}
+            onDateChange={(date) => {this.setState({ boolGet:1,});this.setendDate(date);this.betweendate();}}
+          /></View>
+		  		  
+		  
+	  {workdataDisplay2}
+		
 
-                <View style={{flex:3,justifyContent: 'center',alignItems: 'center'}}>
-                    <Text style={{fontWeight: 'bold', fontSize: 36, color:'white'}}>Connection</Text>
-                    <Text style={{fontWeight: 'bold',fontSize:18, color:'white',height:20}}>Use a set of numbers to</Text>
-                    <Text style={{fontWeight: 'bold',fontSize:18, color:'white'}}>
-                                    connect Mater with Recorders!!</Text>
-                </View>
-                <View style={{flex:1,alignItems :'center',justifyContent: 'center'}}>
-                    <Text style={{fontSize:30 ,color:styles.text.color,justifyContent: 'center'}}>You are</Text>
-                </View>
-
-            <View style={{flex:3,flexDirection: 'row',alignItems: 'center'}} >
-
-              <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
-
-                <View>
-                    <Button transparent onPress={()=>{
-                      this.props.navigation.navigate("Master1");
-                      this.props.screenProps.ch_mode(1);
-                    }}><Image
-                      source={require('./images/control2.png')}
-                      style={{ width: 80, height:80}}/>
-                      </Button>
-                  </View>
-
-                  <View>
-                      <Text style={{fontWeight: 'bold',fontSize: 20, color:'#01B4BC',marginTop: 30}}>Master</Text>
-                  </View>
-
-
-              </View>
-
-              <View style={{flex: 1,alignItems: 'center',justifyContent: 'flex-start',flexDirection: 'column'}}>
-
-              <View>
-                  <Button transparent onPress={()=>{
-                  this.props.navigation.navigate("Client_connect1");
-                  this.props.screenProps.ch_mode(2);
-                }}><Image
-                  source={require('./images/recorder2.png')}
-                  style={{ width: 80, height: 80}} />
-            </Button>
-              </View>
-
-              <View>
-                  <Text style={{ fontWeight: 'bold',fontSize: 20, color:'#01B4BC',marginTop: 30}}>Recorder</Text>
-              </View>
-
-              </View>
-          </View>
-
-
-          <View style={{flex:2, alignSelf:'center',justifyContent: 'flex-start'} }>
-
-              <View style={{alignSelf: 'center',justifyContent: 'center'}}>
-              <Button transparent onPress={()=>{
-                this.props.navigation.navigate("Mastermode");
-                }}>
-              <Text style={styles.underline}></Text>
-              </Button>
-              </View>
-
-          </View>
-
-      </View>
-      <Footer  style={styles.footer}>
-      <Image source={require('../../../assets/trademark.png')} style={{alignItems: 'center'}} />
-      </Footer>
-
-      </Container>
-      );
+                </Content>
+		<Footer  style={styles.footer}>
+		</Footer>
+                
+            </Container>
+        );
     }
 }
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#f5f9f8", 
+    flex:1,
+  },
+  header: {
+    backgroundColor: "#1e2d28",
+  },
+  content:{
+    flex:1
+  },
+
+    button:{
+
+        alignSelf:'center',
+
+      },
+
+  footer:{
+    backgroundColor: "#019875",
+    height:50,
+
+  },
+
+
+    block: {
+        flex: 12,
+        backgroundColor: '#484848'
+    },
+    category: {
+        fontSize: 20,
+        color: 'white',
+        marginLeft: 16,
+        marginVertical: 8
+    },
+    showList: {
+    },
+    playFunc: {
+        flex: 2,
+        backgroundColor: '#484848'
+    },
+	
+	date:{
+	
+	flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent: 'center',
+	},
+	
+	
+swipe:{
+	
+	marginTop: width / 8,
+	marginHorizontal: 30,
+	alignSelf: 'stretch',
+	//backgroundColor: 'rgba(0,0,255,0.32)',
+	flexDirection: "column" 
+			},
+
+worktype: {
+
+	marginTop: 15,
+	flexDirection: 'row',
+	alignSelf: 'center',
+	justifyContent: 'center',
+	fontWeight: 'bold',
+	fontSize: 20,
+	color: '#fff',
+	
+
+},
+
+bannerTextArea: {
+	//position: 'absolute',
+	//top: 80, left: 45, right: 0, bottom: 0,
+	marginTop: 8,
+	height: 60,
+	alignSelf: 'stretch',
+	backgroundColor: 'rgba(255,255,255,0.32)',
+	borderRadius: 8,
+	flexDirection: 'row',
+	alignContent: 'center',
+	justifyContent: 'center',
+	
+},
+
+bannerText: {
+
+	fontWeight: 'bold',
+	fontSize: 35,
+	color: '#ffffff',
+	alignSelf: 'center',
+
+},
+
+list: {
+
+	//fontWeight: 'bold',
+	fontSize: 35,
+	alignItems:'center',
+	flexDirection: 'column',
+	margin:10,
+
+
+},
+	
+	
+});

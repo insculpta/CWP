@@ -17,13 +17,13 @@ import styles from "./style";
 
 const drawerImage = require("../../../assets/account.jpg");
 
-
 class SideBar extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
       shadowOffsetWidth: 1,
-      shadowRadius: 4
+      shadowRadius: 4,
+	  staff : 1,
     };
 
     this.datas = [
@@ -42,12 +42,15 @@ class SideBar extends Component<Props> {
         route: "LeaveApplication",
 
       },
-      {
+      
+	  
+		  
+	 { 
         name: "差假申請核准",
         route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
 
       },
-
+	  
       {},
 
 

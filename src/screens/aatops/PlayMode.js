@@ -9,6 +9,8 @@ import {
   Thumbnail,
   DatePicker,
   Container,
+  CardItem,
+  Card,
   Header,
   Title,
   Content,
@@ -25,6 +27,8 @@ import {
 
 
 const { width, height } = Dimensions.get('window');
+
+const banner = require("../../../assets/MasterMode/banner.png");
 
 
 
@@ -154,8 +158,9 @@ export default class PlayMode extends React.Component {
 	
 
     render() {
-       
-	
+	let dimensions = Dimensions.get("window");       
+	let imageHeight = Math.round((dimensions.width * 9) / 16);
+	let imageWidth = dimensions.width;
 	
 	var call_1 = this.Getworkdata1(900821);	
 	
@@ -212,8 +217,11 @@ export default class PlayMode extends React.Component {
 		  <View style={{flexDirection: 'row',}}>
 		  <Text style={{ flex:1, fontSize: 16,  color:'#435366' ,margin:10, textAlign:'right' }}>{(jsonData.StartTime).substring(11,16)} ~ {(jsonData.EndTime).substring(11,16)}</Text>
 		  <Text style={{ flex:1, fontSize: 16,  color:'#435366' ,margin:10, textAlign:'left'}}>{jsonData.TaskCode}</Text></View>
-
+		
+				
 		</View></View>
+		
+
 	   
 	)
 	i = i+1;
@@ -281,9 +289,8 @@ export default class PlayMode extends React.Component {
 			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
           </Text>
 		  		  
-					    	  		  
-		  {workdataDisplay2}	  
-
+		  
+	  {workdataDisplay2}	
 
                 </Content>
 		<Footer  style={styles.footer}>
@@ -393,7 +400,7 @@ bannerText: {
 list: {
 
 	//fontWeight: 'bold',
-	fontSize: 35 ,
+	fontSize: 35,
 	color:'#435366',
 	alignItems:'center',
 	flexDirection: 'column',

@@ -511,7 +511,9 @@ const workout = {key:'workout', color: 'green'};
 	  </View>
 	  
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
-                 
+
+				 
+				 
                  <Image
                    style={{ paddingBottom:15 }}
                    source={card1}
@@ -523,6 +525,8 @@ const workout = {key:'workout', color: 'green'};
                    style={{ paddingBottom:15}}
                    source={card2}
                  />
+				 
+				 
 				 
 				  
 

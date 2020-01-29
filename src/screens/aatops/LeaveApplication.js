@@ -206,9 +206,13 @@ export default class LeaveApplication extends Component<props> {
 		else if (this.state.remark == "") {
             alert("請輸入差假事由");
         }
+		
+		else if (this.state.applytime == ""){
+			 alert("請稍等兩秒再送出一次");
+		}
         else {
 
-            //fetch('http://140.114.54.22:8080/userdata.php/', {
+            //fetch('http://140.114.54.22:8080/insertleave.php/', {
 			fetch('http://192.168.1.170:8080/insertleave.php/', {
                 method: 'post',
                 header: {
@@ -223,7 +227,7 @@ export default class LeaveApplication extends Component<props> {
                     EndDate: this.state.end,
 					ApplicationDate: this.state.applytime,
                     Remark: this.state.remark,
-					Audited: '0', 
+					Approve: '1', 
 
                 })
 
@@ -236,7 +240,7 @@ export default class LeaveApplication extends Component<props> {
 					//this.state.start = null;
                     //this.state.end = null;
 					//this.state.applytime= null;
-                    this.state.remark = null;	
+                    //this.state.remark = null;	
 					//this.forceUpdate()		;			
 								
 				}
@@ -497,11 +501,6 @@ export default class LeaveApplication extends Component<props> {
 		  </View>
 	    </View>	
 		
-		<Text>{this.state.start}</Text>
-		<Text>{this.state.end}</Text>
-		<Text>{this.state.leavetype}</Text>
-		<Text>{this.state.remark}</Text>
-		<Text>{this.state.applytime}</Text>
 		
 
 		</View>		
