@@ -63,6 +63,11 @@ class Mastermode extends Component<props> {
   
 	  boolGet: 1, //是否拿過workdata
 	  
+	  //公告
+	  NewsboolGet:1,
+	  announce:[], officeID:'', from:'', 
+	  content:'',  newsDate:'', newsEndDate:'', 
+	  
 	  
       		
     };
@@ -135,6 +140,7 @@ class Mastermode extends Component<props> {
 	
   
   componentDidMount() {
+	
     var that = this;
 	var Today = new Date();
     var date = (Today.getDate()<10 ? '0' : '')+ Today.getDate(); //Current Date
@@ -243,6 +249,39 @@ class Mastermode extends Component<props> {
 	
 	
 	
+	GetNewsInfo =(e) => {
+	if(this.state.NewsboolGet)
+	{
+	//fetch('http://140.114.54.22:8080/newsget.php/', {
+	fetch('http://192.168.1.170:8080/newsget.php/', {
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({
+		EmployeeID: e ,
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData != "") {
+
+	//this.props.screenProps.set_workdata(jsonData);
+	this.setState({ announce: jsonData, NewsboolGet : 0});
+	//alert("workdata get!!")	;
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else { //alert("WorkData Loadwrong") ;  
+	}
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+	}
+	}
+	
 
 	callfunc = (e) => {
 		if(!this.state.workData)
@@ -274,7 +313,7 @@ class Mastermode extends Component<props> {
 	  
  
 	} */
- 
+
 
 		
 
@@ -420,6 +459,7 @@ this.state.userid= String(username);
 	  
       var call = this.Getworkdata(this.state.userid);
 	  var call_1 = this.Getworkdata1(900821);
+	  var call_2 = this.GetNewsInfo(900821);
 	  
 	  //var call = this.callfunc(this.state.userid);
 
@@ -429,14 +469,48 @@ const vacation = {key:'vacation', color: 'red', selectedDotColor: 'blue'};
 const massage = {key:'massage', color: 'blue', selectedDotColor: 'blue'};
 const workout = {key:'workout', color: 'green'};
 
+//----------------------Announcement-------------------------------------------
 
+	const anno = this.state.announce;
+	let annoDisplay1 = anno.map(function(jsonData) {
 
+	return (
+	   <View key={jsonData.From}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.From}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.Content}</Text>
+
+		</View>
+	   </View>
+	)
+    });
+	
+	let annoDisplay2 = anno.map(function(jsonData) {	
+	return (
+	   <View key={jsonData.From}>
+		<View style={styles.list}>
+			
+		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
+		  
+		  <View style={{flexDirection:'row', borderColor:'#B3D6D0', borderBottomWidth:1, borderRightWidth:0.5}}>
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.From}</Text>               
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>
+		  </View>
+		  
+		  <View style={{flex: 4,flexDirection:'row'}}>		 		    
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,marginVertical:10,marginHorizontal:5, }}>{jsonData.Content}</Text>	  
+		  
+		  </View>  
+		  		  		 
+				
+		</View></View></View>
+			   
+	)	
+    });
 
 
     return (
 	
-
-
 <Container style={styles.container}>
 
                    <Header style={styles.header}>
@@ -512,23 +586,9 @@ const workout = {key:'workout', color: 'green'};
 	  
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
 
+			
+				{annoDisplay2}
 				 
-				 
-                 <Image
-                   style={{ paddingBottom:15 }}
-                   source={card1}
-                 />
-                 <View style={{height:15}}>
-                 </View>
-
-                 <Image
-                   style={{ paddingBottom:15}}
-                   source={card2}
-                 />
-				 
-				 
-				 
-				  
 
        </ScrollView>
 
@@ -544,7 +604,8 @@ const workout = {key:'workout', color: 'green'};
 }
 
 const styles=StyleSheet.create({
-  container: {
+	
+  container:{
     backgroundColor: "#f5f9f8",
     flex:1,
   },
@@ -664,6 +725,18 @@ const styles=StyleSheet.create({
 	bottom: 0
 	
   }, 
+  
+  list: {
+
+	//fontWeight: 'bold',
+	fontSize: 35,
+	alignItems:'center',
+	flexDirection: 'column',
+	margin:10,
+
+},
+
+
 
 });
 
