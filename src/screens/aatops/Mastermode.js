@@ -184,8 +184,8 @@ class Mastermode extends Component<props> {
     Getworkdata =(e) => {
 		if(this.state.boolGet)
 		{
-		//fetch('http://140.114.54.22:8080/workdata.php/', {
-		fetch('http://192.168.1.170:8080/workdata.php/', {
+		fetch('http://140.114.54.22:8080/workdata.php/', {
+		//fetch('http://192.168.1.170:8080/workdata.php/', {
 		method: 'post',
 		header: {
 			'Accept': 'application/json',
@@ -217,8 +217,8 @@ class Mastermode extends Component<props> {
 	    Getworkdata1 =(e) => {
 		if(this.state.boolGet)
 		{
-		//fetch('http://140.114.54.22:8080/workdata1.php/', {
-		fetch('http://192.168.1.170:8080/workdata1.php/', {
+		fetch('http://140.114.54.22:8080/workdata1.php/', {
+		//fetch('http://192.168.1.170:8080/workdata1.php/', {
 		method: 'post',
 		header: {
 			'Accept': 'application/json',
@@ -252,8 +252,8 @@ class Mastermode extends Component<props> {
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
 	{
-	//fetch('http://140.114.54.22:8080/newsget.php/', {
-	fetch('http://192.168.1.170:8080/newsget.php/', {
+	fetch('http://140.114.54.22:8080/newsget.php/', {
+	//fetch('http://192.168.1.170:8080/newsget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',

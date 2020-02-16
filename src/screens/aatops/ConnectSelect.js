@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
+import {Alert,TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
@@ -61,17 +61,18 @@ export default class Connection extends Component {
 		audited:'', //  1=審核過, 0=審核未通過
 		approve:'', //  1=未審,0=審過
 		
-				
-		
+		test:'1',
+		res:[],		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
+			
 		//this.UpdateleaveInfo = this.UpdateleaveInfo.bind(this);
+	
 		
-        
-
+		
     }
 
 	
@@ -133,14 +134,12 @@ export default class Connection extends Component {
 	}
 	
 	
-	
-	 
-  
+	  
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	//fetch('http://140.114.54.22:8080/leaveget.php/', {
-	fetch('http://192.168.1.170:8080/leaveget.php/', {
+	fetch('http://140.114.54.22:8080/leaveget.php/', {
+	//fetch('http://192.168.1.170:8080/leaveget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -194,8 +193,8 @@ export default class Connection extends Component {
         }
         else {
 	
-            //fetch('http://140.114.54.22:8080/leaveupdate.php/', {
-			fetch('http://192.168.1.170:8080/leaveupdate.php/', {
+            fetch('http://140.114.54.22:8080/leaveupdate.php/', {
+			//fetch('http://192.168.1.170:8080/leaveupdate.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -240,9 +239,9 @@ export default class Connection extends Component {
 //測試用 function	
  InsertApplyData = (e) => {
 
-
-            //fetch('http://140.114.54.22:8080/leaveupdate.php/', {
-			fetch('http://192.168.1.170:8080/leaveupdate.php/', {
+			alert("有在動");
+            fetch('http://140.114.54.22:8080/leaveupdate.php/', {
+			//fetch('http://192.168.1.170:8080/insertleave.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -250,7 +249,13 @@ export default class Connection extends Component {
                 },
                 body: JSON.stringify({
                     // we will pass our input data to server
-				EmployeeID: e ,					
+				EmployeeID: e ,	
+				LeaveID: '121',
+				StartDate: '',
+				EndDate: '',
+				ApplicationDate: '',
+				Remark:'成功了',
+				Approve: '1', 				
 
                 })
 
@@ -295,14 +300,118 @@ export default class Connection extends Component {
 
     }
 
-    
+//審核更新
+  ApproveLeave =(e) => {
+      	
+
+  if (e == "") {
+            alert("尚未取得差假流水號");
+            //this.setState({account:'Please enter Account'})
+        
+        }
+        else {
 	
-	   componentDidMount() {
-       //console.log(this.ws);
-      	this.GetleaveInfo(900821);		
-//		var call_1 = this.GetleaveInfo(900821);
+            fetch('http://140.114.54.22:8080/updatetest.php/', {
+			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
+                method: 'post',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+
+			body: JSON.stringify({
+			
+				AbsentNoteID:e,
+				Audited:'1',
+				Approve: '0',
+
+			})
+            }).then((response) => response.json())
+              .then((jsonData) => {
+                
+				if (jsonData == "audit successfully") {
+					alert("審核資料已更新");			
+								
+				}		   
+				else if (jsonData == "try again"){
+					alert("請再試一次");			   
+				}	
+				else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			   
+				}	
+				 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+        }		
+	}  
+
+	DisapprLeave =(e) => {
+      	
+
+	if (e == "") {
+			alert("ID不見了");
+			//this.setState({account:'Please enter Account'})
 		
-       };
+		}
+		else {
+
+			fetch('http://140.114.54.22:8080/updatetest.php/', {
+			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
+				method: 'post',
+				header: {
+					'Accept': 'application/json',
+					'Content-type': 'application/json',
+				},
+
+			body: JSON.stringify({
+			
+				AbsentNoteID:e,
+				Audited:'0',
+				Approve: '0',
+
+			})
+			}).then((response) => response.json())
+			  .then((jsonData) => {
+				
+				if (jsonData == "audit successfully") {
+					alert("審核資料已更新");			
+								
+				}		   
+				else if (jsonData == "try again"){
+					alert("請再試一次");			   
+				}	
+				else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			   
+				}	
+				 
+				else
+				{alert("Something goes wrong here!");}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		}		
+	} 
+	
+	
+	
+	test=()=>{
+		this.setState({ test: 3,});	
+		alert("其實有作用");
+		
+	}
+    
+	componentDidMount() {
+	//console.log(this.ws);
+	this.GetleaveInfo(900821);		
+	//		var call_1 = this.GetleaveInfo(900821);
+	};
 
     render() {
 	let dimensions = Dimensions.get("window");       
@@ -346,6 +455,7 @@ export default class Connection extends Component {
 			  }
 		  }
 	  }
+	  
 	  var leaveID = Object.values(results).map(item => item.LeaveID); 
 	  var applicationDate = Object.values(results).map(item => item.ApplicationDate); //still object  
 	  var startDate = Object.values(results).map(item => item.StartDate); 	  
@@ -361,21 +471,25 @@ export default class Connection extends Component {
 	  this.state.endDate = String(endDate); 
 	  this.state.remark = String(remark);	
 	  this.state.absentNoteID = String(absentNoteID);
-	  	 
+	  this.state.res = results;	 
 
 	var i = 0;
+	var resultsbtn = 0
 	
+	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	let workdataDisplay2 = results.map(function(jsonData) {	
-	return (
-	   <View key={jsonData.EmployeeID}>
+	if (jsonData.Approve === '1')
+	{
+		return(
+	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
+		<View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
-		
+
 		<View  style={{	flexDirection:'row'}}>		
 		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,textAlign:'right', }}>{jsonData.StartDate}</Text>
 		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,marginLeft:10 }}>{jsonData.Day}</Text>
 		</View>
-		
+
 		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
 		  
 		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>林木森           {jsonData.EmployeeID}</Text></View> 
@@ -383,6 +497,7 @@ export default class Connection extends Component {
 		  <View style={{flex: 4,flexDirection:'row'}}>
 		  
 		  <View style={{flex: 5, flexDirection:'column'}}>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>流水號：</Text>
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
@@ -390,31 +505,31 @@ export default class Connection extends Component {
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		  		  
 		  </View>
 		  
-		  <View style={{flex: 7, flexDirection:'column'}} >		  
+		  <View style={{flex: 7, flexDirection:'column'}} >
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>		  
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>		  
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}, id ={jsonData.AbsentNoteID}</Text>
+		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
 		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>		  
 		  </View>
 		  
 		  </View>  
-		  		  
+				  
 		  <View style={{flexDirection:'row',flex:1}}>
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderRightWidth:0.5}}>
-		  <Button transparent full
-		   onPress={() => {}}
-		   		  		 
-			>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>	
-			</Button></View>
+
+		  <TouchableOpacity transparent full
+		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);}}>
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>
+			</TouchableOpacity>
+		  </View>
 			
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
-		  <Button transparent full
-		   onPress={()=> {}}
-	        >
+		  <TouchableOpacity transparent full 
+		  onPress={()=> {this.DisapprLeave.call(this,jsonData.AbsentNoteID)}}>
 			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>待協調</Text>
-			</Button>
+		 </TouchableOpacity>
 		  </View>
 		  </View>  
 		  
@@ -423,10 +538,12 @@ export default class Connection extends Component {
 		 
 				
 		</View></View>
-			   
-	)
-	i = i+1;
-    });
+		)
+	};
+
+	}
+
+    );
 	
 	var call_1 = this.GetleaveInfo(900821);	
 	
@@ -454,6 +571,15 @@ export default class Connection extends Component {
 			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 管 理 系 統</Text>
 			
 			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
+					  
+		   <View><Button transparent full
+		   onPress={() => {this.ApproveLeave(110);}}>
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>	
+			</Button></View>			
+			<View><Text>{this.state.test}</Text>
+			</View>
+			
+
  
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日：</Text>
           <DatePicker 

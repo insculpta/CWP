@@ -151,8 +151,7 @@ export default class LeaveApplication extends Component<props> {
 	Getworkdata1 =(e) => {
 	if(this.state.boolGet)
 	{
-	//fetch('http://140.114.54.22:8080/workdata1.php/', {
-	fetch('http://192.168.1.170:8080/workdata1.php/', {
+	fetch('http://140.114.54.22:8080/workdata1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -212,8 +211,7 @@ export default class LeaveApplication extends Component<props> {
 		}
         else {
 
-            //fetch('http://140.114.54.22:8080/insertleave.php/', {
-			fetch('http://192.168.1.170:8080/insertleave.php/', {
+            fetch('http://140.114.54.22:8080/insertleave.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -227,6 +225,7 @@ export default class LeaveApplication extends Component<props> {
                     EndDate: this.state.end,
 					ApplicationDate: this.state.applytime,
                     Remark: this.state.remark,
+					Audited:'0',
 					Approve: '1', 
 
                 })
@@ -429,7 +428,6 @@ export default class LeaveApplication extends Component<props> {
               <Picker.Item label="陪產假" value="9" />
 			  <Picker.Item label="生理假" value="10" />
               <Picker.Item label="家庭照顧假" value="11" />
-              <Picker.Item label="災防假" value="12" />
               <Picker.Item label="安胎假" value="13" />
               <Picker.Item label="捐贈骨髓或器官假" value="14" />
 			  <Picker.Item label="工會公假" value="15" />

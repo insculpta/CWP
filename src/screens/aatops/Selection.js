@@ -269,8 +269,7 @@ login = () =>{
         }
         else {
 
-            //fetch('http://140.114.54.22:8080/userdata.php/', {
-			fetch('http://192.168.1.170:8080/userdata.php/', {
+            fetch('http://140.114.54.22:8080/userdata.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -434,7 +433,7 @@ login = () =>{
           <View style={{flex:2, alignSelf:'center',justifyContent: 'flex-start'} }>
 
               <View style={{alignSelf: 'center',justifyContent: 'center'}}>
-              <Button transparent   onPress={this.login} >
+              <Button transparent   onPress={alert("Please contact the system manager!")} >
               <Text style={styles.underline}>無法登入？</Text>
 
               </Button>
