@@ -41,6 +41,9 @@ export default class LeaveApplication extends Component<props> {
 		workData1: [],
 		boolGet: 1, //是否拿過workdata
 		
+		employee:[],
+		employeeboolget:1, //是否拿過employee
+		
 		
 		StartTime:'', EndTime:'',TaskCode:'',
 		start:'',end:'', //查詢的時間起始結束
@@ -180,6 +183,39 @@ export default class LeaveApplication extends Component<props> {
 	}
 }
 
+
+//拿員工剩餘休假日數用
+	GetEmployee =(e) => {
+	if(this.state.boolGet)
+	{
+	fetch('http://140.114.54.22:8080/getemployee.php/', {
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({
+		EmployeeID: e ,
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData != "") {
+
+	//this.props.screenProps.set_workdata(jsonData);
+	this.setState({ employee: jsonData, boolGet : 0});
+	//alert("workdata get!!")	;
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else { //alert("WorkData Loadwrong") ;  
+	}
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+	}
+}
 
   onValueChange(value: string) { //選取假別
     this.setState({
@@ -395,8 +431,8 @@ export default class LeaveApplication extends Component<props> {
         >		
 						<View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}></Text>
-                        <Text style={styles.worktype}>已使用特休數 </Text>
-                        <Text style={styles.worktype}>剩餘特休數 </Text>                     
+                        <Text style={styles.worktype}>已使用休假日數 </Text>
+                        <Text style={styles.worktype}>剩餘休假日數 </Text>                     
                         <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View>
 		</SwiperFlatList>
 		</ImageBackground>
