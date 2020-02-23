@@ -33,12 +33,12 @@ class SideBar extends Component<Props> {
 
       },
       {
-        name: "班表查詢",
+        name: "查詢班表",
         route: "PlayMode",
 
       },
       {
-        name: "差假申請",
+        name: "申請差假",
         route: "LeaveApplication",
 
       },
@@ -46,7 +46,7 @@ class SideBar extends Component<Props> {
 	  
 		  
 	 { 
-        name: "差假申請核准",
+        name: "差假核准",
         route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
 
       },

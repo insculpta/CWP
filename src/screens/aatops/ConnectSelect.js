@@ -60,6 +60,10 @@ export default class Connection extends Component {
 		employee:'',		
 		audited:'', //  1=審核過, 0=審核未通過
 		approve:'', //  1=未審,0=審過
+		boolApprove:1,
+		boolDisapprove:1,
+		
+		booltest:true,
 		
 		test:'1',
 		res:[],		
@@ -302,9 +306,9 @@ export default class Connection extends Component {
 
 //審核更新
   ApproveLeave =(e) => {
-      	
-
-  if (e == "") {
+      
+	
+	if (e == "") {
             alert("尚未取得差假流水號");
             //this.setState({account:'Please enter Account'})
         
@@ -330,7 +334,8 @@ export default class Connection extends Component {
               .then((jsonData) => {
                 
 				if (jsonData == "audit successfully") {
-					alert("審核資料已更新");			
+					alert("審核資料已更新");
+					this.setState({boolGet: 0});					
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -348,10 +353,11 @@ export default class Connection extends Component {
 				console.error(error);
 			});
         }		
-	}  
+	}
+	
 
 	DisapprLeave =(e) => {
-      	
+		    	
 
 	if (e == "") {
 			alert("ID不見了");
@@ -379,7 +385,8 @@ export default class Connection extends Component {
 			  .then((jsonData) => {
 				
 				if (jsonData == "audit successfully") {
-					alert("審核資料已更新");			
+					alert("審核資料已更新");
+					this.setState({boolGet: 0});					
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -401,17 +408,14 @@ export default class Connection extends Component {
 	
 	
 	
+	
 	test=()=>{
 		this.setState({ test: 3,});	
 		alert("其實有作用");
 		
 	}
     
-	componentDidMount() {
-	//console.log(this.ws);
-	this.GetleaveInfo(900821);		
-	//		var call_1 = this.GetleaveInfo(900821);
-	};
+
 
     render() {
 	let dimensions = Dimensions.get("window");       
@@ -478,7 +482,7 @@ export default class Connection extends Component {
 	
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	if (jsonData.Approve === '1')
+	if (this.state.booltest)
 	{
 		return(
 	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
@@ -494,33 +498,45 @@ export default class Connection extends Component {
 		  
 		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>林木森           {jsonData.EmployeeID}</Text></View> 
 		  
-		  <View style={{flex: 4,flexDirection:'row'}}>
+		  <View style={{flex: 1, flexDirection:'column'}}>
 		  
-		  <View style={{flex: 5, flexDirection:'column'}}>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>流水號：</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>差假別：</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		  		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>流水號：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>
 		  </View>
 		  
-		  <View style={{flex: 7, flexDirection:'column'}} >
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>		  
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>		  
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
 		  </View>
 		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>	
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假別：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>	
+		  </View>
+  		  
 		  </View>  
 				  
 		  <View style={{flexDirection:'row',flex:1}}>
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderRightWidth:0.5}}>
 
 		  <TouchableOpacity transparent full
-		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);}}>
+		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);this.setState({booltest:false})}}>
 			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>
 			</TouchableOpacity>
 		  </View>
@@ -561,27 +577,24 @@ export default class Connection extends Component {
                     </Button>
                     </Left>
                     <Body>
-                    <Title style={styles.title}>中華郵政</Title>
+                    <Title>中華郵政</Title>
                     </Body>
+					<Right></Right>
 
                 </Header>
 
                 <Content>
-				
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 管 理 系 統</Text>
 			
+
+			
+			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 核 准</Text>			
 			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
+	
 					  
-		   <View><Button transparent full
-		   onPress={() => {this.ApproveLeave(110);}}>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>	
-			</Button></View>			
-			<View><Text>{this.state.test}</Text>
-			</View>
 			
 
  
-		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日：</Text>
+		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
           <DatePicker 
             defaultDate={new Date()}
             minimumDate={new Date(2019, 1, 1)}
@@ -597,7 +610,7 @@ export default class Connection extends Component {
 			
           /></View>
 		   
-		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日：</Text>
+		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
 		   <DatePicker 
             defaultDate={new Date()}
             minimumDate={new Date(2019, 1, 1)}
@@ -617,8 +630,7 @@ export default class Connection extends Component {
 		
 
                 </Content>
-		<Footer  style={styles.footer}>
-		</Footer>
+
                 
             </Container>
         );

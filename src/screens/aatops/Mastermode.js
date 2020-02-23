@@ -144,7 +144,7 @@ class Mastermode extends Component<props> {
     var that = this;
 	var Today = new Date();
     var date = (Today.getDate()<10 ? '0' : '')+ Today.getDate(); //Current Date
-    var month = Today.getMonth() + 1; //Current Month
+    var month = ((Today.getMonth()+1)<10 ? '0' : '')+ (Today.getMonth()+1) ; //Current Month
     var year = Today.getFullYear(); //Current Year
     var hours = Today.getHours(); //Current Hours
     var min = Today.getMinutes(); //Current Minutes
@@ -522,8 +522,7 @@ const workout = {key:'workout', color: 'green'};
                      <Body>
                        <Title>中華郵政</Title>
                      </Body>
-                     <Right>
-                     </Right>
+					 <Right></Right>
                    </Header>
 
  <Content>
@@ -594,8 +593,7 @@ const workout = {key:'workout', color: 'green'};
 
 
  </Content>
-      <Footer  style={styles.footer}>
-      </Footer>
+
 </Container>
     );
 
@@ -652,16 +650,14 @@ const styles=StyleSheet.create({
   fontWeight: 'bold',
 },
     footer:{
-      backgroundColor: "#019875",
-      height:50,
+      backgroundColor: "#f5f9f8",
+      height:16,
+	 
 
     },
 
   header: {
-    backgroundColor: "#1e2d28",
-                                             
-                                                
-                                                    },
+    backgroundColor: "#1e2d28", },
                                                 
     swipe:{
 		

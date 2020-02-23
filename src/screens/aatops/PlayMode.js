@@ -205,19 +205,52 @@ export default class PlayMode extends React.Component {
 	  this.state.EndTime = String(end).substring(11,16); 
 	  this.state.TaskCode = String(type);	
 
+
 	var i = 0;
-	let workdataDisplay2 = results.map(function(jsonData) {	
+	let workdataDisplay2 = results.map((jsonData) => {	
 	return (
 	   <View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
-		  <View style={{flexDirection: 'row'}}>
-		  <Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10, textAlign:'right' }}>{jsonData.Date}</Text>
-		  <Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,}}>{jsonData.Day}</Text>
-		  </View>
-		  <View style={{flexDirection: 'row',}}>
-		  <Text style={{ flex:1, fontSize: 16,  color:'#435366' ,margin:10, textAlign:'right' }}>{(jsonData.StartTime).substring(11,16)} ~ {(jsonData.EndTime).substring(11,16)}</Text>
-		  <Text style={{ flex:1, fontSize: 16,  color:'#435366' ,margin:10, textAlign:'left'}}>{jsonData.TaskCode}</Text></View>
 		
+		  <View style={{flexDirection: 'row'}}>
+		  <Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,textAlign:'center'}}>{jsonData.Date}  {jsonData.Day}</Text>
+		  </View>		
+				
+			<View  style={{ flex: 6,backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.8}}>
+
+			<View style={{flexDirection: 'row',}}>
+			<Text style={{ flex:4, fontSize: 16,  color:'#435366' , margin:5, marginRight:15, textAlign:'right'}}>工作任務： </Text>		  		  
+			<Text style={{ flex:7, fontSize: 16,  color:'#435366' , margin:5}}>{jsonData.TaskName}</Text>
+			</View>
+
+			<View style={{flexDirection: 'row',}}>
+			<Text style={{ flex:4, fontSize: 16,  color:'#435366' , margin:5,  marginRight:15, textAlign:'right'}}>分局： </Text>		  		  
+			<Text style={{ flex:7, fontSize: 16,  color:'#435366' , margin:5}}>{jsonData.TaskID}</Text>
+			</View>
+			
+			<View style={{flexDirection: 'row',}}>
+			<Text style={{ flex:4, fontSize: 16,  color:'#435366' , margin:5,  marginRight:15, textAlign:'right'}}>組別： </Text>		  		  
+			<Text style={{ flex:7, fontSize: 16,  color:'#435366' , margin:5}}>{jsonData.Group}</Text>
+			</View>
+
+
+			<View style={{flexDirection: 'row',}}>	
+			<Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5,  marginRight:15, textAlign:'right'}}>起始時間：</Text>		  
+			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5 }}>{(jsonData.StartTime).substring(11,16)}</Text>		 
+			</View>
+
+			<View style={{flex: 1, flexDirection:'row'}}>
+			<Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5,  marginRight:15, textAlign:'right'}}>結束時間：</Text>		  
+			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{(jsonData.EndTime).substring(0,16)}</Text>
+			</View>
+			
+			<View style={{flex: 1, flexDirection:'row'}}>
+			<Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5,  marginRight:15, textAlign:'right'}}>休息時間：</Text>		  
+			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{(jsonData.MidRestStart).substring(11,16)} ~ {(jsonData.MidRestEnd).substring(11,16)}</Text>
+			</View>
+
+			</View>  
+		  
 				
 		</View></View>
 		
@@ -241,14 +274,15 @@ export default class PlayMode extends React.Component {
                     </Button>
                     </Left>
                     <Body>
-                    <Title style={styles.title}>中華郵政</Title>
+                    <Title>中華郵政</Title>
                     </Body>
+					<Right></Right>
 
                 </Header>
 
                 <Content>
 				
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>班 表 查 詢 系 統</Text>
+			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>班 表 查 詢</Text>
  
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
           <DatePicker 
@@ -293,8 +327,7 @@ export default class PlayMode extends React.Component {
 	  {workdataDisplay2}	
 
                 </Content>
-		<Footer  style={styles.footer}>
-		</Footer>
+
                 
             </Container>
         );

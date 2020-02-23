@@ -42,7 +42,8 @@ export default class LeaveApplication extends Component<props> {
 		boolGet: 1, //是否拿過workdata
 		
 		employee:[],
-		employeeboolget:1, //是否拿過employee
+		employeebool:1, //是否拿過employee
+		restleave:'',
 		
 		
 		StartTime:'', EndTime:'',TaskCode:'',
@@ -53,7 +54,10 @@ export default class LeaveApplication extends Component<props> {
 		applytime:'',
 		leavetype: "0", //選取假別 
 		remark:[], //請假事由
+		datetest: " test",
 		
+		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
+		colorbool_2:1, // 結束日期選取
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -84,13 +88,10 @@ export default class LeaveApplication extends Component<props> {
       //Setting the value of the date time
         applytime: year + '-' + month + '-'+ (date)+ ' '+ hours+ ':' + min+ ':' +sec,	    	
 			
-    });
+    },this.log);
 	
   }
   
-
-
-
 	setstartDate(newDate) {
 	
 	this.setState({ chosenstartDate: newDate,});
@@ -186,7 +187,7 @@ export default class LeaveApplication extends Component<props> {
 
 //拿員工剩餘休假日數用
 	GetEmployee =(e) => {
-	if(this.state.boolGet)
+	if(this.state.employeebool)
 	{
 	fetch('http://140.114.54.22:8080/getemployee.php/', {
 	method: 'post',
@@ -203,7 +204,7 @@ export default class LeaveApplication extends Component<props> {
 	if (jsonData != "") {
 
 	//this.props.screenProps.set_workdata(jsonData);
-	this.setState({ employee: jsonData, boolGet : 0});
+	this.setState({ employee: jsonData, employeebool : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -241,6 +242,9 @@ export default class LeaveApplication extends Component<props> {
 		else if (this.state.remark == "") {
             alert("請輸入差假事由");
         }
+		else if (this.state.start > this.state.end) {
+			alert("請重新選擇申請日期");
+		}
 		
 		else if (this.state.applytime == ""){
 			 alert("請稍等兩秒再送出一次");
@@ -271,7 +275,10 @@ export default class LeaveApplication extends Component<props> {
                 
 				if (jsonData == "apply successfully") {
 					alert("申請已遞交");		
-					this.state.leavetype = "0";
+					this.setState({ leavetype: 0, chosenstartDate: "", chosenendDate: "", start:"", end:"", applytime:"", remark:"",});
+					this.textInput.clear();	
+				    this.setState({colorbool_1:0, colorbool_2:0});
+
 					//this.state.start = null;
                     //this.state.end = null;
 					//this.state.applytime= null;
@@ -307,7 +314,8 @@ export default class LeaveApplication extends Component<props> {
 
     }
 
-
+	
+	
 
     render() {
 	const { show, date, mode } = this.state;
@@ -330,7 +338,8 @@ export default class LeaveApplication extends Component<props> {
        
 	
 	
-	var call_1 = this.Getworkdata1(900821);	
+	var call_1 = this.Getworkdata1(900821);
+	var call_2 = this.GetEmployee(900821);		
 	
 	const work1 = this.state.workData1;
 	let workdataDisplay1 = work1.map(function(jsonData) {
@@ -346,6 +355,30 @@ export default class LeaveApplication extends Component<props> {
 	)
     });
 	
+	
+
+	const employeeleave = this.state.employee;
+
+	var totalleave = Object.values(employeeleave).map(item => item.LeaveDay); //still object
+	var usedleave = Object.values(employeeleave).map(item => item.AlreadyLeaveDay); 	
+	var restleave  = ((totalleave - usedleave)/8).toFixed(0);
+	this.state.restleave = restleave;
+	
+ 	   	
+	let leaveDisplay = employeeleave.map((jsonData)=> {
+
+	return (
+	   <View key={jsonData.EmployeeID}>
+	   
+		<View style={{height:imageHeight , width:imageWidth, }}>
+		<View style={styles.swipe}>
+		<Text style={styles.bannerText}>已使用特休日數：{jsonData.AlreadyLeaveDay}</Text>
+		<Text style={styles.bannerText}>剩餘特休日數：{this.state.restleave}</Text>                     
+		</View></View>
+	   
+	   </View>
+	)
+    });
 	
 			
 // 依date找出   
@@ -406,8 +439,9 @@ export default class LeaveApplication extends Component<props> {
 				</Button>
 				</Left>
 				<Body>
-				<Title style={styles.title}>中華郵政</Title>
+				<Title style={{alignSelf:'flex-start'}} >中華郵政</Title>
 				</Body>
+				<Right></Right>
 
 			</Header>
 
@@ -429,11 +463,8 @@ export default class LeaveApplication extends Component<props> {
           autoplayLoop          
           showPagination={true}
         >		
-						<View style={{ height:  imageHeight , width: imageWidth }}>
-                        <View style={styles.swipe}><Text style={styles.date}></Text>
-                        <Text style={styles.worktype}>已使用休假日數 </Text>
-                        <Text style={styles.worktype}>剩餘休假日數 </Text>                     
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View>
+		    {leaveDisplay}
+
 		</SwiperFlatList>
 		</ImageBackground>
 		</View>
@@ -474,6 +505,7 @@ export default class LeaveApplication extends Component<props> {
 	  
 		<View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
 		<DatePicker 
+	
 		defaultDate={new Date()}
 		minimumDate={new Date(2019, 1, 1)}
 		//maximumDate={new Date(2019, 11, 22)}
@@ -482,9 +514,9 @@ export default class LeaveApplication extends Component<props> {
 		animationType={"fade"}
 		androidMode={"default"}
 		placeHolderText="Select Here"
-		textStyle={{ color: "green" }}
+		textStyle={{ color: this.state.colorbool_1? "green" : "grey" }}
 		placeHolderTextStyle={{ color: "#d3d3d3" }}
-		onDateChange={this.setstartDate}
+		onDateChange={(date) => {this.setstartDate(date);this.setState({colorbool_1:1});}}
 
 		/></View>
 	   
@@ -498,9 +530,9 @@ export default class LeaveApplication extends Component<props> {
 		animationType={"fade"}
 		androidMode={"default"}
 		placeHolderText="Select Here"
-		textStyle={{ color: "green" }}
+		textStyle={{ color: this.state.colorbool_2? "green" : "grey" }}
 		placeHolderTextStyle={{ color: "#d3d3d3" , }}
-		onDateChange={(date) => {this.setendDate(date);this.betweendate()}}
+		onDateChange={(date) => {this.setendDate(date);this.betweendate();this.setState({colorbool_2:1});}}
 		/></View>
 				  
 		<Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
@@ -518,14 +550,16 @@ export default class LeaveApplication extends Component<props> {
 			//underlineColorAndroid='#d6dee2'
 			onChangeText={(text) => {this.state.remark = text}}
 			style={styles.textArea}
+			ref={input => { this.textInput = input }}
 			//ref={input => { this.accountInput = input }}
 		/></View>
 		
 		<View style={{flex:2,flexDirection: 'row',alignItems: 'center', margin:30, padding:10}} >
 		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 			<View>
-				<Button transparent onPress={() => {  		
-				this.InsertApplyData(900821);				
+				<Button transparent onPress={() => {				
+				this.InsertApplyData(900821);	
+					
 				//this.goodjob();
 				//alert('login successfully!');				
 				//this.props.navigation.navigate("Mastermode");				
@@ -543,9 +577,7 @@ export default class LeaveApplication extends Component<props> {
 		</ScrollView>
 		
 			</Content>
-	<Footer  style={styles.footer}>
-	</Footer>
-			
+
 		</Container>
 	);
 }
@@ -596,11 +628,13 @@ const styles = StyleSheet.create({
 	
     swipe:{
 		
-        marginTop: width / 8,
-        marginHorizontal: 30,
-        alignSelf: 'stretch',
-        //backgroundColor: 'rgba(0,0,255,0.32)',
-        flexDirection: "column" 
+        marginTop: width / 5,
+        alignSelf: 'center',
+        backgroundColor: 'rgba(255,255,255,0.32)',
+		borderRadius: 8,
+        flexDirection: "column", 
+		
+		
                 },
 
     date: {
@@ -634,20 +668,23 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         backgroundColor: 'rgba(255,255,255,0.32)',
         borderRadius: 8,
-        flexDirection: 'row',
-        alignContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
         justifyContent: 'center',
         
     },
 
     bannerText: {
 
-        fontWeight: 'bold',
-        fontSize: 35,
+        fontSize: 18,
         color: '#ffffff',
         alignSelf: 'center',
-
+		marginVertical:5,
+		marginLeft:20,
+		marginRight:20,
     },
+
+	
 	
   
   Top:{
@@ -686,7 +723,7 @@ list: {
 	width:width*0.7,
 	alignSelf:"flex-start",
     justifyContent: "flex-start",
-	fontSize:20, 
+	fontSize:16, 
 	color:'#6A6C6E',
 
   }
