@@ -46,6 +46,10 @@ export default class LeaveApplication extends Component<props> {
 		restleave:'',
 		
 		
+		availableLeave:[], //提醒員工請假用資料
+		availablebool:1,
+		
+		
 		StartTime:'', EndTime:'',TaskCode:'',
 		start:'',end:'', //查詢的時間起始結束
 		date_all:[],  // 查詢期間所有天數
@@ -149,7 +153,14 @@ export default class LeaveApplication extends Component<props> {
 	}
 	
 	
-	
+	componentDidMount(){
+		
+
+	var call_1 = this.Getworkdata1(900821);
+	var call_2 = this.GetEmployee(900821);
+	var call_3 = this.GetAvailableLeave(900821);
+		
+	}
 	 
   
 	Getworkdata1 =(e) => {
@@ -208,8 +219,7 @@ export default class LeaveApplication extends Component<props> {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { //alert("WorkData Loadwrong") ;  
-	}
+	else { alert("Data Loading Error"); }
 	
 	}).catch((error)=>{
 	  console.error(error);
@@ -217,6 +227,42 @@ export default class LeaveApplication extends Component<props> {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
+
+//拿員工應請的
+	GetAvailableLeave =(e) => {
+	if(this.state.availablebool)
+	{
+	fetch('http://140.114.54.22:8080/get_AvailableLeave.php/', {
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({
+		EmployeeID: e ,
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData != "") {
+
+	//this.props.screenProps.set_workdata(jsonData);
+	this.setState({ availableLeave: jsonData, availablebool : 0});
+	alert("該請假囉")	;
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else if (jsonData == "No AvailableLeave"){
+	alert("沒有多的假");
+	}
+	else { alert("Data Loading Error"); }
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+	}
+}
+
 
   onValueChange(value: string) { //選取假別
     this.setState({
@@ -338,8 +384,8 @@ export default class LeaveApplication extends Component<props> {
        
 	
 	
-	var call_1 = this.Getworkdata1(900821);
-	var call_2 = this.GetEmployee(900821);		
+
+	
 	
 	const work1 = this.state.workData1;
 	let workdataDisplay1 = work1.map(function(jsonData) {
@@ -356,9 +402,8 @@ export default class LeaveApplication extends Component<props> {
     });
 	
 	
-
+//Banner 剩餘假數
 	const employeeleave = this.state.employee;
-
 	var totalleave = Object.values(employeeleave).map(item => item.LeaveDay); //still object
 	var usedleave = Object.values(employeeleave).map(item => item.AlreadyLeaveDay); 	
 	var restleave  = ((totalleave - usedleave)/8).toFixed(0);
@@ -374,6 +419,30 @@ export default class LeaveApplication extends Component<props> {
 		<View style={styles.swipe}>
 		<Text style={styles.bannerText}>已使用特休日數：{jsonData.AlreadyLeaveDay}</Text>
 		<Text style={styles.bannerText}>剩餘特休日數：{this.state.restleave}</Text>                     
+		</View></View>
+	   
+	   </View>
+	)
+    });
+	
+//Banner 提醒請假
+	const leaveremind = this.state.availableLeave;
+	//var DueDate = Object.values(availableLeave).map(item => item.DueDate); //still object
+	//var avaliable = Object.values(availableLeave).map(item => item.Avaliable); 	
+	//var restleave  = ((totalleave - usedleave)/8).toFixed(0);
+	//this.state.Avaliable = String(avaliable);
+	//this.state.restleave = restleave;
+	
+ 	   	
+	let remindDisplay = leaveremind.map((jsonData)=> {
+	return (
+	   <View key={jsonData.EmployeeID}>
+	   
+		<View style={{height:imageHeight , width:imageWidth, }}>
+		<View style={styles.swipe}>
+		<Text style={styles.bannerText}>待請假別：{jsonData.TaskID}</Text>
+		<Text style={styles.bannerText}>截止日期：{jsonData.StartTime}</Text>
+		<Text style={styles.bannerText}>剩餘小時：{jsonData.TaskCode} 小時</Text>                     
 		</View></View>
 	   
 	   </View>
@@ -464,6 +533,8 @@ export default class LeaveApplication extends Component<props> {
           showPagination={true}
         >		
 		    {leaveDisplay}
+			{remindDisplay}
+
 
 		</SwiperFlatList>
 		</ImageBackground>
@@ -569,6 +640,17 @@ export default class LeaveApplication extends Component<props> {
 		  </View>
 	    </View>	
 		
+		
+			<View>
+				<Button transparent onPress={() => {				
+				this.GetAvailableLeave(900822);	
+					
+				//this.goodjob();
+				//alert('login successfully!');				
+				//this.props.navigation.navigate("Mastermode");				
+				}}><Image style={{width:294, height:54}} source={applybtn}	/>
+				  </Button>
+			</View>
 		
 
 		</View>		

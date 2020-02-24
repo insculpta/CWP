@@ -27,9 +27,8 @@ import {
 
 
 const { width, height } = Dimensions.get('window');
-
 const banner = require("../../../assets/MasterMode/banner.png");
-
+const querybtn = require('./images/query.png');
 
 
 export default class PlayMode extends React.Component {
@@ -43,12 +42,18 @@ export default class PlayMode extends React.Component {
 		
 		workData1: [],
 		boolGet: 1, //是否拿過workdata
+		bool:0,
 		
 		
 		StartTime:'', EndTime:'',TaskCode:'',
 		start:'',end:'', //查詢的時間起始結束
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
+		
+		 
+		
+		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
+		colorbool_2:1, // 結束日期選取
 		
 		
 		};
@@ -114,47 +119,51 @@ export default class PlayMode extends React.Component {
       i+=1;
 	  
     }	
-	this.setState({date_all:date_all, day_all:day_all,})
+	this.setState({date_all:date_all, day_all:day_all, colorbool_1:0, colorbool_2:0})
 	
 				
 	}
 	
 	
-	
+	componentDidMount(){
+		
+	var call_1 = this.Getworkdata1(900821);	
+		
+	}
 	 
   
-	Getworkdata1 =(e) => {
+
+	Getworkdata1 = (e) => {
+	
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/workdata1.php/', {
-	//fetch('http://192.168.1.170:8080/workdata1.php/', {
-	method: 'post',
-	header: {
-		'Accept': 'application/json',
-		'Content-type': 'application/json'
-	},
-	body: JSON.stringify({
-		EmployeeID: e ,
-	})
-	}).then((response) => response.json())
-	  .then((jsonData) => {
-		  
-	if (jsonData != "") {
+		fetch('http://140.114.54.22:8080/taskget.php/', {
+			method: 'post',
+			header: {
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			body: JSON.stringify({
+			EmployeeID: e ,
+			})
 
-	//this.props.screenProps.set_workdata(jsonData);
-	this.setState({ workData1: jsonData, boolGet : 0});
-	//alert("workdata get!!")	;
-	//this.props.navigation.navigate("Mastermode");
+		}).then((response) => response.json())
+		  .then((jsonData) => {
+			
+								   
+			if (jsonData != "") {
+				// redirect to profile page
+				this.setState({ workData1: jsonData, boolGet : 0});																										
+			}		 
+			else
+			{alert("Data Loading Error");}
+		})
+		.catch((error) => {
+			console.error(error);
+		});
 	}
-	else { //alert("WorkData Loadwrong") ;  
 	}
-	
-	}).catch((error)=>{
-	  console.error(error);
-		});		
-//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
-	}
-}
+
 	
 
     render() {
@@ -162,7 +171,7 @@ export default class PlayMode extends React.Component {
 	let imageHeight = Math.round((dimensions.width * 9) / 16);
 	let imageWidth = dimensions.width;
 	
-	var call_1 = this.Getworkdata1(900821);	
+		
 	
 	const work1 = this.state.workData1;
 	let workdataDisplay1 = work1.map(function(jsonData) {
@@ -177,7 +186,6 @@ export default class PlayMode extends React.Component {
 	   </View>
 	)
     });
-	
 	
 			
 // 依date找出   
@@ -205,6 +213,10 @@ export default class PlayMode extends React.Component {
 	  this.state.EndTime = String(end).substring(11,16); 
 	  this.state.TaskCode = String(type);	
 
+	//按日期排序貼文	
+	results = results.sort(function (a, b) {     
+		return a.Date > b.Date ? 1 : -1;  }); 
+
 
 	var i = 0;
 	let workdataDisplay2 = results.map((jsonData) => {	
@@ -225,7 +237,7 @@ export default class PlayMode extends React.Component {
 
 			<View style={{flexDirection: 'row',}}>
 			<Text style={{ flex:4, fontSize: 16,  color:'#435366' , margin:5,  marginRight:15, textAlign:'right'}}>分局： </Text>		  		  
-			<Text style={{ flex:7, fontSize: 16,  color:'#435366' , margin:5}}>{jsonData.TaskID}</Text>
+			<Text style={{ flex:7, fontSize: 16,  color:'#435366' , margin:5}}>{jsonData.OfficeName}</Text>
 			</View>
 			
 			<View style={{flexDirection: 'row',}}>
@@ -244,11 +256,13 @@ export default class PlayMode extends React.Component {
 			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{(jsonData.EndTime).substring(0,16)}</Text>
 			</View>
 			
+		
 			<View style={{flex: 1, flexDirection:'row'}}>
 			<Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5,  marginRight:15, textAlign:'right'}}>休息時間：</Text>		  
 			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{(jsonData.MidRestStart).substring(11,16)} ~ {(jsonData.MidRestEnd).substring(11,16)}</Text>
 			</View>
-
+			
+			
 			</View>  
 		  
 				
@@ -294,9 +308,9 @@ export default class PlayMode extends React.Component {
             animationType={"fade"}
             androidMode={"default"}
             placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" }}
-            onDateChange={this.setstartDate}
+            textStyle={{ color: this.state.colorbool_1? "green" : "grey" }}
+            placeHolderTextStyle={{ color: "#d3d3d3" }}        
+			onDateChange={(date) => {this.setstartDate(date);this.setState({colorbool_1:1});}}
 			
           /></View>
 		   
@@ -310,9 +324,9 @@ export default class PlayMode extends React.Component {
             animationType={"fade"}
             androidMode={"default"}
             placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
+            textStyle={{color: this.state.colorbool_2? "green" : "grey" }}
             placeHolderTextStyle={{ color: "#d3d3d3" , }}
-            onDateChange={(date) => {this.setendDate(date);this.betweendate()}}
+			onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
           /></View>
 		  
 		  
@@ -322,8 +336,23 @@ export default class PlayMode extends React.Component {
             Date: {this.state.chosenstartDate.toString().substr(4, 12)}
 			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
           </Text>
-		  		  
 		  
+		
+			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+				<View>
+					<Button transparent onPress={() => {				
+					
+					this.betweendate();	
+						
+					//this.goodjob();
+					//alert('login successfully!');				
+					//this.props.navigation.navigate("Mastermode");				
+					}}><Image style={{width:294, height:54}} source={querybtn}	/>
+					  </Button>
+				</View>
+			</View>
+			
+
 	  {workdataDisplay2}	
 
                 </Content>

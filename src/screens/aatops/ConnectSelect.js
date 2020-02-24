@@ -29,7 +29,7 @@ import {
 const { width, height } = Dimensions.get('window');
 
 const banner = require("../../../assets/MasterMode/banner.png");
-
+const querybtn = require('./images/query.png');
 
 
 export default class Connection extends Component {
@@ -44,6 +44,8 @@ export default class Connection extends Component {
 		leaveInfo: [],
 		boolGet: 1, //是否拿過leavedata
 		boolUpdate:1, //是否修改過
+		
+		
 		
 		//讀取請假資料用
 		StartTime:'', EndTime:'',TaskCode:'',
@@ -64,6 +66,10 @@ export default class Connection extends Component {
 		boolDisapprove:1,
 		
 		booltest:true,
+		
+		//選取日期用
+		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
+		colorbool_2:1, // 結束日期選取
 		
 		test:'1',
 		res:[],		
@@ -488,11 +494,10 @@ export default class Connection extends Component {
 	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
 		<View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
-
-		<View  style={{	flexDirection:'row'}}>		
-		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,textAlign:'right', }}>{jsonData.StartDate}</Text>
-		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,marginLeft:10 }}>{jsonData.Day}</Text>
-		</View>
+		
+		<View style={{flexDirection: 'row'}}>
+		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,textAlign:'center'}}>{jsonData.StartDate}  {jsonData.Day}</Text>
+		</View>	
 
 		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
 		  
@@ -604,9 +609,9 @@ export default class Connection extends Component {
             animationType={"fade"}
             androidMode={"default"}
             placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
+            textStyle={{ color: this.state.colorbool_1? "green" : "grey" }}
             placeHolderTextStyle={{ color: "#d3d3d3" }}
-            onDateChange={(date)=>{this.setstartDate(date);}}
+            onDateChange={(date)=>{this.setstartDate(date);this.setState({colorbool_1:1})}}
 			
           /></View>
 		   
@@ -620,11 +625,29 @@ export default class Connection extends Component {
             animationType={"fade"}
             androidMode={"default"}
             placeHolderText="Select Here"
-            textStyle={{ color: "green" }}
+            textStyle={{ color: this.state.colorbool_2? "green" : "grey" }}
             placeHolderTextStyle={{ color: "#d3d3d3" , }}
-            onDateChange={(date) => {this.setState({ boolGet:1,});this.setendDate(date);this.betweendate();}}
+            onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
           /></View>
-		  		  
+		 
+          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
+            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
+			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
+          </Text>
+
+			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+				<View>
+					<Button transparent onPress={() => {				
+					
+					this.betweendate();	
+						
+					//this.goodjob();
+					//alert('login successfully!');				
+					//this.props.navigation.navigate("Mastermode");				
+					}}><Image style={{width:294, height:54}} source={querybtn}	/>
+					  </Button>
+				</View>
+			</View>		  
 		  
 	  {workdataDisplay2}
 		

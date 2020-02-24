@@ -314,7 +314,7 @@ login = () =>{
         }
 
     }
-
+	
 
 
     render(){
@@ -439,10 +439,6 @@ login = () =>{
               </Button>
               </View>
 			  
-			<ScrollView contentContainerStyle={styles.underline}>
-            {dataDisplay}
-                
-            </ScrollView>
 
 
           </View>

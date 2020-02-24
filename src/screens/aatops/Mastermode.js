@@ -56,8 +56,8 @@ class Mastermode extends Component<props> {
 	  day:'',day1:'',day2:'',day3:'',day4:'',
 	  userid:'',
       workData: [], workData1: [],	  
-      ST_time: '', ST_time1: '',ST_time2: '',ST_time3: '',ST_time4: '',
-      END_time: '',END_time1: '',END_time2: '',END_time3: '',END_time4: '',
+      StartTime: '', StartTime1: '',StartTime2: '',StartTime3: '',StartTime4: '',
+      EndTime: '',EndTime1: '',EndTime2: '',EndTime3: '',EndTime4: '',
       worktype:'',worktype1:'',worktype2:'',worktype3:'',worktype4:'',
 	  swiperShow: false,
   
@@ -67,6 +67,7 @@ class Mastermode extends Component<props> {
 	  NewsboolGet:1,
 	  announce:[], officeID:'', from:'', 
 	  content:'',  newsDate:'', newsEndDate:'', 
+	
 	  
 	  
       		
@@ -78,7 +79,7 @@ class Mastermode extends Component<props> {
       this.onPausePlay=this. onPausePlay.bind(this);	  
       this.timer = null;
 	  this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
-	  this.callfunc = this.callfunc.bind(this);
+	
     }
 
 
@@ -179,40 +180,6 @@ class Mastermode extends Component<props> {
 	
   }
   
-  
-  
-    Getworkdata =(e) => {
-		if(this.state.boolGet)
-		{
-		fetch('http://140.114.54.22:8080/workdata.php/', {
-		//fetch('http://192.168.1.170:8080/workdata.php/', {
-		method: 'post',
-		header: {
-			'Accept': 'application/json',
-			'Content-type': 'application/json'
-		},
-		body: JSON.stringify({
-			name: e ,
-		})
-		}).then((response) => response.json())
-		  .then((jsonData) => {
-			  
-		if (jsonData != "") {
-	
-		//this.props.screenProps.set_workdata(jsonData);
-		this.setState({ workData: jsonData, boolGet : 0});
-		//alert("workdata get!!")	;
-		//this.props.navigation.navigate("Mastermode");
-		}
-		else { //alert("WorkData Loadwrong") ;  
-		}
-		
-		}).catch((error)=>{
-		  console.error(error);
-			});		
-//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
-		}
-	}
 	
 	    Getworkdata1 =(e) => {
 		if(this.state.boolGet)
@@ -260,7 +227,7 @@ class Mastermode extends Component<props> {
 		'Content-type': 'application/json'
 	},
 	body: JSON.stringify({
-		EmployeeID: e ,
+		OfficeID: e ,
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -272,7 +239,7 @@ class Mastermode extends Component<props> {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { //alert("WorkData Loadwrong") ;  
+	else { alert("WorkData Loadwrong") ;  
 	}
 	
 	}).catch((error)=>{
@@ -283,13 +250,6 @@ class Mastermode extends Component<props> {
 	}
 	
 
-	callfunc = (e) => {
-		if(!this.state.workData)
-		{
-		this.Getworkdata(e);
-		}
-		return 1;
-	}
 	
 /* 
 	workinfo =(date) => {
@@ -303,13 +263,13 @@ class Mastermode extends Component<props> {
           }
       }
 
-      const start = Object.values(results).map(item => item.ST_time); 
-      const end = Object.values(work).map(item => item.END_time); //still object  
+      const start = Object.values(results).map(item => item.StartTime); 
+      const end = Object.values(work).map(item => item.EndTime); //still object  
       const type= Object.values(results).map(item => item.work); 
       var ST = String(start).substring(0, 5);
       var END = String(end).substring(0,5); 
       var type = String(type); 
-	  this.setState({ ST_time:ST, END_time : END, worktype:type});
+	  this.setState({ StartTime:ST, EndTime : END, worktype:type});
 	  
  
 	} */
@@ -340,20 +300,6 @@ const username = Object.values(data).map(item => item.name); //still object
 this.state.userid= String(username); 
 
 
-	const work = this.state.workData;
-	let workdataDisplay = work.map( function(jsonData) {
-
-	return (
-	   <View key={jsonData.id}>
-		<View style={{flexDirection: 'row'}}>
-		  <Text style={{color: '#000',width: 50}}>{jsonData.work}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.ST_time} ~ {jsonData.END_time}</Text>
-
-		</View>
-	   </View>
-	)
-    });
-
 
 	const work1 = this.state.workData1;
 	let workdataDisplay1 = work1.map( function(jsonData) {
@@ -361,7 +307,7 @@ this.state.userid= String(username);
 	return (
 	   <View key={jsonData.EmployeeID}>
 		<View style={{flexDirection: 'row'}}>
-		  <Text style={{color: '#000',width: 50}}>{jsonData.TaskCode}</Text>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.TaskName}</Text>
 		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartTime} ~ {jsonData.EndTime}</Text>
 
 		</View>
@@ -372,98 +318,97 @@ this.state.userid= String(username);
 
 
 
-
 // 依date找當日的working date--------------------------------------------------
 // date   
 	  var results = [];
-      var searchField = "date";
+      var searchField = "Date";
       var searchVal = this.state.date;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
+      for (var i = 0; i < work1.length; i++) {
+		      check = String(work1[i][searchField])
           if ((check) == searchVal) {
-              results.push(work[i]);         
+              results.push(work1[i]);         
           }
       }
-      var start = Object.values(results).map(item => item.ST_time); 
-      var end = Object.values(results).map(item => item.END_time); //still object  
-      var type= Object.values(results).map(item => item.work); 
-      this.state.ST_time = String(start).substring(0, 5);
-      this.state.END_time = String(end).substring(0,5); 
+      var start = Object.values(results).map(item => item.StartTime); 
+      var end = Object.values(results).map(item => item.EndTime); //still object  
+      var type= Object.values(results).map(item => item.TaskName); 
+      this.state.StartTime = String(start).substring(11, 16);
+      this.state.EndTime = String(end).substring(11,16); 
       this.state.worktype = String(type);
 // date1   
 	  var results = [];
-      var searchField = "date";
+      var searchField = "Date";
       var searchVal = this.state.date1;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
+      for (var i = 0; i < work1.length; i++) {
+		      check = String(work1[i][searchField])
           if ((check) == searchVal) {
-              results.push(work[i]);         
+              results.push(work1[i]);         
           }
       }
-       start = Object.values(results).map(item => item.ST_time); 
-       end = Object.values(results).map(item => item.END_time); //still object  
-       type= Object.values(results).map(item => item.work); 
-      this.state.ST_time1 = String(start).substring(0, 5);
-      this.state.END_time1 = String(end).substring(0,5); 
+       start = Object.values(results).map(item => item.StartTime); 
+       end = Object.values(results).map(item => item.EndTime); //still object  
+       type= Object.values(results).map(item => item.TaskName); 
+      this.state.StartTime1 = String(start).substring(11, 16);
+      this.state.EndTime1 = String(end).substring(11,16); 
       this.state.worktype1 = String(type);
 // date2   
 	  var results = [];
-      var searchField = "date";
+      var searchField = "Date";
       var searchVal = this.state.date2;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
+      for (var i = 0; i < work1.length; i++) {
+		      check = String(work1[i][searchField])
           if ((check) == searchVal) {
-              results.push(work[i]);         
+              results.push(work1[i]);         
           }
       }
-      start = Object.values(results).map(item => item.ST_time); 
-      end = Object.values(results).map(item => item.END_time); //still object  
-      type= Object.values(results).map(item => item.work); 
-      this.state.ST_time2 = String(start).substring(0, 5);
-      this.state.END_time2 = String(end).substring(0,5); 
+      start = Object.values(results).map(item => item.StartTime); 
+      end = Object.values(results).map(item => item.EndTime); //still object  
+      type= Object.values(results).map(item => item.TaskName); 
+      this.state.StartTime2 = String(start).substring(11,16);
+      this.state.EndTime2 = String(end).substring(11,16); 
       this.state.worktype2 = String(type);	  
 // date3   
 	  var results = [];
-      var searchField = "date";
+      var searchField = "Date";
       var searchVal = this.state.date3;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
+      for (var i = 0; i < work1.length; i++) {
+		      check = String(work1[i][searchField])
           if ((check) == searchVal) {
-              results.push(work[i]);         
+              results.push(work1[i]);         
           }
       }
-       start = Object.values(results).map(item => item.ST_time); 
-       end = Object.values(results).map(item => item.END_time); //still object  
-       type= Object.values(results).map(item => item.work); 
-      this.state.ST_time3 = String(start).substring(0, 5);
-      this.state.END_time3 = String(end).substring(0,5); 
+       start = Object.values(results).map(item => item.StartTime); 
+       end = Object.values(results).map(item => item.EndTime); //still object  
+       type= Object.values(results).map(item => item.TaskName); 
+      this.state.StartTime3 = String(start).substring(11, 16);
+      this.state.EndTime3 = String(end).substring(11,16); 
       this.state.worktype3 = String(type);	  
 // date4   
 	  var results = [];
-      var searchField = "date";
+      var searchField = "Date";
       var searchVal = this.state.date4;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
+      for (var i = 0; i < work1.length; i++) {
+		      check = String(work1[i][searchField])
           if ((check) == searchVal) {
-              results.push(work[i]);         
+              results.push(work1[i]);         
           }
       }
-       start = Object.values(results).map(item => item.ST_time); 
-       end = Object.values(results).map(item => item.END_time); //still object  
-       type= Object.values(results).map(item => item.work); 
-      this.state.ST_time4 = String(start).substring(0, 5);
-      this.state.END_time4 = String(end).substring(0,5); 
+       start = Object.values(results).map(item => item.StartTime); 
+       end = Object.values(results).map(item => item.EndTime); //still object  
+       type= Object.values(results).map(item => item.TaskName); 
+      this.state.StartTime4 = String(start).substring(11, 16);
+      this.state.EndTime4 = String(end).substring(11,16); 
       this.state.worktype4 = String(type);
 	  
 	  
 	  
-      var call = this.Getworkdata(this.state.userid);
+ 
 	  var call_1 = this.Getworkdata1(900821);
-	  var call_2 = this.GetNewsInfo(900821);
+	  var call_2 = this.GetNewsInfo(241584);
 	  
-	  //var call = this.callfunc(this.state.userid);
+	 
 
-// calender
+// ------------------------Calender--------------------------------------------
 
 const vacation = {key:'vacation', color: 'red', selectedDotColor: 'blue'};
 const massage = {key:'massage', color: 'blue', selectedDotColor: 'blue'};
@@ -485,7 +430,10 @@ const workout = {key:'workout', color: 'green'};
 	)
     });
 	
-	let annoDisplay2 = anno.map(function(jsonData) {	
+	let annoDisplay2 = anno.map((jsonData)=> {	
+	
+	if(jsonData.EndDate.substring(0,10)>= this.state.date ){
+	
 	return (
 	   <View key={jsonData.From}>
 		<View style={styles.list}>
@@ -498,14 +446,13 @@ const workout = {key:'workout', color: 'green'};
 		  </View>
 		  
 		  <View style={{flex: 4,flexDirection:'row'}}>		 		    
-		  <Text style={{flex:1, fontSize: 16,  color:'#435366' ,marginVertical:10,marginHorizontal:5, }}>{jsonData.Content}</Text>	  
-		  
+			<Text style={{flex:1, fontSize: 16,  color:'#435366' ,marginVertical:10,marginHorizontal:5, }}>{jsonData.Content}</Text>	  
 		  </View>  
 		  		  		 
 				
 		</View></View></View>
 			   
-	)	
+	)}	
     });
 
 
@@ -548,39 +495,39 @@ const workout = {key:'workout', color: 'green'};
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date} {this.state.day}</Text>
                         <Text style={styles.worktype}>{this.state.worktype} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time} - {this.state.END_time}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.StartTime} - {this.state.EndTime}</Text></View></View></View>
 						
 												
                         <View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date1} {this.state.day1}</Text>
                         <Text style={styles.worktype}>{this.state.worktype1} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time1} - {this.state.END_time1}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.StartTime1} - {this.state.EndTime1}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date2} {this.state.day2}</Text>
                         <Text style={styles.worktype}>{this.state.worktype2} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time2} - {this.state.END_time2}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.StartTime2} - {this.state.EndTime2}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date3} {this.state.day3}</Text>
                         <Text style={styles.worktype}>{this.state.worktype3} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time3} - {this.state.END_time3}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.StartTime3} - {this.state.EndTime3}</Text></View></View></View>
 						
 						<View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date4} {this.state.day4}</Text>
                         <Text style={styles.worktype}>{this.state.worktype4} </Text>
                         <View style={styles.bannerTextArea}>                       
-                        <Text style={styles.bannerText}>{this.state.ST_time4} - {this.state.END_time4}</Text></View></View></View>
+                        <Text style={styles.bannerText}>{this.state.StartTime4} - {this.state.EndTime4}</Text></View></View></View>
                         
                       
        </SwiperFlatList>
       </ImageBackground>
      	  
 	<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:15,}}>公 告 與 通 知</Text>
-	  
+	
 	  </View>
 	  
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
@@ -683,7 +630,7 @@ const styles=StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'center',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 22,
         color: '#fff',
 		
 
@@ -706,7 +653,7 @@ const styles=StyleSheet.create({
     bannerText: {
 
         fontWeight: 'bold',
-        fontSize: 35,
+        fontSize: 26,
         color: '#ffffff',
         alignSelf: 'center',
 
