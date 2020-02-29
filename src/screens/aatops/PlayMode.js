@@ -46,6 +46,9 @@ export default class PlayMode extends React.Component {
 		
 		
 		StartTime:'', EndTime:'',TaskCode:'',
+		
+		StartTime1:'', EndTime1:'',TaskCode1:'', //災防
+		
 		start:'',end:'', //查詢的時間起始結束
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
@@ -55,7 +58,9 @@ export default class PlayMode extends React.Component {
 		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
 		colorbool_2:1, // 結束日期選取
 		
+		doublework:[], //災防假天數
 		
+				
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -127,7 +132,7 @@ export default class PlayMode extends React.Component {
 	
 	componentDidMount(){
 		
-	var call_1 = this.Getworkdata1(900821);	
+	var call_1 = this.Getworkdata1(905855);	
 		
 	}
 	 
@@ -188,7 +193,7 @@ export default class PlayMode extends React.Component {
     });
 	
 			
-// 依date找出   
+// 依date找出-------------------------------------   
 	  var results = [];
 	  var searchField = "Date";
 	  //var searchVal = "2019-11-07";
@@ -200,12 +205,11 @@ export default class PlayMode extends React.Component {
 				  var work = work1[i];  // work 為JsonObject
 				  work["Day"] = this.state.day_all[j]; //新增jsonobject的key為Day,對應資料為day_all內容
 				  results.push(work);
-
-				  
-				  
+  
 			  }
 		  }
 	  }
+
 	  var start = Object.values(results).map(item => item.StartTime); 
 	  var end = Object.values(results).map(item => item.EndTime); //still object  
 	  var type= Object.values(results).map(item => item.TaskCode); 
@@ -217,9 +221,51 @@ export default class PlayMode extends React.Component {
 	results = results.sort(function (a, b) {     
 		return a.Date > b.Date ? 1 : -1;  }); 
 
+//災防假處理------------------------------------------------------
+	  
+//  有災防假的班表時刪除原本的班表
+	var results1 = [];
+	var doublework = [] ;
+	var searchField1 = "Typhoon";
 
+// 把有災防假的日期存起來	
+	for (var i = 0; i < results.length; i++) {
+		check1 = String(results[i][searchField1]);
+		if ((check1) == '1'){
+			doublework[i] = String(results[i]["Date"]);
+		}		
+	}
+//逐項確認	
+	for (var i = 0; i < results.length; i++) {
+		datecheck = String(results[i]["Date"]);
+		typhooncheck = String(results[i]["Typhoon"]);
+		for (var j = 0; j < doublework.length; j++){
+			 if ((datecheck) == doublework[j] && (typhooncheck) == '0'  ){
+				results.splice(i,1);  //移除有災防假的日期的普通班表
+			}
+		}
+		var typhoonwork = results[i]; //其他的push到results中
+		results1.push(typhoonwork);	
+	}
+	
+	
+	var start1 = Object.values(results1).map(item => item.StartTime); 
+	var end1 = Object.values(results1).map(item => item.EndTime); //still object  
+	var type1= Object.values(results1).map(item => item.TaskCode); 
+	this.state.StartTime1 = String(start1);
+	this.state.EndTime1 = String(end1).substring(11,16); 
+	this.state.TaskCode1 = String(type1);
+	
+	  
+	//按日期排序貼文	
+	results1 = results1.sort(function (a, b) {     
+		return a.Date > b.Date ? 1 : -1;  }); 
+ 
+	  
+
+// render中display-------------------------------------------
 	var i = 0;
-	let workdataDisplay2 = results.map((jsonData) => {	
+	let workdataDisplay2 = results1.map((jsonData) => {	
 	return (
 	   <View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
@@ -273,8 +319,8 @@ export default class PlayMode extends React.Component {
 	)
 	i = i+1;
     });
-
-
+	
+	
 
         return (
             <Container>
@@ -352,7 +398,7 @@ export default class PlayMode extends React.Component {
 				</View>
 			</View>
 			
-
+	
 	  {workdataDisplay2}	
 
                 </Content>

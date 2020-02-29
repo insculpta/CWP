@@ -239,7 +239,7 @@ class Mastermode extends Component<props> {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { alert("WorkData Loadwrong") ;  
+	else { alert("Announcement Loadwrong") ;  
 	}
 	
 	}).catch((error)=>{
@@ -403,8 +403,8 @@ this.state.userid= String(username);
 	  
 	  
  
-	  var call_1 = this.Getworkdata1(900821);
-	  var call_2 = this.GetNewsInfo(241584);
+	  var call_1 = this.Getworkdata1(905855);
+	  var call_2 = this.GetNewsInfo(7117);
 	  
 	 
 

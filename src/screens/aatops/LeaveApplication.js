@@ -156,9 +156,9 @@ export default class LeaveApplication extends Component<props> {
 	componentDidMount(){
 		
 
-	var call_1 = this.Getworkdata1(900821);
-	var call_2 = this.GetEmployee(900821);
-	var call_3 = this.GetAvailableLeave(900821);
+	var call_1 = this.Getworkdata1(905855);
+	var call_2 = this.GetEmployee(905855);
+	var call_3 = this.GetAvailableLeave(905855);
 		
 	}
 	 
@@ -305,7 +305,8 @@ export default class LeaveApplication extends Component<props> {
                 },
                 body: JSON.stringify({
                     // we will pass our input data to server
-                    EmployeeID: e,
+                    
+					EmployeeID: e,
                     LeaveID: this.state.leavetype,
 					StartDate: this.state.start,
                     EndDate: this.state.end,
@@ -629,7 +630,7 @@ export default class LeaveApplication extends Component<props> {
 		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 			<View>
 				<Button transparent onPress={() => {				
-				this.InsertApplyData(900821);	
+				this.InsertApplyData(900585);	
 					
 				//this.goodjob();
 				//alert('login successfully!');				
@@ -641,18 +642,6 @@ export default class LeaveApplication extends Component<props> {
 	    </View>	
 		
 		
-			<View>
-				<Button transparent onPress={() => {				
-				this.GetAvailableLeave(900822);	
-					
-				//this.goodjob();
-				//alert('login successfully!');				
-				//this.props.navigation.navigate("Mastermode");				
-				}}><Image style={{width:294, height:54}} source={applybtn}	/>
-				  </Button>
-			</View>
-		
-
 		</View>		
 	  	 <View></View>  
 

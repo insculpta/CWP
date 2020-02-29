@@ -185,7 +185,7 @@ export default class Connection extends Component {
       
 	   this.setState({
 		absentNoteID:70,
-		employee:900821,		
+		employee:905855,		
 		audited:1,
 		approve:0,
 
@@ -458,13 +458,17 @@ export default class Connection extends Component {
 				  var work = work1[i];  // work 為JsonObject
 				  work["Day"] = this.state.day_all[j]; //新增jsonobject的key為Day,對應資料為day_all內容
 				  results.push(work);
-				  
 
-				  
-				  
 			  }
 		  }
 	  }
+	  
+	  results = results.sort(function (a, b) {
+		 return a.Date < b.Date ? 1 : -1;
+		});	  		
+	  
+
+	  
 	  
 	  var leaveID = Object.values(results).map(item => item.LeaveID); 
 	  var applicationDate = Object.values(results).map(item => item.ApplicationDate); //still object  
@@ -566,7 +570,7 @@ export default class Connection extends Component {
 
     );
 	
-	var call_1 = this.GetleaveInfo(900821);	
+	var call_1 = this.GetleaveInfo(905855);	
 	
 
         return (
