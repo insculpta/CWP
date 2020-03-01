@@ -105,6 +105,11 @@ export default class PlayMode extends React.Component {
 
 //計算查詢期間所有日期並存在date_all	
 	betweendate(){
+		
+//	if (this.state.colorbool_2 == '0' )	{
+//	 alert("請選擇起始時間");	
+//	}
+//	else{
 	var i=0;
 	var date_all=[]; //間隔日期
 	var day_all=[]; //間隔日期之對應星期幾
@@ -126,7 +131,7 @@ export default class PlayMode extends React.Component {
     }	
 	this.setState({date_all:date_all, day_all:day_all, colorbool_1:0, colorbool_2:0})
 	
-				
+//	}			
 	}
 	
 	

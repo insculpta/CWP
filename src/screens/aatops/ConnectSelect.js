@@ -65,7 +65,7 @@ export default class Connection extends Component {
 		boolApprove:1,
 		boolDisapprove:1,
 		
-		booltest:true,
+		booltest:1,
 		
 		//選取日期用
 		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
@@ -138,10 +138,19 @@ export default class Connection extends Component {
       i+=1;
 	  
     }	
-	this.setState({date_all:date_all, day_all:day_all,})
+	this.setState({date_all:date_all, day_all:day_all, colorbool_1:0, colorbool_2:0})
 	
 				
 	}
+	
+	
+	componentDidMount(){
+		
+	var call_1 = this.GetleaveInfo(905855);	
+
+		
+	}
+	
 	
 	
 	  
@@ -341,7 +350,8 @@ export default class Connection extends Component {
                 
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
-					this.setState({boolGet: 0});					
+					this.setState({boolGet: 0});
+					this.GetleaveInfo(905855);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -424,6 +434,8 @@ export default class Connection extends Component {
 
 
     render() {
+
+	
 	let dimensions = Dimensions.get("window");       
 	let imageHeight = Math.round((dimensions.width * 9) / 16);
 	let imageWidth = dimensions.width*0.9;
@@ -431,7 +443,7 @@ export default class Connection extends Component {
 
 	
 	const work1 = this.state.leaveInfo;
-	let workdataDisplay1 = work1.map(function(jsonData) {
+/* 	let workdataDisplay1 = work1.map(function(jsonData){
 
 	return (
 	   <View key={jsonData.EmployeeID}>
@@ -442,7 +454,7 @@ export default class Connection extends Component {
 		</View>
 	   </View>
 	)
-    });
+    });  */
 	
 	
 			
@@ -463,12 +475,9 @@ export default class Connection extends Component {
 		  }
 	  }
 	  
-	  results = results.sort(function (a, b) {
-		 return a.Date < b.Date ? 1 : -1;
-		});	  		
-	  
 
-	  
+
+  
 	  
 	  var leaveID = Object.values(results).map(item => item.LeaveID); 
 	  var applicationDate = Object.values(results).map(item => item.ApplicationDate); //still object  
@@ -487,14 +496,21 @@ export default class Connection extends Component {
 	  this.state.absentNoteID = String(absentNoteID);
 	  this.state.res = results;	 
 
+
+	//按日期排序貼文	
+	results = results.sort(function (a, b) {     
+		return a.StartDate > b.StartDate ? 1 : -1;  }); 
+
+
 	var i = 0;
 	var resultsbtn = 0
 	
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	if (this.state.booltest)
-	{
+		if (jsonData.Approve =='1'){
 		return(
+		
+		
 	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
 		<View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
@@ -505,7 +521,7 @@ export default class Connection extends Component {
 
 		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
 		  
-		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>林木森           {jsonData.EmployeeID}</Text></View> 
+		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.EmployeeName}    員工編號：{jsonData.EmployeeID}</Text></View> 
 		  
 		  <View style={{flex: 1, flexDirection:'column'}}>
 		  
@@ -530,7 +546,7 @@ export default class Connection extends Component {
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假別：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假類別：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
 		  </View>
 		  
@@ -545,7 +561,7 @@ export default class Connection extends Component {
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderRightWidth:0.5}}>
 
 		  <TouchableOpacity transparent full
-		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);this.setState({booltest:false})}}>
+		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);this.setState({booltest: 0});}}>
 			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>
 			</TouchableOpacity>
 		  </View>
@@ -563,14 +579,17 @@ export default class Connection extends Component {
 		 
 				
 		</View></View>
-		)
-	};
+		)}
+		
+		else{
+			return(null)
+		};
 
-	}
-
-    );
+	i = i+1;
 	
-	var call_1 = this.GetleaveInfo(905855);	
+	});
+	
+	
 	
 
         return (
@@ -653,7 +672,7 @@ export default class Connection extends Component {
 				</View>
 			</View>		  
 		  
-	  {workdataDisplay2}
+			{workdataDisplay2}
 		
 
                 </Content>

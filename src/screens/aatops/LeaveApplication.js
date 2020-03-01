@@ -62,6 +62,9 @@ export default class LeaveApplication extends Component<props> {
 		
 		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
 		colorbool_2:1, // 結束日期選取
+		
+		sentbool:true, //按過按鈕之後 
+		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -156,9 +159,9 @@ export default class LeaveApplication extends Component<props> {
 	componentDidMount(){
 		
 
-	var call_1 = this.Getworkdata1(905855);
-	var call_2 = this.GetEmployee(905855);
-	var call_3 = this.GetAvailableLeave(905855);
+	var call_1 = this.Getworkdata1(905855); 
+	var call_2 = this.GetEmployee(905855);  //Banner 剩餘假數
+	var call_3 = this.GetAvailableLeave(905855);  //拿員工應請的假資料
 		
 	}
 	 
@@ -244,16 +247,17 @@ export default class LeaveApplication extends Component<props> {
 	}).then((response) => response.json())
 	  .then((jsonData) => {
 		  
-	if (jsonData != "") {
+	if (jsonData == "Nothing"){
+	alert("目前沒有待請差假");
+	this.setState({ availableLeave: '', availablebool : 0});
+	}		  
+	else if (jsonData != "") {
 
 	//this.props.screenProps.set_workdata(jsonData);
 	this.setState({ availableLeave: jsonData, availablebool : 0});
-	alert("該請假囉")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData == "No AvailableLeave"){
-	alert("沒有多的假");
-	}
+
 	else { alert("Data Loading Error"); }
 	
 	}).catch((error)=>{
@@ -410,6 +414,8 @@ export default class LeaveApplication extends Component<props> {
 	var restleave  = ((totalleave - usedleave)/8).toFixed(0);
 	this.state.restleave = restleave;
 	
+	
+
  	   	
 	let leaveDisplay = employeeleave.map((jsonData)=> {
 
@@ -426,32 +432,86 @@ export default class LeaveApplication extends Component<props> {
 	)
     });
 	
-//Banner 提醒請假
+//Banner 提醒請假--------------------------------------------------------------------------------
 	const leaveremind = this.state.availableLeave;
 	//var DueDate = Object.values(availableLeave).map(item => item.DueDate); //still object
-	//var avaliable = Object.values(availableLeave).map(item => item.Avaliable); 	
+	//var Available = Object.values(availableLeave).map(item => item.Available); 	
 	//var restleave  = ((totalleave - usedleave)/8).toFixed(0);
-	//this.state.Avaliable = String(avaliable);
+	//this.state.Available = String(Available);
 	//this.state.restleave = restleave;
 	
+	
+	var remind = [];
+	var searchField = "StartDate";
+	//var searchVal = "2019-11-07";
+	for (var i = 0; i < leaveremind.length; i++) {
+			  var leave = leaveremind[i];  // work 為JsonObject
+			  leave["Index"] = i; //新增jsonobject的key為Day,對應資料為day_all內容
+			  remind.push(leave); 
+	}
+	
+	
  	   	
-	let remindDisplay = leaveremind.map((jsonData)=> {
+	let remindDisplay1 = remind.map((jsonData)=> {
+	if (jsonData.Index == '0'){	
 	return (
 	   <View key={jsonData.EmployeeID}>
 	   
 		<View style={{height:imageHeight , width:imageWidth, }}>
-		<View style={styles.swipe}>
-		<Text style={styles.bannerText}>待請假別：{jsonData.TaskID}</Text>
-		<Text style={styles.bannerText}>截止日期：{jsonData.StartTime}</Text>
-		<Text style={styles.bannerText}>剩餘小時：{jsonData.TaskCode} 小時</Text>                     
+		<Text style={styles.bannerText1}>待請差假</Text>
+		<View style={styles.swipe1}>
+		<Text style={styles.bannerText}>假別：{jsonData.Remark}</Text>
+		<Text style={styles.bannerText}>截止日期：{String(jsonData.DueDate).substring(0,10)}</Text>
+		<Text style={styles.bannerText}>剩餘小時：{jsonData.Available} 小時</Text>                     
 		</View></View>
 	   
 	   </View>
 	)
+	}
     });
 	
+	let remindDisplay2 = remind.map((jsonData)=> {
+	if (jsonData.Index == '1'){	
+	return (
+	   <View key={jsonData.EmployeeID}>
+	   
+		<View style={{height:imageHeight , width:imageWidth, }}>
+		<Text style={styles.bannerText1}>待請差假</Text>
+		<View style={styles.swipe1}>
+		<Text style={styles.bannerText}>假別：{jsonData.Remark}</Text>
+		<Text style={styles.bannerText}>截止日期：{String(jsonData.DueDate).substring(0,10)}</Text>
+		<Text style={styles.bannerText}>剩餘小時：{jsonData.Available} 小時</Text>                     
+		</View></View>
+	   
+	   </View>
+	)
+	}
+    });
+	
+	let remindDisplay3 = remind.map((jsonData)=> {
+	if (jsonData.Index == '2'){	
+	return (
+	   <View key={jsonData.EmployeeID}>
+	   
+		<View style={{height:imageHeight , width:imageWidth, }}>
+		<Text style={styles.bannerText1}>待請差假</Text>
+		<View style={styles.swipe1}>
+		<Text style={styles.bannerText}>假別：{jsonData.Remark}</Text>
+		<Text style={styles.bannerText}>截止日期：{String(jsonData.DueDate).substring(0,10)}</Text>
+		<Text style={styles.bannerText}>剩餘小時：{jsonData.Available} 小時</Text>                     
+		</View></View>
+	   
+	   </View>
+	)
+	}
+    });
+	
+
+	
+
+	
 			
-// 依date找出   
+// 依date找出 ------------------------------------------------------------------------------------------ 
 	  var results = [];
 	  var searchField = "Date";
 	  //var searchVal = "2019-11-07";
@@ -534,7 +594,9 @@ export default class LeaveApplication extends Component<props> {
           showPagination={true}
         >		
 		    {leaveDisplay}
-			{remindDisplay}
+			{remindDisplay1}
+			{remindDisplay2}
+			{remindDisplay3}
 
 
 		</SwiperFlatList>
@@ -630,7 +692,7 @@ export default class LeaveApplication extends Component<props> {
 		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 			<View>
 				<Button transparent onPress={() => {				
-				this.InsertApplyData(900585);	
+				this.InsertApplyData(905855);	
 					
 				//this.goodjob();
 				//alert('login successfully!');				
@@ -707,6 +769,16 @@ const styles = StyleSheet.create({
 		
 		
                 },
+	swipe1:{
+	
+	marginTop: 10 ,
+	alignSelf: 'center',
+	backgroundColor: 'rgba(255,255,255,0.32)',
+	borderRadius: 8,
+	flexDirection: "column", 
+	
+	
+			},
 
     date: {
         fontSize: 18,
@@ -748,6 +820,17 @@ const styles = StyleSheet.create({
     bannerText: {
 
         fontSize: 18,
+        color: '#ffffff',
+        alignSelf: 'center',
+		marginVertical:5,
+		marginLeft:20,
+		marginRight:20,
+    },
+	
+	bannerText1: {
+		
+		marginTop: width/10,
+        fontSize: 20,
         color: '#ffffff',
         alignSelf: 'center',
 		marginVertical:5,
