@@ -78,6 +78,7 @@ export default class Connection extends Component {
 		this.setendDate = this.setendDate.bind(this);
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
+		this.GetleaveInfo= this.GetleaveInfo.bind(this);
 			
 		//this.UpdateleaveInfo = this.UpdateleaveInfo.bind(this);
 	
@@ -498,19 +499,29 @@ export default class Connection extends Component {
 
 
 	//按日期排序貼文	
-	results = results.sort(function (a, b) {     
-		return a.StartDate > b.StartDate ? 1 : -1;  }); 
+	results = results.sort(function (a, b) {
+				
+		return a.StartDate > b.StartDate ? 1 : -1;  
+		
+	}); 
+	//再按流水號排序
+		results = results.sort(function (a, b) {		
+		if (a.StartDate == b.StartDate){
+			return a.AbsentNoteID > b.AbsentNoteID ? 1 : -1;
+		};
+		
+	}); 
 
 
-	var i = 0;
+	
 	var resultsbtn = 0
 	
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-		if (jsonData.Approve =='1'){
+	if (jsonData.Approve == 1){
+		
 		return(
-		
-		
+				
 	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
 		<View key={jsonData.EmployeeID}>
 		<View style={styles.list}>
@@ -579,13 +590,15 @@ export default class Connection extends Component {
 		 
 				
 		</View></View>
-		)}
+	)}
+	else{
+		return(
+		<View key={jsonData.EmployeeID}>	
+		</View>
 		
-		else{
-			return(null)
-		};
-
-	i = i+1;
+		)
+	}
+	
 	
 	});
 	
@@ -661,7 +674,7 @@ export default class Connection extends Component {
 			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 				<View>
 					<Button transparent onPress={() => {				
-					
+					this.GetleaveInfo(905855);
 					this.betweendate();	
 						
 					//this.goodjob();

@@ -353,8 +353,7 @@ export default class App extends Component<Props>{
     }
     render(){
       return(
-        <Root>
-		
+        <Root>		
           <AppContainer screenProps={this.props.props}/>
         </Root>
       );

@@ -169,6 +169,7 @@ export default class LeaveApplication extends Component<props> {
 	Getworkdata1 =(e) => {
 	if(this.state.boolGet)
 	{
+	//fetch('http://140.114.55.208:80/workdata1.php/', {
 	fetch('http://140.114.54.22:8080/workdata1.php/', {
 	method: 'post',
 	header: {
@@ -301,6 +302,7 @@ export default class LeaveApplication extends Component<props> {
 		}
         else {
 
+			//fetch('http://140.114.55.208:80/insertleave.php/', {
             fetch('http://140.114.54.22:8080/insertleave.php/', {
                 method: 'post',
                 header: {
