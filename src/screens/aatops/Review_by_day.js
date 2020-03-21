@@ -4,9 +4,6 @@ import {Alert,TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimension
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
-import Reviewday from './Review_by_day';
-import Play from './Play';
-import Review from './Review';
 
 import { 
   Button,  
@@ -26,7 +23,6 @@ import {
   Left,
   Right,
   Title,
-  Picker, Form,
 } from "native-base";
 
 
@@ -42,7 +38,7 @@ const onreocrdBtn = require("./assets/RecorderMode/recordcontent.png");
 const offrecordBtn = require("./assets/RecorderMode/record_black.png");
 
 
-export default class Connection extends Component {
+export default class Reviewday extends Component {
 
   
 	constructor(props) {
@@ -60,6 +56,7 @@ export default class Connection extends Component {
 		//讀取請假資料用
 		StartTime:'', EndTime:'',TaskCode:'',
 		start:'',end:'', //查詢的時間起始結束
+		startday:'',//顯示查詢日期用
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
 		
@@ -81,15 +78,16 @@ export default class Connection extends Component {
 		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
 		colorbool_2:1, // 結束日期選取
 		
+		test:'1',
 		res:[],	
+		
 		
 		officeinfo:[], officeboolGet:1,// 拿分局資料用
 		dayavailable:[],dayboolGet:1, //拿當天可休人數
+		isApproved:'', isNotApproved:'', //計算批准跟不批准的數量
 		
 		
-		fileList: [],
-		checkpage: true,
-		
+		fileList: [],		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -113,6 +111,7 @@ export default class Connection extends Component {
 	var month = monthdic[monstr];
 	var day = this.state.chosenstartDate.toString().substr(8, 2);
 	this.setState({start:year + '-' + month + '-'+ day,});
+	this.setState({startday:year + ' 年 ' + month + ' 月 '+ day + ' 日 ',});
 	
 	
   }
@@ -164,10 +163,9 @@ export default class Connection extends Component {
 	
 	componentDidMount(){
 		
-	var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000);	
-	//var call_3 = this.GetDayAvailable(244000);
-	
+	//var call_1 = this.GetleaveInfo(905855);	
+	//var call_2 = this.GetofficeInfo(244000);
+		
 	}
 	
 	
@@ -206,72 +204,6 @@ export default class Connection extends Component {
 	}
 }
 
-
-
-//審核更新
-/* /*  UpdateleaveInfo =(a,b,c,d) => {
-      
-	   this.setState({
-		absentNoteID:70,
-		employee:905855,		
-		audited:1,
-		approve:0,
-
-	});		
-
-  if (a == "") {
-            alert("a不見了");
-            //this.setState({account:'Please enter Account'})
-
-        }
-
-        else if (b == "") {
-            alert("b不見了");
-            //this.setState({account:'Please enter password'})
-        }
-        else {
-	
-            fetch('http://140.114.54.22:8080/leaveupdate.php/', {
-			//fetch('http://192.168.1.170:8080/leaveupdate.php/', {
-                method: 'post',
-                header: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json',
-                },
-
-			body: JSON.stringify({
-				EmployeeID: b,
-
-			})
-            }).then((response) => response.json())
-              .then((jsonData) => {
-                
-				if (jsonData == "audit successfully") {
-					alert("審核資料已更新");			
-								
-				}
-			   	else if (jsonData == "No this ID"){
-					alert("查無此筆資料");			   
-				}
-				else if (jsonData == "try again"){
-					alert("請再試一次");			   
-				}	
-				else if (jsonData == "Failed to connect"){
-					alert("網路連線有誤");
-			   
-				}	
-	
-		
-			 
-				else
-				{alert("Something goes wrong here!");}
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-        }
-		
-	} */ 
 	
 	
 //測試用 function	
@@ -441,6 +373,7 @@ export default class Connection extends Component {
 		}		
 	} 
 	
+	
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
@@ -522,6 +455,7 @@ export default class Connection extends Component {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
+	
 
     
 
@@ -568,6 +502,34 @@ export default class Connection extends Component {
 		  }
 	  }
 	  
+	  
+ 
+
+	  
+//計算批准跟不批准的數量 ------------------------------------------------------
+	  
+
+	var Approved = [] ;
+	var countAppro = 0;
+	var countDisAppro = 0;
+
+	for (var i = 0; i < results.length; i++) {
+		check1 = String(results[i]["Approve"]);
+		if ((check1) == '0'){
+			Approved[i] = String(results[i]["Audited"]);
+		}		
+	}
+	for (var j = 0; j < Approved.length; j++){
+			 if ( Approved[j] == '1'  ){
+				 countAppro += 1;				
+			}
+			else if ( Approved[j] == '0'  ){
+				 countDisAppro += 1;				
+			}
+		}
+				
+	
+//-----------------------------------------------------------------------------
 
 
   
@@ -606,11 +568,15 @@ export default class Connection extends Component {
 
 
 	
-	var resultsbtn = 0
-	
+	var resultsbtn = 0;
+
+//---------------Approved已核准----------------	
+
+//var countAppro = 0;
+
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	if (jsonData.Approve == 1){
+	if ((jsonData.Approve == 0 && jsonData.Audited == 1)){
 		
 		return(
 				
@@ -629,7 +595,91 @@ export default class Connection extends Component {
 		  <View style={{flex: 1, flexDirection:'column'}}>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>流水號：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假流水號：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>	
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假類別：</Text>
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
+		  </View>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		
+		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>	
+		  </View>
+  		  
+		  </View>  
+				  
+		  <View style={{flexDirection:'row',flex:1}}>
+			
+		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
+		  <TouchableOpacity transparent full 
+		  onPress={()=> {this.DisapprLeave.call(this,jsonData.AbsentNoteID)}}>
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>修正為尚待協調</Text>
+		 </TouchableOpacity>
+		  </View>
+		  </View>  
+		  
+		  
+		  </View>
+		 
+				
+		</View></View>
+	
+	)
+	//countAppro +=1;
+	}
+	else{
+		return(
+		<View key={jsonData.EmployeeID}>	
+		</View>
+		
+		)
+	}
+	//this.setState({isApproved: countAppro });
+	
+	});
+	
+	
+	//--------------------------not approved 未通過-------------------------------------
+	let workdataDisplay3 = results.map((jsonData) =>{
+	
+	if (jsonData.Approve == 0 && jsonData.Audited == 0){
+		
+		return(
+				
+	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
+		<View key={jsonData.EmployeeID}>
+		<View style={styles.list}>
+		
+		<View style={{flexDirection: 'row'}}>
+		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,textAlign:'center'}}>{jsonData.StartDate}  {jsonData.Day}</Text>
+		</View>	
+
+		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
+		  
+		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.EmployeeName}    員工編號：{jsonData.EmployeeID}</Text></View> 
+		  
+		  <View style={{flex: 1, flexDirection:'column'}}>
+		  
+		  <View style={{flex: 1, flexDirection:'row'}}>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假流水號：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>
 		  </View>
 		  
@@ -669,15 +719,8 @@ export default class Connection extends Component {
 			</TouchableOpacity>
 		  </View>
 			
-		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
-		  <TouchableOpacity transparent full 
-		  onPress={()=> {this.DisapprLeave.call(this,jsonData.AbsentNoteID)}}>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>待協調</Text>
-		 </TouchableOpacity>
-		  </View>
 		  </View>  
-		  
-		  
+		  		  
 		  </View>
 		 
 				
@@ -691,19 +734,18 @@ export default class Connection extends Component {
 		)
 	}
 	
-	
 	});
 	
-//----------------Office Information-----------------------------------------
+	
+	//----------------Office Information-----------------------------------------
 
 	const office = this.state.officeinfo;
 	let officeDisplay = office.map((jsonData) => {
 
 	return (
 	   <View key={jsonData.OfficeID}>
-		<View style={{flexDirection: 'row'}}>
-		  <Text style={{color: '#000',width: 50}}>{jsonData.OfficeID}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.OfficeName}</Text>
+		<View style={{flexDirection: 'row',flex: 1 , alignSelf: 'center',}}>
+		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',margin:5,}}>分局：{jsonData.OfficeName}</Text>
 
 		</View>
 	   </View>
@@ -716,20 +758,40 @@ export default class Connection extends Component {
 	let dayAvaiDisplay = dayleave.map((jsonData) => {
 
 	return (
-	   <View key={jsonData.OfficeID}>
-		<View style={{flexDirection: 'row'}}>
-		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>當日可休人數： {jsonData.LeaveAvailable} 人</Text>
+	   <View key={jsonData.Date}>
+		<View style={{flexDirection: 'row',flex: 1 , alignSelf: 'center',}}>
+		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',margin:5,}}>當天可休人數： {jsonData.LeaveAvailable} 人</Text>
 		</View>
 	   </View>
 	)
     });	 
+
+//------------------已核准或待核准數量---------------------------------------
 	
+/* 	let Display = Display (() => {
+	
+	if (results != '' ){
+
+	return(
+			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
+			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
+	)}
+	else{
+		return(
+		<View><Text>87</Text>	
+		</View>
+		
+		)}
+	});
+ */
+
+
+//------------------已核准或待核准跟分隔---------------------------------------		
 	
 
         return (
 		
-	           <Container style={styles.container}>
-			   <ScrollView nestedScrollEnabled = {true}>
+	           <View style={styles.container}>
                 <Header style={styles.header}>
                     <Left>
                     <Button
@@ -754,35 +816,7 @@ export default class Connection extends Component {
 			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
 	
 					  
-		<View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>差假類別：</Text>
-		  <Form>
-            <Picker
-              note
-              mode="dropdown"
-              style={{ width: 200 }}
-              selectedValue={this.state.leavetype}
-              onValueChange={this.onValueChange}
-            >
-			  <Picker.Item label="未選擇" value="0" />
-              <Picker.Item label="休假" value="P" />
-              <Picker.Item label="例假" value="S" />
-              <Picker.Item label="喪假" value="1" />
-              <Picker.Item label="婚假" value="2" />
-              <Picker.Item label="事假" value="3" />
-			  <Picker.Item label="病假" value="4" />
-			  <Picker.Item label="產前(檢)假" value="5" />
-              <Picker.Item label="產假" value="6" />
-              <Picker.Item label="特別休假" value="7" />
-              <Picker.Item label="公假" value="8" />
-              <Picker.Item label="陪產假" value="9" />
-			  <Picker.Item label="生理假" value="10" />
-              <Picker.Item label="家庭照顧假" value="11" />
-              <Picker.Item label="安胎假" value="13" />
-              <Picker.Item label="捐贈骨髓或器官假" value="14" />
-			  <Picker.Item label="工會公假" value="15" />
-            </Picker>
-          </Form>
-		</View>
+			
 
  
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
@@ -824,7 +858,8 @@ export default class Connection extends Component {
 			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 				<View>
 					<Button transparent onPress={() => {				
-					this.setState({ dayboolGet : 1});
+					this.setState({ dayboolGet : 1, boolGet:1, officeboolGet:1});
+					this.GetofficeInfo(244000);					
 					this.GetleaveInfo(905855);
 					this.betweendate();	
 					this.GetDayAvailable(244000);	
@@ -834,41 +869,25 @@ export default class Connection extends Component {
 					}}><Image style={{width:294, height:54}} source={querybtn}	/>
 					  </Button>
 				</View>
-			</View>		  
-		 
-		   {dayAvaiDisplay}
-			{workdataDisplay2}
+			</View>
+			
+			<View><Text style={styles.contenttext}>{this.state.startday}</Text></View>
+		
 			{officeDisplay}
+			{dayAvaiDisplay}
+				{Display}			
+			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
+			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
+			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
+			{workdataDisplay2}
+			<View style={styles.sectionbg}><Text style={styles.contenttext}>待協調</Text></View>
+			{workdataDisplay3}
 		
-			
-            <View style={styles.switch}>
-
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity  >
-                    <Image source={this.state.checkpage ? onreocrdBtn : offrecordBtn}/>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity >
-                    <Image source={this.state.checkpage ? offplayBtn:onplayBtn}/>
-                  </TouchableOpacity>
-                </View>
-              </View>			
-			
-			
-			<Reviewday/>
-			
-		
-			
-			
-			
-
+				
                 </Content>
-
-             </ScrollView>   
-            </Container>
-			
+				
+                
+            </View>
         );
     }
 }
@@ -980,14 +999,26 @@ list: {
 
 },
 
-        switch: {
+sectionbg:{
+	flex: 2,
+	flexDirection: 'column',
+	alignItems: 'stretch',
+	justifyContent: 'center',
+	backgroundColor: '#B3D6D0',
+	marginHorizontal: 10, 
+	marginVertical:10,
+	height: 45,
+	
+},
 
-            backgroundColor: '#484848',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingTop: 10,
-        },
+contenttext:{
+	fontWeight: 'bold',
+	fontSize: 18,
+	color:'#435366',
+	alignSelf:'center' ,
+	margin:5,
+	
+},
 	
 	
 });
