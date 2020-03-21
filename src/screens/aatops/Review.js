@@ -4,9 +4,6 @@ import {Alert,TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimension
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
-import Record from './Record';
-import Play from './Play';
-import Review from './Review';
 
 import { 
   Button,  
@@ -41,7 +38,7 @@ const onreocrdBtn = require("./assets/RecorderMode/recordcontent.png");
 const offrecordBtn = require("./assets/RecorderMode/record_black.png");
 
 
-export default class Connection extends Component {
+export default class Review extends Component {
 
   
 	constructor(props) {
@@ -84,9 +81,7 @@ export default class Connection extends Component {
 		res:[],	
 		
 		
-		fileList: [],
-		checkpage: true,
-		
+		fileList: [],		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -622,7 +617,6 @@ export default class Connection extends Component {
         return (
 		
 	           <Container style={styles.container}>
-			   <ScrollView nestedScrollEnabled = {true}>
                 <Header style={styles.header}>
                     <Left>
                     <Button
@@ -699,37 +693,14 @@ export default class Connection extends Component {
 					  </Button>
 				</View>
 			</View>		  
-		  
-			{workdataDisplay2}
-			
-            <View style={styles.switch}>
-
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity  >
-                    <Image source={this.state.checkpage ? onreocrdBtn : offrecordBtn}/>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity >
-                    <Image source={this.state.checkpage ? offplayBtn:onplayBtn}/>
-                  </TouchableOpacity>
-                </View>
-              </View>			
-			
-			<Play fileList={this.state.fileList} />
-			<Record/>
-			
 		
-			<Review/>
-			
-			
-
+			{workdataDisplay2}
+		
+				
                 </Content>
-
-             </ScrollView>   
+				
+                
             </Container>
-			
         );
     }
 }
@@ -840,15 +811,6 @@ list: {
 
 
 },
-
-        switch: {
-
-            backgroundColor: '#484848',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingTop: 10,
-        },
 	
 	
 });
