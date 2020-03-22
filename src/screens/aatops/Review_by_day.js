@@ -183,6 +183,7 @@ export default class Reviewday extends Component {
 	},
 	body: JSON.stringify({
 		EmployeeID: e ,
+		OfficeID:244000,
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -301,7 +302,7 @@ export default class Reviewday extends Component {
                 
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
-					this.setState({boolGet: 0});
+					this.setState({boolGet: 1});
 					this.GetleaveInfo(905855);	
 								
 				}		   
@@ -353,7 +354,9 @@ export default class Reviewday extends Component {
 				
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
-					this.setState({boolGet: 0});					
+				
+					this.setState({boolGet: 1});					
+					this.GetleaveInfo(905855);						
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -631,7 +634,7 @@ export default class Reviewday extends Component {
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
 		  <TouchableOpacity transparent full 
 		  onPress={()=> {this.DisapprLeave.call(this,jsonData.AbsentNoteID)}}>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>修正為尚待協調</Text>
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>尚待協調</Text>
 		 </TouchableOpacity>
 		  </View>
 		  </View>  
@@ -875,7 +878,7 @@ export default class Reviewday extends Component {
 		
 			{officeDisplay}
 			{dayAvaiDisplay}
-				{Display}			
+						
 			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
 			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
 			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
