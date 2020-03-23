@@ -27,6 +27,7 @@ export default class Connection extends Component<props>{
 
 this.userAccount = null;
 this.userPassword = null;
+
 //this.props.screenProps.set_workdata=this.props.screenProps.set_workdata.bind(this);
 //this.props.screenProps.get_workdata=this.props.screenProps.get_workdata.bind(this);
 //this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
@@ -34,6 +35,9 @@ this.userPassword = null;
 	this.state={
           userData:[],
 		  workData:[],
+		  testdata : [{ 
+		  "name" :"林木森",
+		  }],	  		  
       		}
       }
 
@@ -243,7 +247,7 @@ login = () =>{
 		alert("workdata get!!")	;
 		//this.props.navigation.navigate("Mastermode");
 		}
-		else { alert("WorkData Loadwrong") ;  }
+		else { alert("WorkData Loading Error") ;  }
 		
 		}).catch((error)=>{
 		  console.error(error);
@@ -433,8 +437,12 @@ login = () =>{
           <View style={{flex:2, alignSelf:'center',justifyContent: 'flex-start'} }>
 
               <View style={{alignSelf: 'center',justifyContent: 'center'}}>
-              <Button transparent   onPress={alert("Please contact the system manager!")} >
-              <Text style={styles.underline}>無法登入？</Text>
+              <Button transparent   
+			  onPress ={()=>{
+				//alert("Please contact the system manager!");
+			  this.props.screenProps.set_userdata(this.state.testdata);
+			  this.props.navigation.navigate("Mastermode");}} >
+              <Text style={styles.underline}>測試人員點此</Text>
 
               </Button>
               </View>

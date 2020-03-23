@@ -84,7 +84,8 @@ export default class Reviewday extends Component {
 		
 		officeinfo:[], officeboolGet:1,// 拿分局資料用
 		dayavailable:[],dayboolGet:1, //拿當天可休人數
-		isApproved:'', isNotApproved:'', //計算批准跟不批准的數量
+		countAppro:'', countDisAppro:'', //計算批准跟不批准的數量
+		
 		
 		
 		fileList: [],		
@@ -169,13 +170,10 @@ export default class Reviewday extends Component {
 	}
 	
 	
-	
-	  
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
 	fetch('http://140.114.54.22:8080/leaveget.php/', {
-	//fetch('http://192.168.1.170:8080/leaveget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -195,7 +193,15 @@ export default class Reviewday extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { //alert("WorkData Loadwrong") ;  
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");
+			   
+	}
+	else if (jsonData == "Nothing"){
+		alert("沒有假單資料");
+		this.setState({ boolGet : 0});
+	}	
+	else { alert("WorkData Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -204,72 +210,9 @@ export default class Reviewday extends Component {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
-
 	
-	
-//測試用 function	
- InsertApplyData = (e) => {
 
-			alert("有在動");
-            fetch('http://140.114.54.22:8080/leaveupdate.php/', {
-			//fetch('http://192.168.1.170:8080/insertleave.php/', {
-                method: 'post',
-                header: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    // we will pass our input data to server
-				EmployeeID: e ,	
-				LeaveID: '121',
-				StartDate: '',
-				EndDate: '',
-				ApplicationDate: '',
-				Remark:'成功了',
-				Approve: '1', 				
 
-                })
-
-            }).then((response) => response.json())
-              .then((jsonData) => {
-                
-				if (jsonData == "audit successfully") {
-					alert("申請已遞交");		
-					this.state.leavetype = "0";
-					//this.state.start = null;
-                    //this.state.end = null;
-					//this.state.applytime= null;
-                    //this.state.remark = null;	
-					//this.forceUpdate()		;			
-								
-				}
-			   
-				else if (jsonData == "try again"){
-					alert("請再試一次");
-			   
-				}	
-				else if (jsonData == "Failed to connect"){
-					alert("網路連線有誤");
-			   
-				}				
-/* 				else if (jsonData != "") {
-					// redirect to profile page
-					this.setState({ userData: jsonData,});
-					this.props.screenProps.set_userdata(jsonData);
-					//this.goodjob;														
-					alert('Login Successfully');					
-					this.props.navigation.navigate("Mastermode");
-				} */
-			 
-				else
-				{alert("Something goes wrong here!");}
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-        
-
-    }
 
 //審核更新
   ApproveLeave =(e) => {
@@ -283,7 +226,6 @@ export default class Reviewday extends Component {
         else {
 	
             fetch('http://140.114.54.22:8080/updatetest.php/', {
-			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -310,10 +252,8 @@ export default class Reviewday extends Component {
 					alert("請再試一次");			   
 				}	
 				else if (jsonData == "Failed to connect"){
-					alert("網路連線有誤");
-			   
-				}	
-				 
+					alert("網路連線有誤");			   
+				}					 
 				else
 				{alert("Something goes wrong here!");}
 			})
@@ -335,7 +275,7 @@ export default class Reviewday extends Component {
 		else {
 
 			fetch('http://140.114.54.22:8080/updatetest.php/', {
-			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
+
 				method: 'post',
 				header: {
 					'Accept': 'application/json',
@@ -354,10 +294,8 @@ export default class Reviewday extends Component {
 				
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
-				
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(905855);						
-								
+					this.GetleaveInfo(905855);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -376,12 +314,14 @@ export default class Reviewday extends Component {
 		}		
 	} 
 	
+	  
+	
 	
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
 	fetch('http://140.114.54.22:8080/officeget.php/', {
-	//fetch('http://192.168.1.170:8080/officeget.php/', {
+
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -402,13 +342,20 @@ export default class Reviewday extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData != "") {
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");			   
+	}
+	else if (jsonData == "") {
 
 	//this.props.screenProps.set_workdata(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { alert("Office Info Loadwrong") ;  
+	else if (jsonData == "Nothing"){
+		alert("沒有分局資料");
+		this.setState({ officeboolGet : 0});
+	}
+	else { alert("Office Info Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -449,6 +396,9 @@ export default class Reviewday extends Component {
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");		   
+	}
 
 	else { alert("Data Loading Error"); }
 	
@@ -458,9 +408,7 @@ export default class Reviewday extends Component {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 }
-	
 
-    
 
 
     render() {
@@ -473,21 +421,7 @@ export default class Reviewday extends Component {
 
 	
 	const work1 = this.state.leaveInfo;
-/* 	let workdataDisplay1 = work1.map(function(jsonData){
-
-	return (
-	   <View key={jsonData.EmployeeID}>
-		<View style={{flexDirection: 'row'}}>
-		  <Text style={{color: '#000',width: 50}}>{jsonData.Remark}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartDate} ~ {jsonData.EndDate}</Text>
-
-		</View>
-	   </View>
-	)
-    });  */
-	
-	
-			
+				
 // 依date找出   
 	  var results = [];
 	  var searchField = "StartDate";
@@ -570,8 +504,6 @@ export default class Reviewday extends Component {
 	}); 
 
 
-	
-	var resultsbtn = 0;
 
 //---------------Approved已核准----------------	
 
@@ -747,9 +679,8 @@ export default class Reviewday extends Component {
 
 	return (
 	   <View key={jsonData.OfficeID}>
-		<View style={{flexDirection: 'row',flex: 1 , alignSelf: 'center',}}>
-		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',margin:5,}}>分局：{jsonData.OfficeName}</Text>
-
+		<View style={{flex:1, alignItems: 'stretch'}}>
+		  <Text style={styles.contenttext1}>{jsonData.OfficeName}</Text>
 		</View>
 	   </View>
 	)
@@ -761,14 +692,27 @@ export default class Reviewday extends Component {
 	let dayAvaiDisplay = dayleave.map((jsonData) => {
 
 	return (
-	   <View key={jsonData.Date}>
-		<View style={{flexDirection: 'row',flex: 1 , alignSelf: 'center',}}>
-		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',margin:5,}}>當天可休人數： {jsonData.LeaveAvailable} 人</Text>
+	   <View key={jsonData.OfficeID}>
+		<View style={{flex:1,alignItems: 'stretch'}}>
+		  <Text style={styles.contenttext1}>當天可休人數： {jsonData.LeaveAvailable} 人</Text>		  
 		</View>
 	   </View>
+	   
+		
 	)
     });	 
+//-----------------------------------------------------------------
+	let Display1 =() =>{
 
+	return (
+			<View>
+			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
+			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
+			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
+			</View>
+	)
+    };
+	
 //------------------已核准或待核准數量---------------------------------------
 	
 /* 	let Display = Display (() => {
@@ -795,33 +739,11 @@ export default class Reviewday extends Component {
         return (
 		
 	           <View style={styles.container}>
-                <Header style={styles.header}>
-                    <Left>
-                    <Button
-                        transparent
-                        onPress={() => this.props.navigation.openDrawer()}
-                    >
-                        <Icon name="menu" />
-                    </Button>
-                    </Left>
-                    <Body>
-                    <Title>中華郵政</Title>
-                    </Body>
-					<Right></Right>
-
-                </Header>
 
                 <Content>
-			
-
-			
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 核 准</Text>			
-			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
-	
-					  
-			
-
- 
+								
+			<Text  style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
+	 
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
           <DatePicker 
             defaultDate={new Date()}
@@ -853,19 +775,16 @@ export default class Reviewday extends Component {
             onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
           /></View>
 		 
-          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
-            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
-			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-          </Text>
 
-			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column', marginVertical: 20}}>
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1, boolGet:1, officeboolGet:1});
 					this.GetofficeInfo(244000);					
 					this.GetleaveInfo(905855);
 					this.betweendate();	
-					this.GetDayAvailable(244000);	
+					this.GetDayAvailable(244000);
+					
 					//this.goodjob();
 					//alert('login successfully!');				
 					//this.props.navigation.navigate("Mastermode");				
@@ -874,14 +793,26 @@ export default class Reviewday extends Component {
 				</View>
 			</View>
 			
+			
+			
 			<View><Text style={styles.contenttext}>{this.state.startday}</Text></View>
 		
+			<View style={{flexDirection:'row',flex:1, alignSelf:'center', marginTop: 10}}>
+			
 			{officeDisplay}
-			{dayAvaiDisplay}
+
+			{dayAvaiDisplay}</View>
+			
+	
 						
-			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
-			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
+			
+			<View>
+			<View><Text style={styles.contenttext1}>已核准差假： {countAppro}  則</Text></View>
+			<View><Text style={styles.contenttext1}>待協調差假： {countDisAppro}  則</Text></View>
+			<View style={{marginVertical: 10}}></View>
 			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
+			</View>
+			
 			{workdataDisplay2}
 			<View style={styles.sectionbg}><Text style={styles.contenttext}>待協調</Text></View>
 			{workdataDisplay3}
@@ -1015,11 +946,21 @@ sectionbg:{
 },
 
 contenttext:{
-	fontWeight: 'bold',
+	fontWeight:'bold',
 	fontSize: 18,
 	color:'#435366',
 	alignSelf:'center' ,
 	margin:5,
+	
+},
+
+contenttext1:{
+	
+	fontSize: 18,
+	color:'#435366',
+	alignSelf:'center' ,
+	margin:5,
+	textAlign:'center'
 	
 },
 	

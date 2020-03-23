@@ -28,12 +28,12 @@ class SideBar extends Component<Props> {
 
     this.datas = [
       {
-        name: "公告與通知",
+        name: "公告通知",
         route: "Mastermode",  //要連到的mod
 
       },
       {
-        name: "查詢班表",
+        name: "個人班表",
         route: "PlayMode",
 
       },
@@ -46,8 +46,8 @@ class SideBar extends Component<Props> {
 	  
 		  
 	 { 
-        name: "差假核准",
-        route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
+        name: "管理差假",
+        route: "ConnectSelect",
 
       },
 	  
@@ -56,7 +56,7 @@ class SideBar extends Component<Props> {
 
         {
           name: "登出",
-          route: this.props.screenProps.room==-1?"ConnectSelect":"Master_main_page",
+          route: "Selection",
 
         },
 

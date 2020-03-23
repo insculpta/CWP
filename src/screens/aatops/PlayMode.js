@@ -1,6 +1,20 @@
 import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
+import { 
+TouchableOpacity, 
+StyleSheet,
+Text, 
+Platform, 
+Image,
+View, 
+Dimensions, 
+ScrollView,
+ImageBackground, 
+FlatList,
+ListView,
+BackAndroid,
+Navigator,
+} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
@@ -138,9 +152,13 @@ export default class PlayMode extends React.Component {
 	componentDidMount(){
 		
 	var call_1 = this.Getworkdata1(905855);	
+	//BackAndroidTool.addBackAndroidListener(this.props.navigator);
 		
 	}
-	 
+	
+	//componentWillUnmount(){
+	//BackAndroidTool.removeBackAndroidListener();
+	//}
   
 
 	Getworkdata1 = (e) => {
@@ -164,7 +182,14 @@ export default class PlayMode extends React.Component {
 			if (jsonData != "") {
 				// redirect to profile page
 				this.setState({ workData1: jsonData, boolGet : 0});																										
-			}		 
+			}
+			else if (jsonData == "Failed to connect"){
+					alert("網路連線有誤");
+			}	
+			else if (jsonData == "Nothing"){
+				alert("沒有班表資料");
+				this.setState({ boolGet : 0});
+				}			
 			else
 			{alert("Data Loading Error");}
 		})
@@ -325,7 +350,7 @@ export default class PlayMode extends React.Component {
 	i = i+1;
     });
 	
-	
+	//<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>班 表 查 詢</Text>
 
         return (
             <Container>
@@ -339,7 +364,7 @@ export default class PlayMode extends React.Component {
                     </Button>
                     </Left>
                     <Body>
-                    <Title>中華郵政</Title>
+                    <Title>個人班表</Title>
                     </Body>
 					<Right></Right>
 
@@ -347,7 +372,7 @@ export default class PlayMode extends React.Component {
 
                 <Content>
 				
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>班 表 查 詢</Text>
+		<Text  style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
  
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
           <DatePicker 
@@ -380,16 +405,8 @@ export default class PlayMode extends React.Component {
 			onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
           /></View>
 		  
-		  
-		  
-		  
-          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
-            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
-			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-          </Text>
-		  
-		
-			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+
+			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column',marginVertical: 20}}>
 				<View>
 					<Button transparent onPress={() => {				
 					

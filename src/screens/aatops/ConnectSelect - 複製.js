@@ -174,10 +174,14 @@ export default class Connection extends Component {
 	
 	}
 	
+	
+	
+	  
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
 	fetch('http://140.114.54.22:8080/leaveget.php/', {
+	//fetch('http://192.168.1.170:8080/leaveget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -197,15 +201,7 @@ export default class Connection extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData == "Failed to connect"){
-	alert("網路連線有誤");
-			   
-	}
-	else if (jsonData == "Nothing"){
-		alert("沒有假單資料");
-		this.setState({ boolGet : 0});
-	}	
-	else { alert("WorkData Loading Error") ;  
+	else { //alert("WorkData Loadwrong") ;  
 	}
 	
 	}).catch((error)=>{
@@ -230,6 +226,7 @@ export default class Connection extends Component {
         else {
 	
             fetch('http://140.114.54.22:8080/updatetest.php/', {
+			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -279,7 +276,7 @@ export default class Connection extends Component {
 		else {
 
 			fetch('http://140.114.54.22:8080/updatetest.php/', {
-
+			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
 				method: 'post',
 				header: {
 					'Accept': 'application/json',
@@ -322,7 +319,7 @@ export default class Connection extends Component {
 	if(this.state.officeboolGet)
 	{
 	fetch('http://140.114.54.22:8080/officeget.php/', {
-
+	//fetch('http://192.168.1.170:8080/officeget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -343,20 +340,13 @@ export default class Connection extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData == "Failed to connect"){
-	alert("網路連線有誤");			   
-	}
-	else if (jsonData == "") {
+	else if (jsonData != "") {
 
 	//this.props.screenProps.set_workdata(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData == "Nothing"){
-		alert("沒有分局資料");
-		this.setState({ officeboolGet : 0});
-	}
-	else { alert("Office Info Loading Error") ;  
+	else { alert("Office Info Loadwrong") ;  
 	}
 	
 	}).catch((error)=>{
@@ -397,9 +387,6 @@ export default class Connection extends Component {
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData == "Failed to connect"){
-	alert("網路連線有誤");		   
-	}
 
 	else { alert("Data Loading Error"); }
 	
@@ -414,7 +401,7 @@ export default class Connection extends Component {
 	if(this.state.shiftboolGet)
 	{
 	fetch('http://140.114.54.22:8080/shiftscheduleget.php/', {
-
+	//fetch('http://192.168.1.170:8080/shiftscheduleget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -429,26 +416,17 @@ export default class Connection extends Component {
 	if (jsonData != "") {
 	this.setState({ shiftinfo: jsonData, shiftboolGet : 0});
 	}
-	else if (jsonData == "") {
+	else if (jsonData != "") {
 	this.setState({ shiftinfo: [], shiftboolGet : 0});
 	}
-	else if (jsonData == "Failed to connect"){
-	alert("網路連線有誤");
-			   
-	}
-	else if (jsonData == "Nothing"){
-		alert("沒有分局該職務人數資料");
-		this.setState({ shiftboolGet : 0});
-	}
-	else { alert("Shift Info Loading Error") ;  
+	else { alert("Shift Info Loadwrong") ;  
 	}
 	
 	}).catch((error)=>{
 	  console.error(error);
 		});		
 	}
-	}	
-	
+	}
 
 
     render() {
@@ -722,21 +700,54 @@ export default class Connection extends Component {
 	)
     });	 
 	
-	//<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10, marginTop:20 }}>差  假  核  准</Text>		
+	
 
         return (
 		
-	           <View style={styles.container}>
-			  
-                
+	           <Container style={styles.container}>
+			   <ScrollView nestedScrollEnabled = {true}>
+                <Header style={styles.header}>
+                    <Left>
+                    <Button
+                        transparent
+                        onPress={() => this.props.navigation.openDrawer()}
+                    >
+                        <Icon name="menu" />
+                    </Button>
+                    </Left>
+                    <Body>
+                    <Title>中華郵政</Title>
+                    </Body>
+					<Right></Right>
+
+                </Header>
 
                 <Content>
 				
-								
+				
+				<View style={styles.switch}>
+
+                <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'flex-end'}}>
+                  <TouchableOpacity style={{flexDirection:'column', justifyContent: 'space-between'}} 
+				  onPress ={() =>{this.setState({checkpage:true})}}>				  				    
+				    <Text style={{textAlign:'center', color:'white', fontSize: 15 }}>待 核 假 單</Text>
+                    <Image style={{width:width*0.5, height: 3, marginTop: 10}} source={this.state.checkpage ? onBtn : offBtn}/>					
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'flex-end'}}>
+                  <TouchableOpacity style={{flexDirection:'column', justifyContent: 'space-between'}} 
+				  onPress ={() =>{this.setState({checkpage:false})}}>				  				    
+				    <Text style={{textAlign:'center', color:'white', fontSize: 15 }}>已 審 假 單</Text>
+                    <Image style={{width:width*0.5, height: 3, marginTop: 10}} source={this.state.checkpage ? offBtn : onBtn }/>					
+                  </TouchableOpacity>
+                </View>
+				</View>				
+			
 
 			
-				
-			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
+			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10, marginTop:20 }}>差 假 核 准</Text>			
+			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
 	
 				
 
@@ -757,7 +768,7 @@ export default class Connection extends Component {
 			
           /></View>
 		   
-		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10}}>結束日期：</Text>
+		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
 		   <DatePicker 
             defaultDate={new Date()}
             minimumDate={new Date(2019, 1, 1)}
@@ -772,32 +783,49 @@ export default class Connection extends Component {
             onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
           /></View>
 		 
+          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
+            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
+			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
+          </Text>
 
-
-			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column', marginVertical: 20}}>
+			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1});
 					this.GetleaveInfo(905855);
 					this.betweendate();	
-				
+					this.GetDayAvailable(244000);	
 					//this.goodjob();
 					//alert('login successfully!');				
 					//this.props.navigation.navigate("Mastermode");				
 					}}><Image style={{width:294, height:54}} source={querybtn}	/>
 					  </Button>
 				</View>
-			</View>	
-			<View style={{flex: 1 , backgroundColor:'red'}}></View>			
+			</View>		  
 		 
 		
 			{workdataDisplay2}
 			
 		
+			
+			{
+				this.state.checkpage ?
+				<Review  /> :
+				<Reviewday/>
+			}		
+			
+			
+			
+			
+		
+			
+			
+			
 
                 </Content>
-  
-            </View>
+
+             </ScrollView>   
+            </Container>
 			
         );
     }

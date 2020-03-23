@@ -204,7 +204,14 @@ class Mastermode extends Component<props> {
 		//alert("workdata get!!")	;
 		//this.props.navigation.navigate("Mastermode");
 		}
-		else { //alert("WorkData Loadwrong") ;  
+		else if (jsonData == "Failed to connect"){
+		alert("網路連線有誤");		   
+		}
+		else if (jsonData == "Nothing"){
+		alert("沒有工作任務資料");
+		this.setState({ boolGet : 0});
+		}	
+		else { //alert("WorkData Loading Error") ;  
 		}
 		
 		}).catch((error)=>{
@@ -239,7 +246,14 @@ class Mastermode extends Component<props> {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { alert("Announcement Loadwrong") ;  
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");		   
+	}	
+	else if (jsonData == "Nothing"){
+		alert("沒有公告資料");
+		this.setState({ NewsboolGet : 0});
+		}	
+	else { alert("Announcement Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -251,31 +265,6 @@ class Mastermode extends Component<props> {
 	
 
 	
-/* 
-	workinfo =(date) => {
-	  var results = [];
-      var searchField = "date";
-      var searchVal = date;
-      for (var i = 0; i < work.length; i++) {
-		      check = String(work[i][searchField])
-          if ((check) == searchVal) {
-              results.push(work[i]);         
-          }
-      }
-
-      const start = Object.values(results).map(item => item.StartTime); 
-      const end = Object.values(work).map(item => item.EndTime); //still object  
-      const type= Object.values(results).map(item => item.work); 
-      var ST = String(start).substring(0, 5);
-      var END = String(end).substring(0,5); 
-      var type = String(type); 
-	  this.setState({ StartTime:ST, EndTime : END, worktype:type});
-	  
- 
-	} */
-
-
-		
 
   render() {
     console.log('now', this.state.volumn);
@@ -467,7 +456,7 @@ const workout = {key:'workout', color: 'green'};
                         </Button>
                      </Left>
                      <Body>
-                       <Title>中華郵政</Title>
+                       <Title>公告通知</Title>
                      </Body>
 					 <Right></Right>
                    </Header>
@@ -526,7 +515,7 @@ const workout = {key:'workout', color: 'green'};
        </SwiperFlatList>
       </ImageBackground>
      	  
-	<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:15,}}>公 告 與 通 知</Text>
+	
 	
 	  </View>
 	  

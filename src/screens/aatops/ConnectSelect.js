@@ -40,6 +40,8 @@ const onplayBtn = require("./assets/RecorderMode/playcontent.png");
 const offplayBtn = require("./assets/RecorderMode/play_black.png");
 const onreocrdBtn = require("./assets/RecorderMode/recordcontent.png");
 const offrecordBtn = require("./assets/RecorderMode/record_black.png");
+const onBtn = require("./assets/RecorderMode/line1.png");
+const offBtn = require("./assets/RecorderMode/lineoff.png");
 
 
 export default class Connection extends Component {
@@ -179,7 +181,6 @@ export default class Connection extends Component {
 	if(this.state.boolGet)
 	{
 	fetch('http://140.114.54.22:8080/leaveget.php/', {
-	//fetch('http://192.168.1.170:8080/leaveget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -199,7 +200,15 @@ export default class Connection extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { //alert("WorkData Loadwrong") ;  
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");
+			   
+	}
+	else if (jsonData == "Nothing"){
+		alert("沒有假單資料");
+		this.setState({ boolGet : 0});
+	}	
+	else { alert("WorkData Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -224,7 +233,6 @@ export default class Connection extends Component {
         else {
 	
             fetch('http://140.114.54.22:8080/updatetest.php/', {
-			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -274,7 +282,7 @@ export default class Connection extends Component {
 		else {
 
 			fetch('http://140.114.54.22:8080/updatetest.php/', {
-			//fetch('http://192.168.1.170:8080/updatetest.php/', { 
+
 				method: 'post',
 				header: {
 					'Accept': 'application/json',
@@ -317,7 +325,7 @@ export default class Connection extends Component {
 	if(this.state.officeboolGet)
 	{
 	fetch('http://140.114.54.22:8080/officeget.php/', {
-	//fetch('http://192.168.1.170:8080/officeget.php/', {
+
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -338,13 +346,20 @@ export default class Connection extends Component {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else if (jsonData != "") {
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");			   
+	}
+	else if (jsonData == "") {
 
 	//this.props.screenProps.set_workdata(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { alert("Office Info Loadwrong") ;  
+	else if (jsonData == "Nothing"){
+		alert("沒有分局資料");
+		this.setState({ officeboolGet : 0});
+	}
+	else { alert("Office Info Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -385,6 +400,9 @@ export default class Connection extends Component {
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");		   
+	}
 
 	else { alert("Data Loading Error"); }
 	
@@ -399,7 +417,7 @@ export default class Connection extends Component {
 	if(this.state.shiftboolGet)
 	{
 	fetch('http://140.114.54.22:8080/shiftscheduleget.php/', {
-	//fetch('http://192.168.1.170:8080/shiftscheduleget.php/', {
+
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -414,10 +432,18 @@ export default class Connection extends Component {
 	if (jsonData != "") {
 	this.setState({ shiftinfo: jsonData, shiftboolGet : 0});
 	}
-	else if (jsonData != "") {
+	else if (jsonData == "") {
 	this.setState({ shiftinfo: [], shiftboolGet : 0});
 	}
-	else { alert("Shift Info Loadwrong") ;  
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");
+			   
+	}
+	else if (jsonData == "Nothing"){
+		alert("沒有分局該職務人數資料");
+		this.setState({ shiftboolGet : 0});
+	}
+	else { alert("Shift Info Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -714,95 +740,46 @@ export default class Connection extends Component {
                     </Button>
                     </Left>
                     <Body>
-                    <Title>中華郵政</Title>
+                    <Title>管理差假</Title>
                     </Body>
 					<Right></Right>
 
                 </Header>
 
                 <Content>
-			
-
-			
-			<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 核 准</Text>			
-			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>查 詢 範 圍</Text>
-	
 				
+				
+				<View style={styles.switch}>
 
- 
-		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
-          <DatePicker 
-            defaultDate={new Date()}
-            minimumDate={new Date(2019, 1, 1)}
-            //maximumDate={new Date(2019, 11, 22)}
-            locale={"en"}       
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Here"
-            textStyle={{ color: this.state.colorbool_1? "green" : "grey" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" }}
-            onDateChange={(date)=>{this.setstartDate(date);this.setState({colorbool_1:1});}}
-			
-          /></View>
-		   
-		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
-		   <DatePicker 
-            defaultDate={new Date()}
-            minimumDate={new Date(2019, 1, 1)}
-            //maximumDate={new Date(2019, 11, 22)}
-            locale={"en"}       
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Here"
-            textStyle={{ color: this.state.colorbool_2? "green" : "grey" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" , }}
-            onDateChange={(date) => {this.setendDate(date);this.setState({colorbool_2:1});}}
-          /></View>
-		 
-          <Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
-            Date: {this.state.chosenstartDate.toString().substr(4, 12)}
-			Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-          </Text>
-
-			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
-				<View>
-					<Button transparent onPress={() => {				
-					this.setState({ dayboolGet : 1});
-					this.GetleaveInfo(905855);
-					this.betweendate();	
-					this.GetDayAvailable(244000);	
-					//this.goodjob();
-					//alert('login successfully!');				
-					//this.props.navigation.navigate("Mastermode");				
-					}}><Image style={{width:294, height:54}} source={querybtn}	/>
-					  </Button>
-				</View>
-			</View>		  
-		 
-		
-			{workdataDisplay2}
-			
-		
-			
-            <View style={styles.switch}>
-
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity  >
-                    <Image source={this.state.checkpage ? onreocrdBtn : offrecordBtn}/>
+                <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'flex-end'}}>
+                  <TouchableOpacity style={{flexDirection:'column', justifyContent: 'space-between'}} 
+				  onPress ={() =>{this.setState({checkpage:true})}}>				  				    
+				    <Text style={{textAlign:'center', color:'white', fontSize: 15 }}>待 核 假 單</Text>
+                    <Image style={{width:width*0.5, height: 3, marginTop: 10}} source={this.state.checkpage ? onBtn : offBtn}/>					
                   </TouchableOpacity>
                 </View>
 
-                <View style={{flex: 1, alignItems: 'center',justifyContent: 'center'}}>
-                  <TouchableOpacity >
-                    <Image source={this.state.checkpage ? offplayBtn:onplayBtn}/>
+                <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'flex-end'}}>
+                  <TouchableOpacity style={{flexDirection:'column', justifyContent: 'space-between'}} 
+				  onPress ={() =>{this.setState({checkpage:false})}}>				  				    
+				    <Text style={{textAlign:'center', color:'white', fontSize: 15 }}>已 審 假 單</Text>
+                    <Image style={{width:width*0.5, height: 3, marginTop: 10}} source={this.state.checkpage ? offBtn : onBtn }/>					
                   </TouchableOpacity>
                 </View>
-              </View>			
+				</View>				
+			
+
+			
+
+			
+			{
+				this.state.checkpage ?
+				<Review  /> :
+				<Reviewday/>
+			}		
 			
 			
-			<Reviewday/>
+			
 			
 		
 			
@@ -927,10 +904,10 @@ list: {
 
         switch: {
 
-            backgroundColor: '#484848',
+            backgroundColor: '#1e2d28',
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
+           // alignItems: 'center',
+            //justifyContent: 'flex-end',
             paddingTop: 10,
         },
 	

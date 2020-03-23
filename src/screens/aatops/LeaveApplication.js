@@ -169,7 +169,7 @@ export default class LeaveApplication extends Component<props> {
 	Getworkdata1 =(e) => {
 	if(this.state.boolGet)
 	{
-	//fetch('http://140.114.55.208:80/workdata1.php/', {
+	
 	fetch('http://140.114.54.22:8080/workdata1.php/', {
 	method: 'post',
 	header: {
@@ -189,7 +189,15 @@ export default class LeaveApplication extends Component<props> {
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
-	else { //alert("WorkData Loadwrong") ;  
+	else if (jsonData == "Failed to connect"){
+		alert("網路連線有誤");
+			   
+	}	
+	else if (jsonData == "Nothing"){
+				alert("沒有班表資料");
+				this.setState({ boolGet : 0});
+	}
+	else { //alert("WorkData Loading Error") ;  
 	}
 	
 	}).catch((error)=>{
@@ -222,6 +230,14 @@ export default class LeaveApplication extends Component<props> {
 	this.setState({ employee: jsonData, employeebool : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
+	}
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");
+			   
+	}	
+	else if (jsonData == "Nothing"){
+	alert("沒有剩餘休假日資料");
+	this.setState({ employeebool : 0});
 	}
 	else { alert("Data Loading Error"); }
 	
@@ -258,6 +274,10 @@ export default class LeaveApplication extends Component<props> {
 	this.setState({ availableLeave: jsonData, availablebool : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
+	else if (jsonData == "Failed to connect"){
+		alert("網路連線有誤");
+			   
+	}	
 
 	else { alert("Data Loading Error"); }
 	
@@ -558,7 +578,7 @@ export default class LeaveApplication extends Component<props> {
     });
 
 
-
+	  //<Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 申 請</Text>
 	return (
 		<Container>
 			<Header style={styles.header}>
@@ -571,7 +591,7 @@ export default class LeaveApplication extends Component<props> {
 				</Button>
 				</Left>
 				<Body>
-				<Title style={{alignSelf:'flex-start'}} >中華郵政</Title>
+				<Title style={{alignSelf:'flex-start',}} >差假申請</Title>
 				</Body>
 				<Right></Right>
 
@@ -606,9 +626,9 @@ export default class LeaveApplication extends Component<props> {
 		</View>
 			
 	  <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>	
-	  <Text style={{fontWeight: 'bold', fontSize: 26, height:34, color:'#435366',alignSelf:'center' ,margin:10,}}>差 假 申 請</Text>
 
-		<View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>差假類別：</Text>
+
+		<View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10, marginTop:20}}>差假類別：</Text>
 		  <Form>
             <Picker
               note
