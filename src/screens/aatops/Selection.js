@@ -449,11 +449,8 @@ login = () =>{
 			  
 
 
-          </View>
 
-            <View style={{height:45}}>
-            </View>
-
+		</View>
         </ScrollView>
         </KeyboardAwareScrollView>
 

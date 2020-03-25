@@ -540,12 +540,12 @@ export default class Reviewday extends Component {
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>	
 		  </View>
 		  
@@ -614,33 +614,33 @@ export default class Reviewday extends Component {
 		  <View style={{flex: 1, flexDirection:'column'}}>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假流水號：</Text>
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>
+		  <Text style={styles.leavetext}>假單流水號：</Text>
+		  <Text style={styles.leavedata}>{jsonData.AbsentNoteID}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>申請時間：</Text>
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
+		  <Text style={styles.leavetext}>申請時間：</Text>
+		  <Text style={styles.leavedata}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
+		  <Text style={styles.leavetext}>差假起始日期：</Text>
+		  <Text style={styles.leavedata}>{jsonData.StartDate}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>	
+		  <Text style={styles.leavetext}>差假結束日期：</Text>
+		  <Text style={styles.leavedata}>{jsonData.EndDate}</Text>	
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假類別：</Text>
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.LeaveID}</Text>
+		  <Text style={styles.leavetext}>差假類別：</Text>
+		  <Text style={styles.leavedata}>{jsonData.LeaveID}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		
-		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>	
+		  <Text style={styles.leavetext}>事由：</Text>		
+		  <Text style={styles.leavedata}>{jsonData.Remark} </Text>	
 		  </View>
   		  
 		  </View>  
@@ -963,6 +963,14 @@ contenttext1:{
 	textAlign:'center'
 	
 },
+
+		leavetext:{
+			flex:5, fontSize: 16,  color:'#435366' ,margin:5, 
+			
+		},
+		leavedata:{
+			flex:6, fontSize: 16,  color:'#435366' ,margin:5, 
+		},
 	
 	
 });

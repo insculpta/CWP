@@ -199,7 +199,7 @@ export default class App extends Component<Props>{
           NHDatePicker: { screen: NHDatePicker }
         },
         {
-          initialRouteName: "Master_main_page",
+          initialRouteName: "Mastermode",
           contentOptions: {  
             activeTintColor: "#e91e63"
           },

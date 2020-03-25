@@ -431,7 +431,10 @@ const workout = {key:'workout', color: 'green'};
 		  
 		  <View style={{flexDirection:'row', borderColor:'#B3D6D0', borderBottomWidth:1, borderRightWidth:0.5}}>
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.From}</Text>               
-		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>
+		  <View style={{ flexDirection: 'column', alignItems:'flex-end'}}>
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginTop:2, marginRight:4, textAlign:'right'}}>公告日期</Text>
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>
+		  </View>
 		  </View>
 		  
 		  <View style={{flex: 4,flexDirection:'row'}}>		 		    
@@ -629,7 +632,7 @@ const styles=StyleSheet.create({
         //position: 'absolute',
         //top: 80, left: 45, right: 0, bottom: 0,
         marginTop: 8,
-        height: 60,
+        height: 45,
         alignSelf: 'stretch',
         backgroundColor: 'rgba(255,255,255,0.32)',
         borderRadius: 8,
@@ -642,7 +645,7 @@ const styles=StyleSheet.create({
     bannerText: {
 
         fontWeight: 'bold',
-        fontSize: 26,
+        fontSize: 22,
         color: '#ffffff',
         alignSelf: 'center',
 

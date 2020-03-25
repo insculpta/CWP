@@ -433,7 +433,7 @@ export default class LeaveApplication extends Component<props> {
 	const employeeleave = this.state.employee;
 	var totalleave = Object.values(employeeleave).map(item => item.LeaveDay); //still object
 	var usedleave = Object.values(employeeleave).map(item => item.AlreadyLeaveDay); 	
-	var restleave  = ((totalleave - usedleave)/8).toFixed(0);
+	var restleave  = totalleave - usedleave;
 	this.state.restleave = restleave;
 	
 	
@@ -446,8 +446,8 @@ export default class LeaveApplication extends Component<props> {
 	   
 		<View style={{height:imageHeight , width:imageWidth, }}>
 		<View style={styles.swipe}>
-		<Text style={styles.bannerText}>已使用特休日數：{jsonData.AlreadyLeaveDay}</Text>
-		<Text style={styles.bannerText}>剩餘特休日數：{this.state.restleave}</Text>                     
+		<Text style={styles.bannerText}>已使用特休時數：{jsonData.AlreadyLeaveDay}</Text>
+		<Text style={styles.bannerText}>剩餘特休時數：{this.state.restleave}</Text>                     
 		</View></View>
 	   
 	   </View>
