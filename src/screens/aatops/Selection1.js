@@ -1,5 +1,5 @@
 import React ,{Component} from 'react';
-import {AppRegistry,View,Text, ActivityIndicator,StyleSheet, TextInput,KeyboardAvoidingView,ScrollView, Keyboard,WebView,Dimensions } from 'react-native';
+import {AppRegistry,View,Text, ActivityIndicator,StyleSheet, TextInput,KeyboardAvoidingView,ScrollView, Keyboard,WebView } from 'react-native';
 //import { WebView } from 'react-native-webview';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {Image,} from 'react-native-elements';
@@ -22,7 +22,6 @@ import {
 } from "native-base";
 
 WEBVIEW_REF = 'webview';
-const { width, height } = Dimensions.get('window');
 
 export default class Connection extends Component<props>{
     constructor(props){
@@ -369,33 +368,86 @@ login = () =>{
               <Right></Right>
             </Header>
 
-				
-
-            <View  style={styles.content}> 
-    
-		
-            <View style={{flex:10}}> 		
-			<WebView
+				<WebView
 				  ref={WEBVIEW_REF}
-				  //source={{uri: 'https://sso.post.gov.tw/my.policy'}}
-				  source={{uri: 'https://github.com/insculpta'}}
-				  //source={{uri: 'http://www.jianshu.com/u/d5b531888b2b'}}
-				  //https://sso.post.gov.tw/my.policy
-				  //https://github.com/insculpta
+				  source={{uri: 'http://google.com.tw/'}}
 				  startInLoadingState={true}
 				  domStorageEnabled={true}
 				  javaScriptEnabled={true}
 				  automaticallyAdjustContentInsets={true}
-			
-				  style={{ marginTop:20, backgroundColor:'red' }}
+				  style={{marginTop:20}}
 			  />
-			</View>			  
-			
 
-                
+            <View  style={styles.content}> 
+		
+             		
+				
 			
 			<KeyboardAwareScrollView>
-			<ScrollView>	 
+			<ScrollView>	     
+
+                <View style={{flex:3,justifyContent: 'center',alignSelf: 'center'}}>
+                    <Image  source={require('./images/cwp_logo.png')} style={{ width: 150, height:150,alignSelf: 'center',margin:15}}/ >
+                    <Text style={{fontWeight: 'bold', fontSize: 30, height:34, color:'#435366',alignItems:  'flex-start',margin:15,}}>郵務智慧排班系統</Text>
+
+                </View>
+
+            <View style={{height:10}}>
+            </View>
+
+                <View style={{flex:2,alignItems :'center',justifyContent: 'center'}}>
+
+                        <View style={styles.input}>
+                        <TextInput
+                             placeholder="  請輸入帳號"
+                             keyboardType='default'
+                             autoFocus={true}
+                             underlineColorAndroid='#d6dee2'
+                             onChangeText={(text) => {this.userAccount = text}}
+                             style={{fontSize:20, color:'#6A6C6E',height:45}}
+                             ref={input => { this.accountInput = input }}
+                        /></View>
+                        <View style={styles.input}>
+                        <TextInput
+                             placeholder="  請輸入密碼"
+                             keyboardType='default'
+                             secureTextEntry= {true}
+                             autoFocus={true}
+                             underlineColorAndroid='#d6dee2'
+                             onChangeText={(text) => {this.userPassword = text}}
+                             style={{fontSize:20, color:'#d6dee2',height:45}}
+                             ref={input => { this.passwordInput = input }}
+
+                        /></View>
+
+                 </View>
+
+
+            <View style={{height:30}}>
+            </View>
+
+            <View style={{flex:2,flexDirection: 'row',alignItems: 'center',}} >
+
+              <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
+
+                <View>
+                    <Button transparent onPress={() => {  
+                    this.OnGetuserdata();
+					//this.goodjob();
+					//alert('login successfully!');				
+					//this.props.navigation.navigate("Mastermode");
+					
+
+                    }}><Image
+                      source={require('./images/login.png')}
+                      style={{ }}/>
+                      </Button>
+                  </View>
+
+
+              </View>
+
+          </View>
 
             <View style={{height:30}}>
             </View>
@@ -416,8 +468,6 @@ login = () =>{
               </View>
 
 		</View>
-		
-		
 		
 
 

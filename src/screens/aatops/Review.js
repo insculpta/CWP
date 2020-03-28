@@ -596,6 +596,18 @@ export default class Connection extends Component {
 		};
 		
 	}); 
+	
+	
+	//將重複ID的刪掉
+	const newArray = [];
+    results.forEach(obj => {
+      if (!newArray.some(o => o.AbsentNoteID === obj.AbsentNoteID)) {
+        newArray.push({ ...obj })
+      }
+
+    });
+	results = newArray;	  
+ 
 
 
 	

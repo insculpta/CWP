@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
+import MSSQL from 'react-native-mssql';
 import {
   Thumbnail,
   Container,
@@ -193,6 +194,7 @@ class Mastermode extends Component<props> {
 		},
 		body: JSON.stringify({
 			EmployeeID: e ,
+			//OfficeID:e,
 		})
 		}).then((response) => response.json())
 		  .then((jsonData) => {
@@ -222,12 +224,29 @@ class Mastermode extends Component<props> {
 	}
 	
 	
+	GetNewsInfo2 =() => {
+	const config = {
+    user: 'postui',
+    password: 'post123456',
+    server: '140.114.55.208', 
+    port: 1433,
+
+    database: 'DLGQAI01'
+
+	}
+	MSSQL.connect(config);
+	const query = 'SELECT * FROM dbo.news '
+	MSSQL.executeQuery(query);
+	MSSQL.close();
+	
+	}
+	
+	
 	
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
 	{
 	fetch('http://140.114.54.22:8080/newsget.php/', {
-	//fetch('http://192.168.1.170:8080/newsget.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -235,6 +254,7 @@ class Mastermode extends Component<props> {
 	},
 	body: JSON.stringify({
 		OfficeID: e ,
+		
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -261,7 +281,7 @@ class Mastermode extends Component<props> {
 		});		
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
-	}
+	};
 	
 
 	
@@ -313,7 +333,7 @@ this.state.userid= String(username);
       var searchField = "Date";
       var searchVal = this.state.date;
       for (var i = 0; i < work1.length; i++) {
-		      check = String(work1[i][searchField])
+		      check = String(work1[i][searchField]).substring(0, 9)
           if ((check) == searchVal) {
               results.push(work1[i]);         
           }
@@ -329,7 +349,7 @@ this.state.userid= String(username);
       var searchField = "Date";
       var searchVal = this.state.date1;
       for (var i = 0; i < work1.length; i++) {
-		      check = String(work1[i][searchField])
+		      check = String(work1[i][searchField]).substring(0, 9)
           if ((check) == searchVal) {
               results.push(work1[i]);         
           }
@@ -391,10 +411,11 @@ this.state.userid= String(username);
 	  
 	  
 	  
- 
-	  var call_1 = this.Getworkdata1(905855);
-	  var call_2 = this.GetNewsInfo(7117);
-	  
+		var call_1 = this.Getworkdata1(905855);
+	  //var call_1 = this.Getworkdata1(244000001002);
+	 //var call_2 = this.GetNewsInfo(244000001002);
+	  var call_2 = this.GetNewsInfo(244000);
+	  //var call_2 = this.GetNewsInfo2();
 	 
 
 // ------------------------Calender--------------------------------------------
@@ -406,7 +427,7 @@ const workout = {key:'workout', color: 'green'};
 //----------------------Announcement-------------------------------------------
 
 	const anno = this.state.announce;
-	let annoDisplay1 = anno.map(function(jsonData) {
+	let annoDisplay1 = anno.map((jsonData)=> {
 
 	return (
 	   <View key={jsonData.From}>
@@ -421,7 +442,7 @@ const workout = {key:'workout', color: 'green'};
 	
 	let annoDisplay2 = anno.map((jsonData)=> {	
 	
-	if(jsonData.EndDate.substring(0,10)>= this.state.date ){
+	if(jsonData.EndDate.substring(0,9)>= this.state.date ){
 	
 	return (
 	   <View key={jsonData.From}>
