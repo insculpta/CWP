@@ -226,7 +226,7 @@ class Mastermode extends Component<props> {
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
 	{
-	fetch('http://140.114.54.22:8080/newsget.php/', {
+	fetch('http://140.114.54.22:8080/newsget1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -393,7 +393,7 @@ this.state.userid= String(username);
 	  
 		var call_1 = this.Getworkdata1(905855);
 	  //var call_1 = this.Getworkdata1(244000001002);
-	 var call_2 = this.GetNewsInfo(244000);
+	 var call_2 = this.GetNewsInfo(244000001002);
 	  //var call_2 = this.GetNewsInfo(244000);
 	  //var call_2 = this.GetNewsInfo2();
 	 
@@ -414,7 +414,7 @@ const workout = {key:'workout', color: 'green'};
 		<View style={{flexDirection: 'row'}}>
 		  <Text style={{color: '#000',width: 50}}>{jsonData.From}</Text>
 		  <Text style={{color: '#00f',width: 180}}>{jsonData.Content}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.EndDate}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.EndDate.date}</Text>
 
 		</View>
 	   </View>
@@ -423,7 +423,7 @@ const workout = {key:'workout', color: 'green'};
 	
 	let annoDisplay2 = anno.map((jsonData)=> {	
 	
-	if(jsonData.EndDate.substring(0,10)>= this.state.date ){
+	if(jsonData.EndDate.date.substring(0,10)>= this.state.date ){
 		
 	return (
 	   <View key={jsonData.From}>
@@ -435,7 +435,7 @@ const workout = {key:'workout', color: 'green'};
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.From}</Text>               
 		  <View style={{ flexDirection: 'column', alignItems:'flex-end'}}>
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginTop:2, marginRight:4, textAlign:'right'}}>公告日期</Text>
-		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>	
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.date.substring(0,10)}</Text>	
 		  </View>
 		  </View>
 		  
