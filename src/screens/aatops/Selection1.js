@@ -368,16 +368,7 @@ login = () =>{
               <Right></Right>
             </Header>
 
-				<WebView
-				  ref={WEBVIEW_REF}
-				  source={{uri: 'http://google.com.tw/'}}
-				  startInLoadingState={true}
-				  domStorageEnabled={true}
-				  javaScriptEnabled={true}
-				  automaticallyAdjustContentInsets={true}
-				  style={{marginTop:20}}
-			  />
-
+				
             <View  style={styles.content}> 
 		
              		

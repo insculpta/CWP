@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import MSSQL from 'react-native-mssql';
 import {
   Thumbnail,
   Container,
@@ -185,7 +184,7 @@ class Mastermode extends Component<props> {
 	    Getworkdata1 =(e) => {
 		if(this.state.boolGet)
 		{
-		//fetch('http://140.114.55.208:80/workdata1.php/', {	
+	
 		fetch('http://140.114.54.22:8080/workdata1.php/', {
 		method: 'post',
 		header: {
@@ -222,26 +221,7 @@ class Mastermode extends Component<props> {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 		}
 	}
-	
-	
-	GetNewsInfo2 =() => {
-	const config = {
-    user: 'postui',
-    password: 'post123456',
-    server: '140.114.55.208', 
-    port: 1433,
-
-    database: 'DLGQAI01'
-
-	}
-	MSSQL.connect(config);
-	const query = 'SELECT * FROM dbo.news '
-	MSSQL.executeQuery(query);
-	MSSQL.close();
-	
-	}
-	
-	
+		
 	
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
@@ -317,7 +297,7 @@ this.state.userid= String(username);
 	   <View key={jsonData.EmployeeID}>
 		<View style={{flexDirection: 'row'}}>
 		  <Text style={{color: '#000',width: 50}}>{jsonData.TaskName}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartTime} ~ {jsonData.EndTime}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.StartTime.date} ~ {jsonData.EndTime.date}</Text>
 
 		</View>
 	   </View>
@@ -413,8 +393,8 @@ this.state.userid= String(username);
 	  
 		var call_1 = this.Getworkdata1(905855);
 	  //var call_1 = this.Getworkdata1(244000001002);
-	 //var call_2 = this.GetNewsInfo(244000001002);
-	  var call_2 = this.GetNewsInfo(244000);
+	 var call_2 = this.GetNewsInfo(244000);
+	  //var call_2 = this.GetNewsInfo(244000);
 	  //var call_2 = this.GetNewsInfo2();
 	 
 
@@ -434,6 +414,7 @@ const workout = {key:'workout', color: 'green'};
 		<View style={{flexDirection: 'row'}}>
 		  <Text style={{color: '#000',width: 50}}>{jsonData.From}</Text>
 		  <Text style={{color: '#00f',width: 180}}>{jsonData.Content}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.EndDate}</Text>
 
 		</View>
 	   </View>
@@ -442,8 +423,8 @@ const workout = {key:'workout', color: 'green'};
 	
 	let annoDisplay2 = anno.map((jsonData)=> {	
 	
-	if(jsonData.EndDate.substring(0,9)>= this.state.date ){
-	
+	if(jsonData.EndDate.substring(0,10)>= this.state.date ){
+		
 	return (
 	   <View key={jsonData.From}>
 		<View style={styles.list}>
@@ -454,7 +435,7 @@ const workout = {key:'workout', color: 'green'};
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.From}</Text>               
 		  <View style={{ flexDirection: 'column', alignItems:'flex-end'}}>
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginTop:2, marginRight:4, textAlign:'right'}}>公告日期</Text>
-		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>	
 		  </View>
 		  </View>
 		  
@@ -545,6 +526,7 @@ const workout = {key:'workout', color: 'green'};
 	  
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
 
+			
 			
 				{annoDisplay2}
 				 

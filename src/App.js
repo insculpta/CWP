@@ -4,7 +4,8 @@ import { Root } from "native-base";
 import { createDrawerNavigator, createStackNavigator, createAppContainer } from "react-navigation";
 
 import Top2 from "./screens/aatops/Top2";
-import Selection from "./screens/aatops/Selection";
+import Selection from "./screens/aatops/Selection";   //Webview
+import Selection1 from "./screens/aatops/Selection1"; //original login  
 import ConnectSelect from "./screens/aatops/ConnectSelect";
 import Mastermode from "./screens/aatops/Mastermode";
 import Master1 from "./screens/aatops/Master1";
@@ -211,7 +212,7 @@ export default class App extends Component<Props>{
         {
           Drawer: { screen: Drawer },  //navigate 到 Drawer
           Selection: { screen: Selection },  //selection go to header  //改 to drawer
-
+		  Selection1: { screen: Selection1 }, 
           Master1:{screen:Master1},
           Master2:{screen:Master2},
 
@@ -344,7 +345,7 @@ export default class App extends Component<Props>{
           AccordionCustomHeaderContent: { screen: AccordionCustomHeaderContent }
         },
         {
-          initialRouteName: "Selection",
+          initialRouteName: "Selection1",
           headerMode: "none"
         }
       );

@@ -634,12 +634,12 @@ export default class Reviewday extends Component {
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>差假起始日期：</Text>
+		  <Text style={styles.leavetext}>差假起始：</Text>
 		  <Text style={styles.leavedata}>{jsonData.StartDate}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>差假結束日期：</Text>
+		  <Text style={styles.leavetext}>差假結束：</Text>
 		  <Text style={styles.leavedata}>{jsonData.EndDate}</Text>	
 		  </View>
 		  

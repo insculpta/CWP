@@ -150,7 +150,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-mssql')
     implementation project(':react-native-fs')
     implementation project(':react-native-audio-recorder-player')
     implementation project(':lottie-react-native')
