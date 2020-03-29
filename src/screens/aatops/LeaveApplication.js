@@ -26,7 +26,7 @@ import {
 
 
 const { width, height } = Dimensions.get('window');
-const banner = require("../../../assets/MasterMode/banner.png");
+const banner = require("../../../assets/MasterMode/banner6.jpg");
 const applybtn = require('./images/apply.png');
 
 export default class LeaveApplication extends Component<props> {
@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#ffffff',
         alignSelf: 'center',
-		marginVertical:5,
+		marginVertical:2,
 		marginLeft:20,
 		marginRight:20,
     },
@@ -860,7 +860,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#ffffff',
         alignSelf: 'center',
-		marginVertical:5,
 		marginLeft:20,
 		marginRight:20,
     },

@@ -42,6 +42,8 @@ const onreocrdBtn = require("./assets/RecorderMode/recordcontent.png");
 const offrecordBtn = require("./assets/RecorderMode/record_black.png");
 const onBtn = require("./assets/RecorderMode/line1.png");
 const offBtn = require("./assets/RecorderMode/lineoff.png");
+const delete1 = require('./assets/RecorderMode/delete1.png');
+const Delete = require('./assets/RecorderMode/delete.png');
 
 
 export default class LeaveQuery extends Component {
@@ -92,6 +94,8 @@ export default class LeaveQuery extends Component {
 		
 		fileList: [],
 		checkpage: true,
+		yes:0, //刪除用 
+		wait:'',
 		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
@@ -99,7 +103,9 @@ export default class LeaveQuery extends Component {
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
 		this.GetleaveInfo= this.GetleaveInfo.bind(this);
-			
+		this.DeleteLeave= this.DeleteLeave.bind(this);
+		this.getAlert = this.getAlert.bind(this);	
+		this.wait = this.wait.bind(this);
 		//this.UpdateleaveInfo = this.UpdateleaveInfo.bind(this);
 	
 		
@@ -315,6 +321,60 @@ export default class LeaveQuery extends Component {
 		});		
 	}
 	}
+	
+	
+	DeleteLeave =(e) => {
+	{
+	fetch('http://140.114.54.22:8080/deleteleave.php/', {
+
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({		
+		AbsentNoteID: e,		
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData == "audit successfully") {
+	alert("該申請已刪除");
+	this.setState({boolGet: 1});					
+	this.GetleaveInfo(905855);
+	}
+	else if (jsonData == "try again") {
+	alert("再試一次");
+	}
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");			   
+	}
+	else if (jsonData == "Nothing"){
+		alert("刪除失敗");
+	}
+	else { alert("Shift Info Loading Error") ;  
+	}
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+	}
+	}
+	
+	
+	
+	
+	getAlert = (ID) => {
+		Alert.alert('警告','刪除此則申請',[{text:"取消",onPress:()=> this.setState({yes:0})} ,{text:"確定",onPress:()=> this.wait(ID) }])
+		
+	
+	}
+	
+	
+// Alert 是Asychronize:(異步)下面直接放function 會立刻執行，所以再用另一個function call
+	wait =(ID)=>{
+	this.DeleteLeave(ID);
+	}
 
 
     render() {
@@ -362,8 +422,8 @@ export default class LeaveQuery extends Component {
 //審核狀態
 	
 	for (var i = 0; i < results.length; i++) {
-		check1 = String(leave[i]["Approve"])
-		check2 = String(leave[i]["Audited"])
+		check2 = String(results[i]["Audited"])
+		check1 = String(results[i]["Approve"])
 			
 			if((check2)== '1' && (check1)== '0'){
 				var approve = results[i];
@@ -436,8 +496,8 @@ export default class LeaveQuery extends Component {
 	
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	
-		
+	//onPress={()=> {this.DeleteLeave.call(this,jsonData.AbsentNoteID)}}
+	//	
 		return(
 				
 	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
@@ -448,9 +508,16 @@ export default class LeaveQuery extends Component {
 		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,textAlign:'center'}}>{jsonData.StartDate}  {jsonData.Day}</Text>
 		</View>	
 
-		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
+		<View  style={{ flex:6 ,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
 		  
-		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.EmployeeName}    員工編號：{jsonData.EmployeeID}</Text></View> 
+		  <View style={{ flex: 6,flexDirection:'row',}}><Text style={{ fontWeight: 'bold', flex:8, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.EmployeeName} 員編：{jsonData.EmployeeID}</Text>
+		  <View style={{flex:2, alignSelf: 'flex-end'}}>		  
+		  <TouchableOpacity transparent full 
+		  onPress={()=> {this.getAlert.call(this,jsonData.AbsentNoteID);  }}>
+			<Image style={{resizeMode:'center', height:'80%',width:'80%', alignSelf: 'flex-end'}} source={delete1}	/>
+		 </TouchableOpacity>
+		  </View> 
+		  </View> 
 		  
 		  <View style={{flex: 1, flexDirection:'column'}}>
 		  

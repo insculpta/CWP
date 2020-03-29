@@ -34,7 +34,7 @@ const action = require("../../../assets/MasterMode/Action.png");
 const action2 = require("../../../assets/MasterMode/Action2.jpg");
 const card1 = require("../../../assets/MasterMode/card1.png");
 const card2 = require("../../../assets/MasterMode/card2.png");
-const banner = require("../../../assets/MasterMode/banner.png");
+const banner = require("../../../assets/MasterMode/banner6.jpg");
 
 
 

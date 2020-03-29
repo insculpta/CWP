@@ -59,7 +59,7 @@ class SideBar extends Component<Props> {
 
 		{
 		  name: "登出",
-		  route: "Selection",
+		  route: "Selection1",
 
 		},
 
