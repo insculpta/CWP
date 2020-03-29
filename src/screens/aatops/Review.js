@@ -168,8 +168,8 @@ export default class Connection extends Component {
 	componentDidMount(){
 		
 	//var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000);	
-	var call_4 = this.GetshiftInfo(244000);
+	var call_2 = this.GetofficeInfo(244000001002);	
+	var call_4 = this.GetshiftInfo(244000001002);
 	//var call_3 = this.GetDayAvailable(244000);
 	
 	}
@@ -177,15 +177,15 @@ export default class Connection extends Component {
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget.php/', {
+	fetch('http://140.114.54.22:8080/leaveget1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
 		'Content-type': 'application/json'
 	},
 	body: JSON.stringify({
-		EmployeeID: e ,
-		OfficeID:244000,
+		
+		OfficeID:e,
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -229,7 +229,7 @@ export default class Connection extends Component {
         }
         else {
 	
-            fetch('http://140.114.54.22:8080/updatetest.php/', {
+            fetch('http://140.114.54.22:8080/updatetest1.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -249,7 +249,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});
-					this.GetleaveInfo(905855);	
+					this.GetleaveInfo(244000001002);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -278,7 +278,7 @@ export default class Connection extends Component {
 		}
 		else {
 
-			fetch('http://140.114.54.22:8080/updatetest.php/', {
+			fetch('http://140.114.54.22:8080/updatetest1.php/', {
 
 				method: 'post',
 				header: {
@@ -299,7 +299,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(905855);			
+					this.GetleaveInfo(244000001002);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -321,7 +321,7 @@ export default class Connection extends Component {
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
-	fetch('http://140.114.54.22:8080/officeget.php/', {
+	fetch('http://140.114.54.22:8080/officeget1.php/', {
 
 	method: 'post',
 	header: {
@@ -373,7 +373,7 @@ export default class Connection extends Component {
 	GetDayAvailable =(e) => {
 	if(this.state.dayboolGet)
 	{
-	fetch('http://140.114.54.22:8080/leave_by_dayget.php/', {
+	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -413,7 +413,7 @@ export default class Connection extends Component {
     GetshiftInfo =(e) => {
 	if(this.state.shiftboolGet)
 	{
-	fetch('http://140.114.54.22:8080/shiftscheduleget.php/', {
+	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
 
 	method: 'post',
 	header: {
@@ -742,13 +742,13 @@ export default class Connection extends Component {
 			  
                 
 
-                <Content>
+               <Content>
 				
 								
 
 			
 				
-			<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
+		<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
 	
 				
 
@@ -790,7 +790,7 @@ export default class Connection extends Component {
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1});
-					this.GetleaveInfo(905855);
+					this.GetleaveInfo(244000001002);
 					this.betweendate();	
 				
 					//this.goodjob();
@@ -800,7 +800,7 @@ export default class Connection extends Component {
 					  </Button>
 				</View>
 			</View>	
-			<View style={{flex: 1 , backgroundColor:'red'}}></View>			
+			
 		 
 		
 			{workdataDisplay2}

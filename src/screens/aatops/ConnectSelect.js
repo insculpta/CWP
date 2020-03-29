@@ -168,8 +168,8 @@ export default class Connection extends Component {
 	componentDidMount(){
 		
 	//var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000);	
-	var call_4 = this.GetshiftInfo(244000);
+	var call_2 = this.GetofficeInfo(244000001002);	
+	var call_4 = this.GetshiftInfo(244000001002);
 	//var call_3 = this.GetDayAvailable(244000);
 	
 	}
@@ -187,8 +187,8 @@ export default class Connection extends Component {
 		'Content-type': 'application/json'
 	},
 	body: JSON.stringify({
-		EmployeeID: e ,
-		OfficeID:244000,
+		
+		OfficeID:e,
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -252,7 +252,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});
-					this.GetleaveInfo(905855);	
+					this.GetleaveInfo(244000001002);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -302,7 +302,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(905855);			
+					this.GetleaveInfo(244000001002);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -324,7 +324,7 @@ export default class Connection extends Component {
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
-	fetch('http://140.114.54.22:8080/officeget.php/', {
+	fetch('http://140.114.54.22:8080/officeget1.php/', {
 
 	method: 'post',
 	header: {
@@ -376,7 +376,7 @@ export default class Connection extends Component {
 	GetDayAvailable =(e) => {
 	if(this.state.dayboolGet)
 	{
-	fetch('http://140.114.54.22:8080/leave_by_dayget.php/', {
+	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -416,7 +416,7 @@ export default class Connection extends Component {
     GetshiftInfo =(e) => {
 	if(this.state.shiftboolGet)
 	{
-	fetch('http://140.114.54.22:8080/shiftscheduleget.php/', {
+	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
 
 	method: 'post',
 	header: {

@@ -185,7 +185,7 @@ class Mastermode extends Component<props> {
 		if(this.state.boolGet)
 		{
 	
-		fetch('http://140.114.54.22:8080/workdata1.php/', {
+		fetch('http://140.114.54.22:8080/workdata2.php/', {
 		method: 'post',
 		header: {
 			'Accept': 'application/json',
@@ -414,7 +414,7 @@ const workout = {key:'workout', color: 'green'};
 		<View style={{flexDirection: 'row'}}>
 		  <Text style={{color: '#000',width: 50}}>{jsonData.From}</Text>
 		  <Text style={{color: '#00f',width: 180}}>{jsonData.Content}</Text>
-		  <Text style={{color: '#00f',width: 180}}>{jsonData.EndDate.date}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.EndDate}</Text>
 
 		</View>
 	   </View>
@@ -423,7 +423,7 @@ const workout = {key:'workout', color: 'green'};
 	
 	let annoDisplay2 = anno.map((jsonData)=> {	
 	
-	if(jsonData.EndDate.date.substring(0,10)>= this.state.date ){
+	if(jsonData.EndDate.substring(0,10)>= this.state.date ){
 		
 	return (
 	   <View key={jsonData.From}>
@@ -435,7 +435,7 @@ const workout = {key:'workout', color: 'green'};
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.From}</Text>               
 		  <View style={{ flexDirection: 'column', alignItems:'flex-end'}}>
 		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginTop:2, marginRight:4, textAlign:'right'}}>公告日期</Text>
-		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.date.substring(0,10)}</Text>	
+		  <Text style={{ fontWeight: 'bold', flex:1, fontSize: 14,  color:'#435366' ,marginBottom:2, marginRight:4,textAlign:'right'}}>{jsonData.Date.substring(0,10)}</Text>	
 		  </View>
 		  </View>
 		  
@@ -480,10 +480,11 @@ const workout = {key:'workout', color: 'green'};
                         </View>
 						
 	    <SwiperFlatList
-          autoplay={false}
-          autoplayDelay={2}
-          autoplayLoop          
-          showPagination={true}
+		  autoplay={true} 			//自動播放
+          autoplayDelay={3}			//播放間隔秒數
+          autoplayLoop={true}       //是否循環  
+          showPagination={true}     // 顯示分頁
+		  disableGesture={false}    //是否禁用手勢滑動
         >		
 						<View style={{ height:  imageHeight , width: imageWidth }}>
                         <View style={styles.swipe}><Text style={styles.date}>{this.state.date} {this.state.day}</Text>

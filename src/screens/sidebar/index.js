@@ -27,38 +27,41 @@ class SideBar extends Component<Props> {
     };
 
     this.datas = [
-      {
-        name: "公告通知",
-        route: "Mastermode",  //要連到的mod
+		{
+		name: "公告通知",
+		route: "Mastermode",  //要連到的mod
 
-      },
-      {
-        name: "個人班表",
-        route: "PlayMode",
+		},
+		{
+		name: "個人班表",
+		route: "PlayMode",
 
-      },
-      {
-        name: "申請差假",
-        route: "LeaveApplication",
+		},
+		{
+		name: "申請差假",
+		route: "LeaveApplication",
 
-      },
-      
-	  
+		},
+
+		{name: "差假紀錄",
+		route: "LeaveQuery",
+		},
+
 		  
-	 { 
-        name: "管理差假",
-        route: "ConnectSelect",
+		{ 
+		name: "管理差假",
+		route: "ConnectSelect",
 
-      },
-	  
-      {},
+		},
+
+		{},
 
 
-        {
-          name: "登出",
-          route: "Selection",
+		{
+		  name: "登出",
+		  route: "Selection",
 
-        },
+		},
 
 
     ];

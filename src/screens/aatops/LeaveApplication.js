@@ -65,28 +65,30 @@ export default class LeaveApplication extends Component<props> {
 		
 		sentbool:true, //按過按鈕之後 
 		
+		employeeID: 905855,
+		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
 		this.getDate = this.getDate.bind(this);
 		this.betweendate = this.betweendate.bind(this);
 		this.onValueChange = this.onValueChange.bind(this);
-		this.getapplytime = this.getapplytime.bind(this);
+		this.Getapplytime = this.Getapplytime.bind(this);
 		
         
     }
 	
  
 	//查找並設定今天日期(申請日期)
-  getapplytime() {
+  Getapplytime() {
     var that = this;
 	var Today = new Date();
-    var date = (Today.getDate()<10 ? '0' : '')+ Today.getDate(); //Current Date
-    var month = Today.getMonth() + 1; //Current Month
+    var date = Today.getDate().toString().length==1?"0"+Today.getDate():Today.getDate();//Current Date
+    var month = (Today.getMonth()+1).toString().length==1?"0"+(Today.getMonth()+1).toString():(Today.getMonth()+1).toString();//Current Month
     var year = Today.getFullYear(); //Current Year
-    var hours = Today.getHours(); //Current Hours
-    var min = Today.getMinutes(); //Current Minutes
-    var sec = Today.getSeconds(); //Current Seconds
+    var hours = Today.getHours().toString().length==1?"0"+Today.getHours().toString():Today.getHours(); //Current Hours
+    var min = Today.getMinutes().toString().length==1?"0"+Today.getMinutes().toString():Today.getMinutes();//Current Minutes
+    var sec = Today.getSeconds().toString().length==1?"0"+Today.getSeconds().toString():Today.getSeconds();//Current Seconds
 	var dayindex = Today.getDay();	
 	//var date1 = (Today.setDate(Today.getDate() + 1)<10 ? '0' : '')+ Today.setDate(Today.getDate() + 1);
     //var date2 = (date1 <10 ? '0' : '')+date1;
@@ -94,7 +96,7 @@ export default class LeaveApplication extends Component<props> {
 	that.setState({
       //Setting the value of the date time
         applytime: year + '-' + month + '-'+ (date)+ ' '+ hours+ ':' + min+ ':' +sec,	    	
-			
+		
     },this.log);
 	
   }
@@ -162,7 +164,7 @@ export default class LeaveApplication extends Component<props> {
 	var call_1 = this.Getworkdata1(905855); 
 	var call_2 = this.GetEmployee(905855);  //Banner 剩餘假數
 	var call_3 = this.GetAvailableLeave(905855);  //拿員工應請的假資料
-		
+	var call_4 = this.Getapplytime();	
 	}
 	 
   
@@ -170,7 +172,7 @@ export default class LeaveApplication extends Component<props> {
 	if(this.state.boolGet)
 	{
 	
-	fetch('http://140.114.54.22:8080/workdata1.php/', {
+	fetch('http://140.114.54.22:8080/workdata2.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -212,7 +214,7 @@ export default class LeaveApplication extends Component<props> {
 	GetEmployee =(e) => {
 	if(this.state.employeebool)
 	{
-	fetch('http://140.114.54.22:8080/getemployee.php/', {
+	fetch('http://140.114.54.22:8080/getemployee1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -252,7 +254,7 @@ export default class LeaveApplication extends Component<props> {
 	GetAvailableLeave =(e) => {
 	if(this.state.availablebool)
 	{
-	fetch('http://140.114.54.22:8080/get_AvailableLeave.php/', {
+	fetch('http://140.114.54.22:8080/get_AvailableLeave1.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -272,6 +274,7 @@ export default class LeaveApplication extends Component<props> {
 
 	//this.props.screenProps.set_workdata(jsonData);
 	this.setState({ availableLeave: jsonData, availablebool : 0});
+	alert("有待請差假");
 	//this.props.navigation.navigate("Mastermode");
 	}
 	else if (jsonData == "Failed to connect"){
@@ -291,19 +294,16 @@ export default class LeaveApplication extends Component<props> {
 
   onValueChange(value: string) { //選取假別
     this.setState({
-      leavetype: value
+      leavetype: value,
     });
   }
   
   //丟申請資料去資料庫
   InsertApplyData = (e) => {
-		this.getapplytime();
-
-        
-        if (this.state.leavetype == "0") {
+        	
+		if (this.state.leavetype == "0") {
             alert("請選擇假別");
-        }
-
+		}
         else if (this.state.start == "") {
             alert("請選擇差假起始日");
         }
@@ -322,8 +322,8 @@ export default class LeaveApplication extends Component<props> {
 		}
         else {
 
-			//fetch('http://140.114.55.208:80/insertleave.php/', {
-            fetch('http://140.114.54.22:8080/insertleave.php/', {
+			
+            fetch('http://140.114.54.22:8080/insertleave1.php/', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -332,7 +332,7 @@ export default class LeaveApplication extends Component<props> {
                 body: JSON.stringify({
                     // we will pass our input data to server
                     
-					EmployeeID: e,
+					EmployeeID: this.state.employeeID,
                     LeaveID: this.state.leavetype,
 					StartDate: this.state.start,
                     EndDate: this.state.end,
@@ -348,7 +348,7 @@ export default class LeaveApplication extends Component<props> {
                 
 				if (jsonData == "apply successfully") {
 					alert("申請已遞交");		
-					this.setState({ leavetype: 0, chosenstartDate: "", chosenendDate: "", start:"", end:"", applytime:"", remark:"",});
+					this.setState({ leavetype:0, chosenstartDate: "", chosenendDate: "", start:"", end:"", applytime:'', remark:"",});
 					this.textInput.clear();	
 				    this.setState({colorbool_1:0, colorbool_2:0});
 
@@ -610,16 +610,17 @@ export default class LeaveApplication extends Component<props> {
                         </View>
 						
 	    <SwiperFlatList
-          autoplay={false}
-          autoplayDelay={2}
-          autoplayLoop          
+          autoplay={true}
+          autoplayDelay={3}
+          autoplayLoop={false}          
           showPagination={true}
+		  disableGesture={false}
         >		
 		    {leaveDisplay}
 			{remindDisplay1}
 			{remindDisplay2}
 			{remindDisplay3}
-
+			
 
 		</SwiperFlatList>
 		</ImageBackground>
@@ -637,23 +638,28 @@ export default class LeaveApplication extends Component<props> {
               selectedValue={this.state.leavetype}
               onValueChange={this.onValueChange}
             >
-			  <Picker.Item label="未選擇" value="0" />
-              <Picker.Item label="休假" value="P" />
-              <Picker.Item label="例假" value="S" />
-              <Picker.Item label="喪假" value="1" />
-              <Picker.Item label="婚假" value="2" />
-              <Picker.Item label="事假" value="3" />
-			  <Picker.Item label="病假" value="4" />
-			  <Picker.Item label="產前(檢)假" value="5" />
-              <Picker.Item label="產假" value="6" />
-              <Picker.Item label="特別休假" value="7" />
-              <Picker.Item label="公假" value="8" />
-              <Picker.Item label="陪產假" value="9" />
-			  <Picker.Item label="生理假" value="10" />
-              <Picker.Item label="家庭照顧假" value="11" />
-              <Picker.Item label="安胎假" value="13" />
-              <Picker.Item label="捐贈骨髓或器官假" value="14" />
-			  <Picker.Item label="工會公假" value="15" />
+			  <Picker.Item label="未選擇" value='0' />
+              <Picker.Item label="事假" value='01' />
+			  <Picker.Item label="例假" value='P' />
+              <Picker.Item label="休假" value='S' />
+              <Picker.Item label="特休假" value='SPE' />			  
+			  <Picker.Item label="公假" value='10' />
+			  <Picker.Item label="特/例" value='10P' />
+			  <Picker.Item label="特/休" value='10S' />			  			  
+              <Picker.Item label="未住院病假" value='02' />
+			  <Picker.Item label="住院病假" value='20' />			  
+              <Picker.Item label="婚假" value='03' />
+			  <Picker.Item label="喪假" value='04' />
+			  <Picker.Item label="娩/產假及流產假" value='05' />
+              <Picker.Item label="公(傷)假" value='07' />
+			  <Picker.Item label="陪產假" value='13' />
+			  <Picker.Item label="捐贈骨髓或器官假" value='14' />
+			  <Picker.Item label="生理假" value='15' />
+			  <Picker.Item label="家庭照顧假" value='16' />
+			  <Picker.Item label="安胎假" value='22' />
+			  <Picker.Item label="工會公假" value='91' />
+			  <Picker.Item label="非駐會理事長公假" value='92' />
+              
             </Picker>
           </Form>
 		</View>
@@ -691,10 +697,7 @@ export default class LeaveApplication extends Component<props> {
 		onDateChange={(date) => {this.setendDate(date);this.betweendate();this.setState({colorbool_2:1});}}
 		/></View>
 				  
-		<Text style={{ flexDirection:'column', fontSize: 12,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,	flexDirection: 'row', justifyContent: 'center',}}>
-		Date: {this.state.chosenstartDate.toString().substr(4, 12)}
-		Date: {this.state.chosenendDate.toString().substr(4, 12)}			
-		</Text>
+
 
 		<View style={{flex:2,justifyContent: 'center'}}>
 		<View style={styles.input} >
@@ -714,6 +717,8 @@ export default class LeaveApplication extends Component<props> {
 		  <View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column'}}>
 			<View>
 				<Button transparent onPress={() => {				
+				this.Getapplytime();
+				//this.setState({leavetype:'1'});
 				this.InsertApplyData(905855);	
 					
 				//this.goodjob();
@@ -727,7 +732,7 @@ export default class LeaveApplication extends Component<props> {
 		
 		
 		</View>		
-	  	 <View></View>  
+ 
 
 		</ScrollView>
 		

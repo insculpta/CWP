@@ -165,7 +165,7 @@ export default class PlayMode extends React.Component {
 	
 	if(this.state.boolGet)
 	{
-		fetch('http://140.114.54.22:8080/taskget.php/', {
+		fetch('http://140.114.54.22:8080/taskget1.php/', {
 			method: 'post',
 			header: {
 				'Accept': 'application/json',
@@ -243,7 +243,7 @@ export default class PlayMode extends React.Component {
 	  var start = Object.values(results).map(item => item.StartTime); 
 	  var end = Object.values(results).map(item => item.EndTime); //still object  
 	  var type= Object.values(results).map(item => item.TaskCode); 
-	  this.state.StartTime = String(start);
+	  this.state.StartTime = String(start).substring(11,16);
 	  this.state.EndTime = String(end).substring(11,16); 
 	  this.state.TaskCode = String(type);	
 
@@ -282,7 +282,7 @@ export default class PlayMode extends React.Component {
 	var start1 = Object.values(results1).map(item => item.StartTime); 
 	var end1 = Object.values(results1).map(item => item.EndTime); //still object  
 	var type1= Object.values(results1).map(item => item.TaskCode); 
-	this.state.StartTime1 = String(start1);
+	this.state.StartTime1 = String(start1).substring(11,16);
 	this.state.EndTime1 = String(end1).substring(11,16); 
 	this.state.TaskCode1 = String(type1);
 	
@@ -324,7 +324,7 @@ export default class PlayMode extends React.Component {
 
 			<View style={{flexDirection: 'row',}}>	
 			<Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5,  marginRight:15, textAlign:'right'}}>起始時間：</Text>		  
-			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5 }}>{(jsonData.StartTime).substring(11,16)}</Text>		 
+			<Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5 }}>{(jsonData.StartTime).substring(0,16)}</Text>		 
 			</View>
 
 			<View style={{flex: 1, flexDirection:'row'}}>

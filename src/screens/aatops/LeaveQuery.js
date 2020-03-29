@@ -4,6 +4,9 @@ import {Alert,TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimension
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
+import Reviewday from './Review_by_day';
+import Play from './Play';
+import Review from './Review';
 
 import { 
   Button,  
@@ -23,6 +26,7 @@ import {
   Left,
   Right,
   Title,
+  Picker, Form,
 } from "native-base";
 
 
@@ -36,9 +40,11 @@ const onplayBtn = require("./assets/RecorderMode/playcontent.png");
 const offplayBtn = require("./assets/RecorderMode/play_black.png");
 const onreocrdBtn = require("./assets/RecorderMode/recordcontent.png");
 const offrecordBtn = require("./assets/RecorderMode/record_black.png");
+const onBtn = require("./assets/RecorderMode/line1.png");
+const offBtn = require("./assets/RecorderMode/lineoff.png");
 
 
-export default class Reviewday extends Component {
+export default class LeaveQuery extends Component {
 
   
 	constructor(props) {
@@ -56,7 +62,6 @@ export default class Reviewday extends Component {
 		//讀取請假資料用
 		StartTime:'', EndTime:'',TaskCode:'',
 		start:'',end:'', //查詢的時間起始結束
-		startday:'',//顯示查詢日期用
 		date_all:[],  // 查詢期間所有天數
 		day_all:[], //查詢期間天數的星期幾
 		
@@ -78,17 +83,16 @@ export default class Reviewday extends Component {
 		colorbool_1:1, // 起始日期選取(開始為綠，送出資料後為灰，表示須重選)
 		colorbool_2:1, // 結束日期選取
 		
-		test:'1',
 		res:[],	
 		
-		year:'    ', month:'  ', date:'  ', //選取單日總計的日期
-		officeinfo:[], officeName:'', officeboolGet:1,// 拿分局資料用
+		officeinfo:[], officeboolGet:1,// 拿分局資料用
 		dayavailable:[],dayboolGet:1, //拿當天可休人數
-		countAppro:'', countDisAppro:'', //計算批准跟不批准的數量
+		shiftinfo:[],shiftboolGet:1, //計算同職務替代人數
 		
 		
+		fileList: [],
+		checkpage: true,
 		
-		fileList: [],		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -112,7 +116,7 @@ export default class Reviewday extends Component {
 	var month = monthdic[monstr];
 	var day = this.state.chosenstartDate.toString().substr(8, 2);
 	this.setState({start:year + '-' + month + '-'+ day,});
-
+	
 	
   }
   	setendDate(newDate) {
@@ -123,7 +127,6 @@ export default class Reviewday extends Component {
 	var month = monthdic[monstr];
 	var day = this.state.chosenendDate.toString().substr(8, 2);
 	this.setState({end:year + '-' + month + '-'+ day,});
-	this.setState({startday:year + ' 年 ' + month + ' 月 '+ day + ' 日 ',});
   }
   
   
@@ -164,23 +167,28 @@ export default class Reviewday extends Component {
 	
 	componentDidMount(){
 		
-	var call_1 = this.GetleaveInfo(244000001002);	
-	var call_2 = this.GetofficeInfo(244000001002);
-		
+	//var call_1 = this.GetleaveInfo(905855);
+	var call_2 = this.GetofficeInfo(244000001002);	
+	var call_4 = this.GetshiftInfo(244000001002);
+	//var call_3 = this.GetDayAvailable(244000);
+	
 	}
 	
 	
+	
+	  
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget1.php/', {
+	fetch('http://140.114.54.22:8080/leaveget_employee.php/', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
 		'Content-type': 'application/json'
 	},
 	body: JSON.stringify({
-		OfficeID:e,
+		
+		EmployeeID:e,
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
@@ -213,107 +221,9 @@ export default class Reviewday extends Component {
 
 
 
-//審核更新
-  ApproveLeave =(e) => {
-      
-	
-	if (e == "") {
-            alert("尚未取得差假流水號");
-            //this.setState({account:'Please enter Account'})
-        
-        }
-        else {
-	
-            fetch('http://140.114.54.22:8080/updatetest1.php/', {
-                method: 'post',
-                header: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json',
-                },
 
-			body: JSON.stringify({
-			
-				AbsentNoteID:e,
-				Audited:'1',
-				Approve: '0',
-
-			})
-            }).then((response) => response.json())
-              .then((jsonData) => {
-                
-				if (jsonData == "audit successfully") {
-					alert("審核資料已更新");
-					this.setState({boolGet: 1});
-					this.GetleaveInfo(244000001002);	
-								
-				}		   
-				else if (jsonData == "try again"){
-					alert("請再試一次");			   
-				}	
-				else if (jsonData == "Failed to connect"){
-					alert("網路連線有誤");			   
-				}					 
-				else
-				{alert("Something goes wrong here!");}
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-        }		
-	}
 	
 
-	DisapprLeave =(e) => {
-		    	
-
-	if (e == "") {
-			alert("ID不見了");
-			//this.setState({account:'Please enter Account'})
-		
-		}
-		else {
-
-			fetch('http://140.114.54.22:8080/updatetest1.php/', {
-
-				method: 'post',
-				header: {
-					'Accept': 'application/json',
-					'Content-type': 'application/json',
-				},
-
-			body: JSON.stringify({
-			
-				AbsentNoteID:e,
-				Audited:'0',
-				Approve: '0',
-
-			})
-			}).then((response) => response.json())
-			  .then((jsonData) => {
-				
-				if (jsonData == "audit successfully") {
-					alert("審核資料已更新");
-					this.setState({boolGet: 1});					
-					this.GetleaveInfo(244000001002);			
-				}		   
-				else if (jsonData == "try again"){
-					alert("請再試一次");			   
-				}	
-				else if (jsonData == "Failed to connect"){
-					alert("網路連線有誤");
-			   
-				}	
-				 
-				else
-				{alert("Something goes wrong here!");}
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-		}		
-	} 
-	
-	  
 	
 	
 	GetofficeInfo =(e) => {
@@ -366,48 +276,45 @@ export default class Reviewday extends Component {
 	
 	
 	
-	
-//拿當天可核准的人數	
-	GetDayAvailable =(e) => {
-	if(this.state.dayboolGet)
+
+    GetshiftInfo =(e) => {
+	if(this.state.shiftboolGet)
 	{
-	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
+	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
+
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
 		'Content-type': 'application/json'
 	},
-	body: JSON.stringify({
-		OfficeID: e ,
-		Date: this.state.start,
-		
+	body: JSON.stringify({		
+		OfficeID: e,		
 	})
 	}).then((response) => response.json())
 	  .then((jsonData) => {
 		  
-	if (jsonData == "Nothing"){
-	alert("目前沒有當天可休人數資料");
-	this.setState({ dayavailable: [1], dayboolGet : 0});
-	}		  
-	else if (jsonData != "") {
-
-	//this.props.screenProps.set_workdata(jsonData);
-	this.setState({ dayavailable: jsonData, dayboolGet : 0});
-	//this.props.navigation.navigate("Mastermode");
+	if (jsonData != "") {
+	this.setState({ shiftinfo: jsonData, shiftboolGet : 0});
+	}
+	else if (jsonData == "") {
+	this.setState({ shiftinfo: [], shiftboolGet : 0});
 	}
 	else if (jsonData == "Failed to connect"){
-	alert("網路連線有誤");		   
+	alert("網路連線有誤");
+			   
 	}
-
-	else { alert("Data Loading Error"); }
+	else if (jsonData == "Nothing"){
+		alert("沒有分局該職務人數資料");
+		this.setState({ shiftboolGet : 0});
+	}
+	else { alert("Shift Info Loading Error") ;  
+	}
 	
 	}).catch((error)=>{
 	  console.error(error);
 		});		
-//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
-}
-
+	}
 
 
     render() {
@@ -418,67 +325,68 @@ export default class Reviewday extends Component {
 	let imageWidth = dimensions.width*0.9;
 	
 
-	
+//----------------Shift Information-----------------------------------------
 	const leave = this.state.leaveInfo;
-				
-// 依date找出   
-	  var results = [];
-	  var searchField = "StartDate";
-	  //var searchVal = "2019-11-07";
-	  for (var i = 0; i < leave.length; i++) {
-		  check = String(leave[i][searchField]) //每筆在work資料表中的資料拿Date出來
-		  for (var j = 0; j < this.state.date_all.length; j++){  //跟期間的資料比對
-			  if ((check) == this.state.date_all[j]) {
-				  //leave[i].push("Day",temp[i]);
-				  var work = leave[i];  // work 為JsonObject
-				  work["Day"] = this.state.day_all[j]; //新增jsonobject的key為Day,對應資料為day_all內容
-				  results.push(work);
+	const shift = this.state.shiftinfo;
+	let shiftDisplay = shift.map((jsonData) => {
+	return (
+	   <View key={jsonData.OfficeID}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 300}}>任務:{jsonData.TaskID},員工:</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.EmployeeID}</Text>
 
-			  }
-		  }
-	  }
-	  
+		</View>
+	   </View>
+	)
+    });	
 
-//將重複ID的刪掉
-	const newArray = [];
-    results.forEach(obj => {
-      if (!newArray.some(o => o.AbsentNoteID === obj.AbsentNoteID)) {
-        newArray.push({ ...obj })
-      }
-
-    });
-	results = newArray;	  
- 
-
-	  
-//計算批准跟不批准的數量 ------------------------------------------------------
-	  
-
-	var Approved = [] ;
-	var countAppro = 0;
-	var countDisAppro = 0;
-
-	for (var i = 0; i < results.length; i++) {
-		check1 = String(results[i]["Approve"]);
-		check2 = String(results[i]["StartDate"]);
-		if ((check1) == '0' && (check2) == this.state.date_all[0]){
-			Approved[i] = String(results[i]["Audited"]);
-		}		
-	}
-	for (var j = 0; j < Approved.length; j++){
-			 if ( Approved[j] == '1'  ){
-				 countAppro += 1;				
-			}
-			else if ( Approved[j] == '0'  ){
-				 countDisAppro += 1;				
-			}
-	}
-				
 	
-//-----------------------------------------------------------------------------
+			
+// 依date找出   
+	var results = [];
+	var searchField = "StartDate";
+	
+	for (var i = 0; i < leave.length; i++) {
+		check = String(leave[i][searchField]) //每筆在work資料表中的資料拿Date出來
+		for (var j = 0; j < this.state.date_all.length; j++){  //跟期間的資料比對
+			if ((check) == this.state.date_all[j]) {
+			  //leave[i].push("Day",temp[i]);
+			var work = leave[i];  // work 為JsonObject
+			work["Day"] = this.state.day_all[j]; //新增jsonobject的key為Day,對應資料為day_all內容
+			results.push(work);
+		  }
+		}
+		
+	}
 
-	  var officename = Object.values(this.state.officeinfo).map(item => item.OfficeName); 
-  
+//審核狀態
+	
+	for (var i = 0; i < results.length; i++) {
+		check1 = String(leave[i]["Approve"])
+		check2 = String(leave[i]["Audited"])
+			
+			if((check2)== '1' && (check1)== '0'){
+				var approve = results[i];
+				approve["Status"] = '已核准';
+				results[i] = approve;
+			}			
+			else if ((check1)== '1' ){
+				var approve = results[i];
+				approve["Status"] = '待審核';
+				results[i] = approve;
+			}
+
+			else if((check2) == '0' && (check1)== '0'){
+				var approve = results[i];
+				approve["Status"] = '待協調';
+				results[i] = approve;
+			}
+			
+	}
+
+
+	  
+	  
 	  var leaveID = Object.values(results).map(item => item.LeaveID); 
 	  var applicationDate = Object.values(results).map(item => item.ApplicationDate); //still object  
 	  var startDate = Object.values(results).map(item => item.StartDate); 	  
@@ -487,7 +395,7 @@ export default class Reviewday extends Component {
 	  var absentNoteID = Object.values(results).map(item => item.AbsentNoteID); //still object 
 	  
 	  
-	  this.state.officeName = String(officename);
+	  
 	  this.state.leaveID = String(leaveID);
 	  this.state.applicationDate = String(applicationDate).substring(0,5); 
 	  this.state.startDate = String(startDate);
@@ -510,17 +418,25 @@ export default class Reviewday extends Component {
 		};
 		
 	}); 
+	
+	//將重複ID的刪掉
+	const newArray = [];
+    results.forEach(obj => {
+      if (!newArray.some(o => o.AbsentNoteID === obj.AbsentNoteID)) {
+        newArray.push({ ...obj })
+      }
+
+    });
+	results = newArray;	  
+ 
 
 
-
-
-//---------------Approved已核准----------------	
-
-//var countAppro = 0;
-
+	
+	var resultsbtn = 0
+	
 	let workdataDisplay2 = results.map((jsonData) =>{
 	
-	if ((jsonData.Approve == 0 && jsonData.Audited == 1)){
+	
 		
 		return(
 				
@@ -539,7 +455,7 @@ export default class Reviewday extends Component {
 		  <View style={{flex: 1, flexDirection:'column'}}>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假流水號：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>流水號：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.AbsentNoteID}</Text>
 		  </View>
 		  
@@ -549,12 +465,12 @@ export default class Reviewday extends Component {
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假起始日期：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.StartDate}</Text>
 		  </View>
 		  
 		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束：</Text>
+		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>差假結束日期：</Text>
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.EndDate}</Text>	
 		  </View>
 		  
@@ -567,16 +483,16 @@ export default class Reviewday extends Component {
 		  <Text style={{flex:4, fontSize: 16,  color:'#435366' ,margin:5, }}>事由：</Text>		
 		  <Text style={{flex:7, fontSize: 16,  color:'#435366' ,margin:5, }}>{jsonData.Remark} </Text>	
 		  </View>
+
   		  
 		  </View>  
 				  
 		  <View style={{flexDirection:'row',flex:1}}>
 			
 		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderLeftWidth:0.5}}>		  
-		  <TouchableOpacity transparent full 
-		  onPress={()=> {this.DisapprLeave.call(this,jsonData.AbsentNoteID)}}>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>尚待協調</Text>
-		 </TouchableOpacity>
+		  
+			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>審核狀態：{jsonData.Status}</Text>
+
 		  </View>
 		  </View>  
 		  
@@ -585,111 +501,22 @@ export default class Reviewday extends Component {
 		 
 				
 		</View></View>
-	
 	)
-	//countAppro +=1;
-	}
-	else{
-		return(
-		<View key={jsonData.EmployeeID}>	
-		</View>
-		
-		)
-	}
-	//this.setState({isApproved: countAppro });
+	
 	
 	});
 	
-	
-	//--------------------------not approved 未通過-------------------------------------
-	let workdataDisplay3 = results.map((jsonData) =>{
-	
-	if (jsonData.Approve == 0 && jsonData.Audited == 0){
-		
-		return(
-				
-	//this.setState({absentNoteID:jsonData.AbsentNoteID,});
-		<View key={jsonData.EmployeeID}>
-		<View style={styles.list}>
-		
-		<View style={{flexDirection: 'row'}}>
-		<Text style={{flex:1, fontSize: 18,  color:'#435366' ,margin:10,textAlign:'center'}}>{jsonData.StartDate}  {jsonData.Day}</Text>
-		</View>	
-
-		<View  style={{ flex: 6,flexDirection:'column',	backgroundColor:'white', borderColor:'#B3D6D0', borderRadius:3, borderWidth:1, margin: 10, width: imageWidth*0.9}}>
-		  
-		  <View><Text style={{ fontWeight: 'bold', flex:1, fontSize: 18,  color:'#435366' ,marginHorizontal:5,marginVertical:10, textAlign:'left'}}>{jsonData.EmployeeName}    員工編號：{jsonData.EmployeeID}</Text></View> 
-		  
-		  <View style={{flex: 1, flexDirection:'column'}}>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>假單流水號：</Text>
-		  <Text style={styles.leavedata}>{jsonData.AbsentNoteID}</Text>
-		  </View>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>申請時間：</Text>
-		  <Text style={styles.leavedata}>{jsonData.ApplicationDate.substring(0,16)}</Text> 
-		  </View>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>差假起始：</Text>
-		  <Text style={styles.leavedata}>{jsonData.StartDate}</Text>
-		  </View>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>差假結束：</Text>
-		  <Text style={styles.leavedata}>{jsonData.EndDate}</Text>	
-		  </View>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>差假類別：</Text>
-		  <Text style={styles.leavedata}>{jsonData.LeaveID}</Text>
-		  </View>
-		  
-		  <View style={{flex: 1, flexDirection:'row'}}>
-		  <Text style={styles.leavetext}>事由：</Text>		
-		  <Text style={styles.leavedata}>{jsonData.Remark} </Text>	
-		  </View>
-  		  
-		  </View>  
-				  
-		  <View style={{flexDirection:'row',flex:1}}>
-		  <View style={{flex:1, alignSelf: 'center', borderColor:'#B3D6D0', borderTopWidth:1, borderRightWidth:0.5}}>
-
-		  <TouchableOpacity transparent full
-		   onPress={()=> {this.ApproveLeave.call(this,jsonData.AbsentNoteID);this.setState({booltest: 0});}}>
-			<Text style={{ fontWeight: 'bold', fontSize: 18,  color:'#435366' ,margin:10, textAlign:'center'}}>核准</Text>
-			</TouchableOpacity>
-		  </View>
-			
-		  </View>  
-		  		  
-		  </View>
-		 
-				
-		</View></View>
-	)}
-	else{
-		return(
-		<View key={jsonData.EmployeeID}>	
-		</View>
-		
-		)
-	}
-	
-	});
-	
-	
-	//----------------Office Information-----------------------------------------
+//----------------Office Information-----------------------------------------
 
 	const office = this.state.officeinfo;
 	let officeDisplay = office.map((jsonData) => {
 
 	return (
 	   <View key={jsonData.OfficeID}>
-		<View style={{flex:1}}>
-		  <Text style={{fontSize:18,fontWeight:'bold',color:'#435366',alignSelf:'center' ,margin:5, marginTop: 10, textAlign:'center', }}>{jsonData.OfficeName}</Text>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.OfficeID}</Text>
+		  <Text style={{color: '#00f',width: 180}}>{jsonData.OfficeName}</Text>
+
 		</View>
 	   </View>
 	)
@@ -702,57 +529,43 @@ export default class Reviewday extends Component {
 
 	return (
 	   <View key={jsonData.OfficeID}>
-		<View style={{flex:1}}>
-		  <Text style={{fontSize: 18,color:'#435366',alignSelf:'center' ,margin:5, marginLeft: 0,textAlign:'center'}}>{jsonData.LeaveAvailable} 人</Text>		  
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,}}>當日可休人數： {jsonData.LeaveAvailable} 人</Text>
 		</View>
 	   </View>
-	   
-		
 	)
     });	 
-//-----------------------------------------------------------------
-	let Display1 =() =>{
-
-	return (
-			<View>
-			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
-			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
-			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
-			</View>
-	)
-    };
 	
-//------------------已核准或待核准數量---------------------------------------
-	
-/* 	let Display = Display (() => {
-	
-	if (results != '' ){
-
-	return(
-			<View><Text style={styles.contenttext}>已核准差假：  {countAppro}  則</Text></View>
-			<View><Text style={styles.contenttext}>待協調差假：  {countDisAppro}  則</Text></View>
-	)}
-	else{
-		return(
-		<View><Text>87</Text>	
-		</View>
-		
-		)}
-	});
- */
-
-
-//------------------已核准或待核准跟分隔---------------------------------------		
 	
 
         return (
 		
-	           <View style={styles.container}>
+	           <Container style={styles.container}>
+			   <ScrollView nestedScrollEnabled = {true}>
+                <Header style={styles.header}>
+                    <Left>
+                    <Button
+                        transparent
+                        onPress={() => this.props.navigation.openDrawer()}
+                    >
+                        <Icon name="menu" />
+                    </Button>
+                    </Left>
+                    <Body>
+                    <Title>差假紀錄</Title>
+                    </Body>
+					<Right></Right>
+
+                </Header>
 
                 <Content>
-								
-			<Text  style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
-	 
+
+				
+		<Text style={{fontWeight: 'bold', fontSize: 18, color:'#435366',alignSelf:'center' ,margin:5,  marginTop:20}}>查 詢 範 圍</Text>
+	
+				
+
+ 
 		  <View style={styles.date} ><Text style={{ fontSize: 18,  color:'#435366',alignSelf:'center' ,margin:10,}}>起始日期：</Text>
           <DatePicker 
             defaultDate={new Date()}
@@ -765,11 +578,11 @@ export default class Reviewday extends Component {
             placeHolderText="Select Here"
             textStyle={{ color: this.state.colorbool_1? "green" : "grey" }}
             placeHolderTextStyle={{ color: "#d3d3d3" }}
-            onDateChange={(date)=>{this.setstartDate(date);this.setState({colorbool_1:1})}}
+            onDateChange={(date)=>{this.setstartDate(date);this.setState({colorbool_1:1});}}
 			
           /></View>
 		   
-		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10,}}>結束日期：</Text>
+		   <View style={styles.date}><Text style={{ fontSize: 18,  height: 30, color:'#435366',alignSelf:'center' ,margin:10}}>結束日期：</Text>
 		   <DatePicker 
             defaultDate={new Date()}
             minimumDate={new Date(2019, 1, 1)}
@@ -785,60 +598,33 @@ export default class Reviewday extends Component {
           /></View>
 		 
 
+
 			<View style={{flex: 1 ,alignItems: 'center',justifyContent: 'flex-end',flexDirection: 'column', marginVertical: 20}}>
 				<View>
 					<Button transparent onPress={() => {				
-					this.setState({ dayboolGet : 1, boolGet:1, officeboolGet:1});
-					this.GetofficeInfo(244000001002);					
-					this.GetleaveInfo(244000001002);
+					this.setState({ dayboolGet : 1, boolGet: 1});
+					this.GetleaveInfo(905855);
 					this.betweendate();	
-					this.GetDayAvailable(244000001002);
-					
+				
 					//this.goodjob();
 					//alert('login successfully!');				
 					//this.props.navigation.navigate("Mastermode");				
 					}}><Image style={{width:294, height:54}} source={querybtn}	/>
 					  </Button>
 				</View>
-			</View>
+			</View>	
 			
-
-			{officeDisplay}
-			<View style={styles.sectionbg1}><Text style={styles.contenttext}>單日總計</Text></View>			
-			<View style={{alignItems:'flex-start'}}>
-				<View><Text style={styles.contenttext1}>日期：{this.state.startday}</Text></View>
-
-				<View style={{flexDirection:'row', }}>
-					<Text style={{fontSize: 18,color:'#435366',margin:5,marginRight:0,textAlign:'center',marginHorizontal: 10, }}>當日可休人數：</Text>{dayAvaiDisplay}
-				</View>
-						
-			<View><Text style={styles.contenttext1}>已核准差假： {countAppro}  則</Text></View>
-			<View><Text style={styles.contenttext1}>待協調差假： {countDisAppro}  則</Text></View>
-			
-			</View>
-			
-			
-			
-
 	
-
-	
-	
-
-
+			<View style={styles.sectionbg}><Text style={styles.contenttext}>查詢結果</Text></View>
+			{workdataDisplay2}				
 			
-			<View style={{marginVertical: 10}}></View>
-			<View style={styles.sectionbg}><Text style={styles.contenttext}>已核准</Text></View>
-		
-			{workdataDisplay2}
-			<View style={styles.sectionbg}><Text style={styles.contenttext}>待協調</Text></View>
-			{workdataDisplay3}
-		
-				
+					
+
                 </Content>
-				
-                
-            </View>
+
+             </ScrollView>   
+            </Container>
+			
         );
     }
 }
@@ -950,23 +736,15 @@ list: {
 
 },
 
-sectionbg1:{
-	flex: 2,
-	flexDirection: 'column',
-	alignItems: 'stretch',
-	justifyContent: 'center',
-	backgroundColor:'white',
-	borderColor:'#B3D6D0',
-	borderRadius:3,
-	borderWidth:1, 
-	marginHorizontal: 10, 
-	marginVertical:10,
-	height: 45,
+        switch: {
+
+            backgroundColor: '#1e2d28',
+            flexDirection: 'row',
+           // alignItems: 'center',
+            //justifyContent: 'flex-end',
+            paddingTop: 10,
+        },
 	
-},
-
-
-
 sectionbg:{
 	flex: 2,
 	flexDirection: 'column',
@@ -987,26 +765,5 @@ contenttext:{
 	margin:5,
 	
 },
-
-contenttext1:{
-	
-	fontSize: 18,
-	color:'#435366',
-	margin:5,
-	textAlign:'center',
-	marginHorizontal: 10, 
-	
-},
-
-leavetext:{
-	flex:5, fontSize: 16,  color:'#435366' ,margin:5, 
-	
-},
-leavedata:{
-	flex:6, fontSize: 16,  color:'#435366' ,margin:5, 
-},
-
-
-	
 	
 });
