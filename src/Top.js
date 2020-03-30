@@ -36,10 +36,10 @@ export default class Top extends Component<Props>{
       this.connect=new Connection(this.ws_fire_event);
 	  
 	  //使用者資料將function bind 
-	  this.set_userdata = this.set_userdata.bind(this);
-	  this.get_userdata = this.get_userdata.bind(this);
-	  this.set_workdata = this.set_workdata.bind(this);
-	  this.get_workdata = this.get_workdata.bind(this);
+	  this.set_userID = this.set_userID.bind(this);
+	  this.get_userID = this.get_userID.bind(this);
+	  this.set_officeID = this.set_officeID.bind(this);
+	  this.get_officeID = this.get_officeID.bind(this);
 	  
 
        this.state={
@@ -72,14 +72,16 @@ export default class Top extends Component<Props>{
         ch_name:this.ch_name,
 		
 		//使用者資料的state
-		userdata:123,
-		set_userdata:this.set_userdata,
-		get_userdata:this.get_userdata,
+		//userid: 168171,
+		  userid: 905855,
+		set_userID:this.set_userID,
+		get_userID:this.get_userID,
 		
 		//使用者工作的state
-		workdata:123,
-		set_workdata:this.set_workdata,
-		get_workdata:this.get_workdata,
+		//officeid:900000280700,
+		  officeid:244000001002,
+		set_officeID:this.set_officeID,
+		get_officeID:this.get_officeID,
 		
 		
 
@@ -297,21 +299,21 @@ export default class Top extends Component<Props>{
   }
 
 //用戶的使用者資料用這兩個function修改	(參照set_room_number跟get)room function做的)
-set_userdata(data){
-	this.state.userdata = data;
+set_userID(data){
+	this.state.userid = data;
 }	
 	
-get_userdata(){
-	return this.state.userdata;	
+get_userID(){
+	return this.state.userid;	
 }
 
 // 存staff table 裡員工的工作資料 
-set_workdata(data){
-	this.state.workdata = data;
+set_officeID(data){
+	this.state.officeid = data;
 }	
 	
-get_workdata(){
-	return this.state.workdata;	
+get_officeID(){
+	return this.state.officeid;	
 }
 		
 	

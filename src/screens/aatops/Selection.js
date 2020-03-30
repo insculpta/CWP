@@ -31,9 +31,9 @@ export default class Connection extends Component<props>{
 this.userAccount = null;
 this.userPassword = null;
 
-//this.props.screenProps.set_workdata=this.props.screenProps.set_workdata.bind(this);
-//this.props.screenProps.get_workdata=this.props.screenProps.get_workdata.bind(this);
-//this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
+//this.props.screenProps.set_officeID=this.props.screenProps.set_officeID.bind(this);
+//this.props.screenProps.get_officeID=this.props.screenProps.get_officeID.bind(this);
+//this.props.screenProps.get_userID = this.props.screenProps.get_userID.bind(this);
     
 	this.state={
           userData:[],
@@ -87,7 +87,7 @@ new_login = () => {
 			
 			else {
 			this.setState({ userData: user_jsonData, }); 
-			this.props.screenProps.set_userdata(user_jsonData);
+			this.props.screenProps.set_userID(user_jsonData);
 		 
 			 
 		   // fetch('http://140.114.54.22:8080/userdata.php/',{
@@ -245,7 +245,7 @@ login = () =>{
 			  
 		if (jsonData != "") {
 	
-		this.props.screenProps.set_workdata(jsonData);
+		this.props.screenProps.set_officeID(jsonData);
 		this.setState({ workData: jsonData,});
 		alert("workdata get!!")	;
 		//this.props.navigation.navigate("Mastermode");
@@ -306,7 +306,7 @@ login = () =>{
 				else if (jsonData != "") {
 					// redirect to profile page
 					this.setState({ userData: jsonData,});
-					this.props.screenProps.set_userdata(jsonData);
+					this.props.screenProps.set_userID(jsonData);
 					//this.goodjob;														
 					alert('Login Successfully');					
 					this.props.navigation.navigate("Mastermode");
@@ -335,7 +335,7 @@ login = () =>{
 
     
 	const data = this.state.userData;
-	//const data = this.props.screenProps.get_userdata();
+	//const data = this.props.screenProps.get_userID();
 	let dataDisplay = data.map(function(jsonData){
 	 return (
 	   <View key={jsonData.id}>
@@ -408,7 +408,7 @@ login = () =>{
               <Button transparent   
 			  onPress ={()=>{
 				//alert("Please contact the system manager!");
-			  this.props.screenProps.set_userdata(this.state.testdata);
+			  this.props.screenProps.set_userID(this.state.testdata);
 			  this.props.navigation.navigate("Mastermode");}} >
               <Text style={styles.underline}>測試人員點此</Text>
 

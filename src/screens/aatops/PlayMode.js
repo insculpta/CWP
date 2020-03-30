@@ -74,6 +74,8 @@ export default class PlayMode extends React.Component {
 		
 		doublework:[], //災防假天數
 		
+		user : this.props.screenProps.get_userID(),
+		office: this.props.screenProps.get_officeID(),
 				
 		};
 		this.setstartDate = this.setstartDate.bind(this);
@@ -151,7 +153,7 @@ export default class PlayMode extends React.Component {
 	
 	componentDidMount(){
 		
-	var call_1 = this.Getworkdata1(905855);	
+	var call_1 = this.Getworkdata1(this.state.user);	
 	//BackAndroidTool.addBackAndroidListener(this.props.navigator);
 		
 	}

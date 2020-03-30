@@ -93,6 +93,9 @@ export default class Connection extends Component {
 		fileList: [],
 		checkpage: true,
 		
+		user : this.props.screenProps.get_userID(),
+	    office: this.props.screenProps.get_officeID(),
+		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -167,9 +170,9 @@ export default class Connection extends Component {
 	
 	componentDidMount(){
 		
-	//var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000001002);	
-	var call_4 = this.GetshiftInfo(244000001002);
+	//var call_1 = this.GetleaveInfo(this.state.user);
+	var call_2 = this.GetofficeInfo(this.state.office);	
+	var call_4 = this.GetshiftInfo(this.state.office);
 	//var call_3 = this.GetDayAvailable(244000);
 	
 	}
@@ -195,7 +198,7 @@ export default class Connection extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ leaveInfo: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -252,7 +255,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});
-					this.GetleaveInfo(244000001002);	
+					this.GetleaveInfo(this.state.office);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -302,7 +305,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(244000001002);			
+					this.GetleaveInfo(this.state.office);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -341,7 +344,7 @@ export default class Connection extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: jsonData, officeboolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -351,7 +354,7 @@ export default class Connection extends Component {
 	}
 	else if (jsonData == "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -396,7 +399,7 @@ export default class Connection extends Component {
 	}		  
 	else if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -786,7 +789,7 @@ export default class Connection extends Component {
 			{
 				this.state.checkpage ?
 				<Review  /> :
-				<Reviewday/>
+				<Reviewday />
 			}		
 			
 			

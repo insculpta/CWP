@@ -86,7 +86,8 @@ export default class Reviewday extends Component {
 		dayavailable:[],dayboolGet:1, //拿當天可休人數
 		countAppro:'', countDisAppro:'', //計算批准跟不批准的數量
 		
-		
+		//user : this.props.screenProps.get_userID(),
+	    //office: this.props.screenProps.get_officeID(),
 		
 		fileList: [],		
 		};
@@ -187,7 +188,7 @@ export default class Reviewday extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ leaveInfo: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -336,7 +337,7 @@ export default class Reviewday extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: jsonData, officeboolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -346,7 +347,7 @@ export default class Reviewday extends Component {
 	}
 	else if (jsonData == "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -391,7 +392,7 @@ export default class Reviewday extends Component {
 	}		  
 	else if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}

@@ -65,7 +65,9 @@ export default class LeaveApplication extends Component<props> {
 		
 		sentbool:true, //按過按鈕之後 
 		
-		employeeID: 905855,
+		
+		user : this.props.screenProps.get_userID(),
+	    office: this.props.screenProps.get_officeID(),
 		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
@@ -161,9 +163,9 @@ export default class LeaveApplication extends Component<props> {
 	componentDidMount(){
 		
 
-	var call_1 = this.Getworkdata1(905855); 
-	var call_2 = this.GetEmployee(905855);  //Banner 剩餘假數
-	var call_3 = this.GetAvailableLeave(905855);  //拿員工應請的假資料
+	var call_1 = this.Getworkdata1(this.state.user); 
+	var call_2 = this.GetEmployee(this.state.user);  //Banner 剩餘假數
+	var call_3 = this.GetAvailableLeave(this.state.user);  //拿員工應請的假資料
 	var call_4 = this.Getapplytime();	
 	}
 	 
@@ -186,7 +188,7 @@ export default class LeaveApplication extends Component<props> {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ workData1: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -228,7 +230,7 @@ export default class LeaveApplication extends Component<props> {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ employee: jsonData, employeebool : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -272,7 +274,7 @@ export default class LeaveApplication extends Component<props> {
 	}		  
 	else if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ availableLeave: jsonData, availablebool : 0});
 	alert("有待請差假");
 	//this.props.navigation.navigate("Mastermode");
@@ -332,7 +334,7 @@ export default class LeaveApplication extends Component<props> {
                 body: JSON.stringify({
                     // we will pass our input data to server
                     
-					EmployeeID: this.state.employeeID,
+					EmployeeID: this.state.user,
                     LeaveID: this.state.leavetype,
 					StartDate: this.state.start,
                     EndDate: this.state.end,
@@ -371,7 +373,7 @@ export default class LeaveApplication extends Component<props> {
 /* 				else if (jsonData != "") {
 					// redirect to profile page
 					this.setState({ userData: jsonData,});
-					this.props.screenProps.set_userdata(jsonData);
+					this.props.screenProps.set_userID(jsonData);
 					//this.goodjob;														
 					alert('Login Successfully');					
 					this.props.navigation.navigate("Mastermode");
@@ -398,8 +400,8 @@ export default class LeaveApplication extends Component<props> {
     let imageWidth = dimensions.width;
 	 
 	 
-	const data =  this.props.screenProps.get_userdata();
-	let dataDisplay = data.map( function(jsonData) {
+	const data =  this.props.screenProps.get_userID();
+/* 	let dataDisplay = data.map( function(jsonData) {
 	return (
 		<View key={jsonData.name}>
 			<View style={{ flexDirection: 'row' }}>			
@@ -407,7 +409,7 @@ export default class LeaveApplication extends Component<props> {
 			</View>
 		</View>
 	)
-});
+}); */
        
 	
 	
@@ -606,7 +608,9 @@ export default class LeaveApplication extends Component<props> {
                  source={banner}
                > 
 				<View style={styles.Top}>
-                            {dataDisplay}
+                           <View style={{ flexDirection: 'row' }}>			
+								<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {this.state.user} ！</Text>			
+						   </View>
                         </View>
 						
 	    <SwiperFlatList
@@ -719,7 +723,7 @@ export default class LeaveApplication extends Component<props> {
 				<Button transparent onPress={() => {				
 				this.Getapplytime();
 				//this.setState({leavetype:'1'});
-				this.InsertApplyData(905855);	
+				this.InsertApplyData(this.state.user);	
 					
 				//this.goodjob();
 				//alert('login successfully!');				

@@ -196,7 +196,7 @@ export default class Connection extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ leaveInfo: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -335,14 +335,14 @@ export default class Connection extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: jsonData, officeboolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
 	}
 	else if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -383,7 +383,7 @@ export default class Connection extends Component {
 	}		  
 	else if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ dayavailable: jsonData, dayboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}

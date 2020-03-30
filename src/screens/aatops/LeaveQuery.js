@@ -97,6 +97,9 @@ export default class LeaveQuery extends Component {
 		yes:0, //刪除用 
 		wait:'',
 		
+		user : this.props.screenProps.get_userID(),
+	    office: this.props.screenProps.get_officeID(),
+		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
 		this.setendDate = this.setendDate.bind(this);
@@ -173,9 +176,9 @@ export default class LeaveQuery extends Component {
 	
 	componentDidMount(){
 		
-	//var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000001002);	
-	var call_4 = this.GetshiftInfo(244000001002);
+	//var call_1 = this.GetleaveInfo(this.state.user);
+	var call_2 = this.GetofficeInfo(this.state.office);	
+	var call_4 = this.GetshiftInfo(this.state.office);
 	//var call_3 = this.GetDayAvailable(244000);
 	
 	}
@@ -201,7 +204,7 @@ export default class LeaveQuery extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ leaveInfo: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -252,7 +255,7 @@ export default class LeaveQuery extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: jsonData, officeboolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -262,7 +265,7 @@ export default class LeaveQuery extends Component {
 	}
 	else if (jsonData == "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ officeinfo: [], officeboolGet : 0});
 	//this.props.navigation.navigate("Mastermode");
 	}
@@ -341,7 +344,7 @@ export default class LeaveQuery extends Component {
 	if (jsonData == "audit successfully") {
 	alert("該申請已刪除");
 	this.setState({boolGet: 1});					
-	this.GetleaveInfo(905855);
+	this.GetleaveInfo(this.state.user);
 	}
 	else if (jsonData == "try again") {
 	alert("再試一次");
@@ -670,7 +673,7 @@ export default class LeaveQuery extends Component {
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1, boolGet: 1});
-					this.GetleaveInfo(905855);
+					this.GetleaveInfo(this.state.user);
 					this.betweendate();	
 				
 					//this.goodjob();

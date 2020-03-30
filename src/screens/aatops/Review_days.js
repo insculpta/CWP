@@ -182,7 +182,7 @@ export default class Review extends Component {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ leaveInfo: jsonData, boolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -313,7 +313,7 @@ export default class Review extends Component {
 /* 				else if (jsonData != "") {
 					// redirect to profile page
 					this.setState({ userData: jsonData,});
-					this.props.screenProps.set_userdata(jsonData);
+					this.props.screenProps.set_userID(jsonData);
 					//this.goodjob;														
 					alert('Login Successfully');					
 					this.props.navigation.navigate("Mastermode");

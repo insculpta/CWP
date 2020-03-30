@@ -68,7 +68,9 @@ class Mastermode extends Component<props> {
 	  announce:[], officeID:'', from:'', 
 	  content:'',  newsDate:'', newsEndDate:'', 
 	
-	  
+	 user : this.props.screenProps.get_userID(),
+	 office: this.props.screenProps.get_officeID(),
+	
 	  
       		
     };
@@ -78,7 +80,7 @@ class Mastermode extends Component<props> {
       this.onStartPlay=this. onStartPlay.bind(this);
       this.onPausePlay=this. onPausePlay.bind(this);	  
       this.timer = null;
-	  this.props.screenProps.get_userdata = this.props.screenProps.get_userdata.bind(this);
+
 	
     }
 
@@ -160,6 +162,7 @@ class Mastermode extends Component<props> {
 	var today3 = this.getDay(3,'-');
 	var today4 = this.getDay(4,'-');
 	
+	
 	that.setState({
       //Setting the value of the date time
         date:
@@ -200,7 +203,7 @@ class Mastermode extends Component<props> {
 			  
 		if (jsonData != "") {
 	
-		//this.props.screenProps.set_workdata(jsonData);
+		//this.props.screenProps.set_officeID(jsonData);
 		this.setState({ workData1: jsonData, boolGet : 0});
 		//alert("workdata get!!")	;
 		//this.props.navigation.navigate("Mastermode");
@@ -241,7 +244,7 @@ class Mastermode extends Component<props> {
 		  
 	if (jsonData != "") {
 
-	//this.props.screenProps.set_workdata(jsonData);
+	//this.props.screenProps.set_officeID(jsonData);
 	this.setState({ announce: jsonData, NewsboolGet : 0});
 	//alert("workdata get!!")	;
 	//this.props.navigation.navigate("Mastermode");
@@ -262,7 +265,9 @@ class Mastermode extends Component<props> {
 //		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
 	}
 	};
+
 	
+
 
 	
 
@@ -273,20 +278,20 @@ class Mastermode extends Component<props> {
      let imageWidth = dimensions.width;
 	 
 	 
-	const data =  this.props.screenProps.get_userdata();
-	let dataDisplay = data.map( function(jsonData) {
+	const data =  this.props.screenProps.get_userID();
+/* 	let dataDisplay = data.map( function(jsonData) {
 	return (
 		<View key={jsonData.name}>
 			<View style={{ flexDirection: 'row' }}>			
 				<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {jsonData.name} ！</Text>			
 			</View>
 		</View>
-	)
-});
+	) 
+});*/
 
 
-const username = Object.values(data).map(item => item.name); //still object
-this.state.userid= String(username); 
+//const username = Object.values(data).map(item => item.name); //still object
+//this.state.userid= String(username); 
 
 
 
@@ -467,7 +472,8 @@ const workout = {key:'workout', color: 'green'};
                    </Header>
 
  <Content>
-	
+ 
+
 	  
 	  <View style={{flex:2}}>
 
@@ -476,8 +482,10 @@ const workout = {key:'workout', color: 'green'};
                  source={banner}
                > 
 				<View style={styles.Top}>
-                            {dataDisplay}
-                        </View>
+                            <View style={{ flexDirection: 'row' }}>			
+								<Text style={{ color: '#FFFFFF', fontSize: 14 }}>Hello, {this.state.user}！</Text>			
+							</View>
+                </View>
 						
 	    <SwiperFlatList
 		  autoplay={true} 			//自動播放
@@ -522,12 +530,11 @@ const workout = {key:'workout', color: 'green'};
       </ImageBackground>
      	  
 	
-	
 	  </View>
 	  
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
 
-			
+		
 			
 				{annoDisplay2}
 				 
