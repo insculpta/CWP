@@ -70,6 +70,8 @@ class Mastermode extends Component<props> {
 	
 	 user : this.props.screenProps.get_userID(),
 	 office: this.props.screenProps.get_officeID(),
+	 
+	 officeinfo:[], officeboolGet:1,// 拿分局資料用
 	
 	  
       		
@@ -181,6 +183,8 @@ class Mastermode extends Component<props> {
 		
     });
 	
+	//var call_3 = this.GetofficeInfo(0);	
+	
   }
   
 	
@@ -189,6 +193,7 @@ class Mastermode extends Component<props> {
 		{
 	
 		fetch('http://140.114.54.22:8080/workdata2.php/', {
+		//fetch('http://210.200.25.43:443/workdata2.php', {
 		method: 'post',
 		header: {
 			'Accept': 'application/json',
@@ -229,7 +234,8 @@ class Mastermode extends Component<props> {
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
 	{
-	fetch('http://140.114.54.22:8080/newsget1.php/', {
+	fetch('http://140.114.54.22:80/newsget2.php/', {
+	//fetch('http://210.200.25.43:443/newsget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -268,7 +274,53 @@ class Mastermode extends Component<props> {
 
 	
 
+	GetofficeInfo =(e) => {
+	if(this.state.officeboolGet)
+	{
+	fetch('http://210.200.25.43:443/office.php', {
 
+	method: 'post',
+	header: {
+		'Accept': 'application/json',
+		'Content-type': 'application/json'
+	},
+	body: JSON.stringify({
+		
+		//OfficeID: e,
+		
+	})
+	}).then((response) => response.json())
+	  .then((jsonData) => {
+		  
+	if (jsonData != "") {
+
+	//this.props.screenProps.set_officeID(jsonData);
+	this.setState({ officeinfo: jsonData, officeboolGet : 0});
+	//alert("workdata get!!")	;
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else if (jsonData == "Failed to connect"){
+	alert("網路連線有誤");			   
+	}
+	else if (jsonData == "") {
+
+	//this.props.screenProps.set_officeID(jsonData);
+	this.setState({ officeinfo: [], officeboolGet : 0});
+	//this.props.navigation.navigate("Mastermode");
+	}
+	else if (jsonData == "Nothing"){
+		alert("沒有分局資料");
+		this.setState({ officeboolGet : 0});
+	}
+	else { alert("Office Info Loading Error") ;  
+	}
+	
+	}).catch((error)=>{
+	  console.error(error);
+		});		
+//		return <Text style={{ color: '#FFFFFF', fontSize: 14 }}>call work func！</Text>
+	}
+	}
 	
 
   render() {
@@ -396,10 +448,12 @@ class Mastermode extends Component<props> {
 	  
 	  
 	  
-		var call_1 = this.Getworkdata1(905855);
+		//var call_1 = this.Getworkdata1(905855);
+	 //var call_1 = this.Getworkdata1(168171); //郵局資料庫
 	  //var call_1 = this.Getworkdata1(244000001002);
-	 var call_2 = this.GetNewsInfo(244000001002);
-	  //var call_2 = this.GetNewsInfo(244000);
+	 //var call_2 = this.GetNewsInfo(900000280700);  //郵局資料庫
+	  var call_2 = this.GetNewsInfo(244000001002); // 清大
+	  
 	  //var call_2 = this.GetNewsInfo2();
 	 
 
@@ -452,6 +506,22 @@ const workout = {key:'workout', color: 'green'};
 		</View></View></View>
 			   
 	)}	
+    });
+	
+	//----------------Office Information-----------------------------------------
+
+	const office = this.state.officeinfo;
+	let officeDisplay = office.map((jsonData) => {
+
+	return (
+	   <View key={jsonData.OfficeID}>
+		<View style={{flexDirection: 'row'}}>
+		  <Text style={{color: '#000',width: 50}}>{jsonData.OfficeID}</Text>
+		  //<Text style={{color: '#00f',width: 180}}>{jsonData.OfficeName}</Text>
+
+		</View>
+	   </View>
+	)
     });
 
 
@@ -531,11 +601,11 @@ const workout = {key:'workout', color: 'green'};
      	  
 	
 	  </View>
-	  
+	 
 	        <ScrollView style={{paddingRight:15,paddingLeft:15,paddingBottom:15}}>
 
 		
-			
+		         
 				{annoDisplay2}
 				 
 

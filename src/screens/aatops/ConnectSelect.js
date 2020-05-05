@@ -183,7 +183,8 @@ export default class Connection extends Component {
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget.php/', {
+	fetch('http://140.114.54.22:8080/leaveget1.php/', {
+	//fetch('http://210.200.25.43:443/leaveget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -236,6 +237,7 @@ export default class Connection extends Component {
         else {
 	
             fetch('http://140.114.54.22:8080/updatetest.php/', {
+			//fetch('http://210.200.25.43:443/updatetest.php', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -285,6 +287,7 @@ export default class Connection extends Component {
 		else {
 
 			fetch('http://140.114.54.22:8080/updatetest.php/', {
+			//fetch('http://210.200.25.43:443/updatetest.php', {
 
 				method: 'post',
 				header: {
@@ -328,6 +331,7 @@ export default class Connection extends Component {
 	if(this.state.officeboolGet)
 	{
 	fetch('http://140.114.54.22:8080/officeget1.php/', {
+	//fetch('http://210.200.25.43:443/officeget1.php', {
 
 	method: 'post',
 	header: {
@@ -380,6 +384,7 @@ export default class Connection extends Component {
 	if(this.state.dayboolGet)
 	{
 	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
+	//fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -420,6 +425,7 @@ export default class Connection extends Component {
 	if(this.state.shiftboolGet)
 	{
 	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
+	//fetch('http://210.200.25.43:443/shiftscheduleget1.php', {
 
 	method: 'post',
 	header: {

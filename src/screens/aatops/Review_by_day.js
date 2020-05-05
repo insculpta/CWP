@@ -175,6 +175,7 @@ export default class Reviewday extends Component {
 	if(this.state.boolGet)
 	{
 	fetch('http://140.114.54.22:8080/leaveget1.php/', {
+	//fetch('http://210.200.25.43:443/leaveget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -226,6 +227,7 @@ export default class Reviewday extends Component {
         else {
 	
             fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			//fetch('http://210.200.25.43:443/updatetest1.php', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -275,6 +277,7 @@ export default class Reviewday extends Component {
 		else {
 
 			fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			//fetch('http://210.200.25.43:443/updatetest1.php', {
 
 				method: 'post',
 				header: {
@@ -321,6 +324,7 @@ export default class Reviewday extends Component {
 	if(this.state.officeboolGet)
 	{
 	fetch('http://140.114.54.22:8080/officeget1.php/', {
+	//fetch('http://210.200.25.43:443/officeget1.php', {
 
 	method: 'post',
 	header: {
@@ -373,6 +377,7 @@ export default class Reviewday extends Component {
 	if(this.state.dayboolGet)
 	{
 	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
+	//fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',

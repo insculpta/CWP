@@ -168,6 +168,7 @@ export default class PlayMode extends React.Component {
 	if(this.state.boolGet)
 	{
 		fetch('http://140.114.54.22:8080/taskget1.php/', {
+		//fetch('http://210.200.25.43:443/taskget1.php', {
 			method: 'post',
 			header: {
 				'Accept': 'application/json',
