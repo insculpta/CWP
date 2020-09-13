@@ -40,6 +40,10 @@ const offrecordBtn = require("./assets/RecorderMode/record_black.png");
 
 export default class Reviewday extends Component {
 
+	static propTypes = {
+        user: PropTypes.number,
+		office: PropTypes.number,
+    };  
   
 	constructor(props) {
         super(props);
@@ -88,6 +92,8 @@ export default class Reviewday extends Component {
 		
 		//user : this.props.screenProps.get_userID(),
 	    //office: this.props.screenProps.get_officeID(),
+		
+		user:900024, office:2804,
 		
 		fileList: [],		
 		};
@@ -165,8 +171,8 @@ export default class Reviewday extends Component {
 	
 	componentDidMount(){
 		
-	var call_1 = this.GetleaveInfo(244000001002);	
-	var call_2 = this.GetofficeInfo(244000001002);
+	var call_1 = this.GetleaveInfo(this.props.office);	
+	var call_2 = this.GetofficeInfo(this.props.office);
 		
 	}
 	
@@ -174,8 +180,8 @@ export default class Reviewday extends Component {
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget1.php/', {
-	//fetch('http://210.200.25.43:443/leaveget1.php', {
+	//fetch('http://140.114.54.22:8080/leaveget1.php/', {
+	fetch('http://210.200.25.43:443/leaveget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -226,8 +232,8 @@ export default class Reviewday extends Component {
         }
         else {
 	
-            fetch('http://140.114.54.22:8080/updatetest1.php/', {
-			//fetch('http://210.200.25.43:443/updatetest1.php', {
+            //fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			fetch('http://210.200.25.43:443/updatetest1.php', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -247,7 +253,7 @@ export default class Reviewday extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});
-					this.GetleaveInfo(244000001002);	
+					this.GetleaveInfo(this.props.office);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -276,8 +282,8 @@ export default class Reviewday extends Component {
 		}
 		else {
 
-			fetch('http://140.114.54.22:8080/updatetest1.php/', {
-			//fetch('http://210.200.25.43:443/updatetest1.php', {
+			//fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			fetch('http://210.200.25.43:443/updatetest1.php', {
 
 				method: 'post',
 				header: {
@@ -298,7 +304,7 @@ export default class Reviewday extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(244000001002);			
+					this.GetleaveInfo(this.props.office);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -323,8 +329,8 @@ export default class Reviewday extends Component {
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
-	fetch('http://140.114.54.22:8080/officeget1.php/', {
-	//fetch('http://210.200.25.43:443/officeget1.php', {
+	//fetch('http://140.114.54.22:8080/officeget1.php/', {
+	fetch('http://210.200.25.43:443/officeget1.php', {
 
 	method: 'post',
 	header: {
@@ -376,8 +382,8 @@ export default class Reviewday extends Component {
 	GetDayAvailable =(e) => {
 	if(this.state.dayboolGet)
 	{
-	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
-	//fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
+	//fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
+	fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -795,10 +801,10 @@ export default class Reviewday extends Component {
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1, boolGet:1, officeboolGet:1});
-					this.GetofficeInfo(244000001002);					
-					this.GetleaveInfo(244000001002);
+					this.GetofficeInfo(this.props.office);					
+					this.GetleaveInfo(this.props.office);
 					this.betweendate();	
-					this.GetDayAvailable(244000001002);
+					this.GetDayAvailable(this.props.office);
 					
 					//this.goodjob();
 					//alert('login successfully!');				

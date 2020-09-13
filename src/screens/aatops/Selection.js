@@ -126,48 +126,7 @@ new_login = () => {
 
 
 
-some =() =>{
 
-fetch('http://140.114.54.22:8080/login.php/',{
-        method:'post',
-        header:{
-            'Accept': 'application/json',
-            'Content-type': 'application/json'
-        },
-        body:JSON.stringify({
-            // we will pass our input data to server
-            account: this.userAccount,
-            password: this.userPassword,
-        })
-
-    })
-    .then((response) => response.json())
-     .then((jsonData)=>{
-
-         if(jsonData == "Correct"){
-             // redirect to profile page
-             alert("Successfully Login");
-             this.props.navigation.navigate("Mastermode");
-
-         }else if (jsonData == "Wrong Password"){
-             alert("Wrong Password");
-             this.passwordInput.clear();
-             this.userPassword=null;
-         }
-         else if (jsonData == "Wrong Account"){
-            alert("Wrong Account");
-            this.accountInput.clear();
-            this.passwordInput.clear();
-            this.userAccount=null;
-            this.userPassword=null;
-         }
-     })
-     .catch((error)=>{
-     console.error(error);
-     });	
-		
-		
-}
 
 
 
@@ -228,36 +187,7 @@ login = () =>{
 
 
 
-    goodjob =() => {
-		
-		fetch('http://140.114.54.22:8080/workdata.php/', {
-		method: 'post',
-		header: {
-			'Accept': 'application/json',
-			'Content-type': 'application/json'
-		},
-		body: JSON.stringify({
-			account: this.userAccount,
-			password: this.userPassword,
-		})
-		}).then((response) => response.json())
-		  .then((jsonData) => {
-			  
-		if (jsonData != "") {
-	
-		this.props.screenProps.set_officeID(jsonData);
-		this.setState({ workData: jsonData,});
-		alert("workdata get!!")	;
-		//this.props.navigation.navigate("Mastermode");
-		}
-		else { alert("WorkData Loading Error") ;  }
-		
-		}).catch((error)=>{
-		  console.error(error);
-			});
-		
-		
-	}
+
 
 
 
@@ -276,7 +206,8 @@ login = () =>{
         }
         else {
 
-            fetch('http://140.114.54.22:8080/userdata.php/', {
+            //fetch('http://140.114.54.22:8080/userdata.php/', {
+			fetch('http://210.200.25.43:443/userdata.php', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',

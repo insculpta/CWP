@@ -72,13 +72,15 @@ export default class Top extends Component<Props>{
         ch_name:this.ch_name,
 		
 		//使用者資料的state
-		userid: 168171,
+		//userid: 168171,
+		userid: 900042,
 		  //userid: 905855,
 		set_userID:this.set_userID,
 		get_userID:this.get_userID,
 		
 		//使用者工作的state
-		officeid:900000280700,
+		//officeid:900000280700,
+		officeid:2804,
 		  //officeid:244000001002,
 		set_officeID:this.set_officeID,
 		get_officeID:this.get_officeID,

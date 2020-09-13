@@ -189,8 +189,8 @@ export default class LeaveQuery extends Component {
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget_employee.php/', {
-	//fetch('http://210.200.25.43:443/leaveget_employee.php', {
+	//fetch('http://140.114.54.22:8080/leaveget_employee.php/', {
+	fetch('http://210.200.25.43:443/leaveget_employee.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -239,8 +239,8 @@ export default class LeaveQuery extends Component {
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
-	fetch('http://140.114.54.22:8080/officeget1.php/', {
-	//fetch('http://210.200.25.43:443/officeget1.php', {
+	//fetch('http://140.114.54.22:8080/officeget1.php/', {
+	fetch('http://210.200.25.43:443/officeget1.php', {
 
 	method: 'post',
 	header: {
@@ -291,8 +291,8 @@ export default class LeaveQuery extends Component {
     GetshiftInfo =(e) => {
 	if(this.state.shiftboolGet)
 	{
-	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
-	//fetch('http://210.200.25.43:443/shiftscheduleget1.php', {
+	//fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
+	fetch('http://210.200.25.43:443/shiftscheduleget1.php', {
 
 	method: 'post',
 	header: {
@@ -331,8 +331,8 @@ export default class LeaveQuery extends Component {
 	
 	DeleteLeave =(e) => {
 	{
-	fetch('http://140.114.54.22:8080/deleteleave.php/', {
-	//fetch('http://210.200.25.43:443/deleteleave.php', {	
+	//fetch('http://140.114.54.22:8080/deleteleave.php/', {
+	fetch('http://210.200.25.43:443/deleteleave.php', {	
 
 	method: 'post',
 	header: {

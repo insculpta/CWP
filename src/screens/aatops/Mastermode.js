@@ -192,8 +192,8 @@ class Mastermode extends Component<props> {
 		if(this.state.boolGet)
 		{
 	
-		fetch('http://140.114.54.22:8080/workdata2.php/', {
-		//fetch('http://210.200.25.43:443/workdata2.php', {
+		//fetch('http://140.114.54.22:8080/workdata2.php/', {
+		fetch('http://210.200.25.43:443/workdata2.php', {
 		method: 'post',
 		header: {
 			'Accept': 'application/json',
@@ -234,8 +234,8 @@ class Mastermode extends Component<props> {
 	GetNewsInfo =(e) => {
 	if(this.state.NewsboolGet)
 	{
-	fetch('http://140.114.54.22:80/newsget2.php/', {
-	//fetch('http://210.200.25.43:443/newsget1.php', {
+	//fetch('http://140.114.54.22:80/newsget2.php/', {
+	fetch('http://210.200.25.43:443/newsget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -449,10 +449,10 @@ class Mastermode extends Component<props> {
 	  
 	  
 		//var call_1 = this.Getworkdata1(905855);
-	 //var call_1 = this.Getworkdata1(168171); //郵局資料庫
+	 var call_1 = this.Getworkdata1(this.state.user); //郵局資料庫
 	  //var call_1 = this.Getworkdata1(244000001002);
-	 //var call_2 = this.GetNewsInfo(900000280700);  //郵局資料庫
-	  var call_2 = this.GetNewsInfo(244000001002); // 清大
+	 var call_2 = this.GetNewsInfo(this.state.office);  //郵局資料庫
+	  //var call_2 = this.GetNewsInfo(244000001002); // 清大
 	  
 	  //var call_2 = this.GetNewsInfo2();
 	 

@@ -3,7 +3,7 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import {Alert,TouchableOpacity, StyleSheet,Text, Platform, Image,View, Dimensions, ScrollView,ImageBackground, FlatList,ListView} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-
+import PropTypes from 'prop-types';
 import Reviewday from './Review_by_day';
 import Play from './Play';
 import Review from './Review';
@@ -46,7 +46,12 @@ const offBtn = require("./assets/RecorderMode/lineoff.png");
 
 export default class Connection extends Component {
 
-  
+	static propTypes = {
+        user: PropTypes.number,
+		office: PropTypes.number,
+    };
+	
+	
 	constructor(props) {
         super(props);
 		this.state = { 			
@@ -92,9 +97,6 @@ export default class Connection extends Component {
 		
 		fileList: [],
 		checkpage: true,
-		
-		//user : this.props.screenProps.get_userID(),
-	   // office: this.props.screenProps.get_officeID(),
 		
 		};
 		this.setstartDate = this.setstartDate.bind(this);
@@ -169,19 +171,20 @@ export default class Connection extends Component {
 	
 	
 	componentDidMount(){
-		
+			
 	//var call_1 = this.GetleaveInfo(905855);
-	var call_2 = this.GetofficeInfo(244000001002);	
-	var call_4 = this.GetshiftInfo(244000001002);
+	var call_2 = this.GetofficeInfo(this.props.office);	
+	var call_4 = this.GetshiftInfo(this.props.office);
 	//var call_3 = this.GetDayAvailable(244000);
+	
 	
 	}
 	
 	GetleaveInfo =(e) => {
 	if(this.state.boolGet)
 	{
-	fetch('http://140.114.54.22:8080/leaveget1.php/', {
-	//fetch('http://210.200.25.43:443/leaveget1.php', {
+	//fetch('http://140.114.54.22:8080/leaveget1.php/', {
+	fetch('http://210.200.25.43:443/leaveget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -233,8 +236,8 @@ export default class Connection extends Component {
         }
         else {
 	
-            fetch('http://140.114.54.22:8080/updatetest1.php/', {
-			//fetch('http://210.200.25.43:443/updatetest1.php', {	
+            //fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			fetch('http://210.200.25.43:443/updatetest1.php', {	
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
@@ -254,7 +257,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});
-					this.GetleaveInfo(244000001002);	
+					this.GetleaveInfo(this.props.office);	
 								
 				}		   
 				else if (jsonData == "try again"){
@@ -283,8 +286,8 @@ export default class Connection extends Component {
 		}
 		else {
 
-			fetch('http://140.114.54.22:8080/updatetest1.php/', {
-			//fetch('http://210.200.25.43:443/updatetest1.php', {
+			//fetch('http://140.114.54.22:8080/updatetest1.php/', {
+			fetch('http://210.200.25.43:443/updatetest1.php', {
 				method: 'post',
 				header: {
 					'Accept': 'application/json',
@@ -304,7 +307,7 @@ export default class Connection extends Component {
 				if (jsonData == "audit successfully") {
 					alert("審核資料已更新");
 					this.setState({boolGet: 1});					
-					this.GetleaveInfo(244000001002);			
+					this.GetleaveInfo(this.props.office);			
 				}		   
 				else if (jsonData == "try again"){
 					alert("請再試一次");			   
@@ -326,8 +329,8 @@ export default class Connection extends Component {
 	GetofficeInfo =(e) => {
 	if(this.state.officeboolGet)
 	{
-	fetch('http://140.114.54.22:8080/officeget1.php/', {
-	//fetch('http://210.200.25.43:443/officeget1.php', {
+	//fetch('http://140.114.54.22:8080/officeget1.php/', {
+	fetch('http://210.200.25.43:443/officeget1.php', {
 		
 	method: 'post',
 	header: {
@@ -379,8 +382,8 @@ export default class Connection extends Component {
 	GetDayAvailable =(e) => {
 	if(this.state.dayboolGet)
 	{
-	fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
-	//fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
+	//fetch('http://140.114.54.22:8080/leave_by_dayget1.php/', {
+	fetch('http://210.200.25.43:443/leave_by_dayget1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -420,8 +423,8 @@ export default class Connection extends Component {
     GetshiftInfo =(e) => {
 	if(this.state.shiftboolGet)
 	{
-	fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
-	//fetch('http://210.200.25.43:443/shiftscheduleget1.php', {
+	//fetch('http://140.114.54.22:8080/shiftscheduleget1.php/', {
+	fetch('http://210.200.25.43:443/shiftscheduleget1.php', {
 
 	method: 'post',
 	header: {
@@ -798,7 +801,7 @@ export default class Connection extends Component {
 				<View>
 					<Button transparent onPress={() => {				
 					this.setState({ dayboolGet : 1});
-					this.GetleaveInfo(244000001002);
+					this.GetleaveInfo(this.props.office);
 					this.betweendate();	
 				
 					//this.goodjob();

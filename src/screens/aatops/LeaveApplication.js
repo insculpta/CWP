@@ -174,8 +174,8 @@ export default class LeaveApplication extends Component<props> {
 	if(this.state.boolGet)
 	{
 	
-	fetch('http://140.114.54.22:8080/workdata2.php/', {
-	//fetch('http://210.200.25.43:443/workdata2.php', {	
+	//fetch('http://140.114.54.22:8080/workdata2.php/', {
+	fetch('http://210.200.25.43:443/workdata2.php', {	
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -217,8 +217,8 @@ export default class LeaveApplication extends Component<props> {
 	GetEmployee =(e) => {
 	if(this.state.employeebool)
 	{
-	fetch('http://140.114.54.22:8080/getemployee1.php/', {
-	//fetch('http://210.200.25.43:443/getemployee1.php', {
+	//fetch('http://140.114.54.22:8080/getemployee1.php/', {
+	fetch('http://210.200.25.43:443/getemployee1.php', {
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -258,8 +258,8 @@ export default class LeaveApplication extends Component<props> {
 	GetAvailableLeave =(e) => {
 	if(this.state.availablebool)
 	{
-	fetch('http://140.114.54.22:8080/get_AvailableLeave1.php/', {
-	//fetch('http://210.200.25.43:443/get_AvailableLeave1.php', {	
+	//fetch('http://140.114.54.22:8080/get_AvailableLeave1.php/', {
+	fetch('http://210.200.25.43:443/get_AvailableLeave1.php', {	
 	method: 'post',
 	header: {
 		'Accept': 'application/json',
@@ -328,8 +328,8 @@ export default class LeaveApplication extends Component<props> {
         else {
 
 			
-            fetch('http://140.114.54.22:8080/insertleave1.php/', {
-			//fetch('http://210.200.25.43:443/insertleave1.php', {
+            //fetch('http://140.114.54.22:8080/insertleave1.php/', {
+			fetch('http://210.200.25.43:443/insertleave1.php', {
                 method: 'post',
                 header: {
                     'Accept': 'application/json',
